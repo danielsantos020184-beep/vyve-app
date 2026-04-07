@@ -506,15 +506,72 @@ notepad vyve.html
 
     // ==================== VIDEO CALL ====================
     async function startVideoCall() {
-        let targetUser = prompt('Enter username to call:');
-        if (!targetUser) return;
-        try {
-            localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            document.getElementById('localCallVideo').srcObject = localCallStream;
-            document.getElementById('videoCallContainer').classList.add('active');
-            alert(`Calling @${targetUser}...\n\n(WebRTC would connect in production)`);
-        } catch (error) { alert('Cannot access camera'); }
+    let targetUser = prompt('Enter username to call:', '');
+    if (!targetUser || targetUser === currentUser) {
+        alert('Enter a valid username');
+        return;
     }
+    
+    // Check if camera is available
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Your browser does not support video calls. Please use Chrome, Safari, or Edge on a recent device.');
+        return;
+    }
+    
+    currentCallPartner = targetUser;
+    
+    try {
+        // Request camera with specific constraints for mobile
+        localCallStream = await navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: 'user' },  // Use front camera on mobile
+            audio: true 
+        });
+        
+        document.getElementById('localCallVideo').srcObject = localCallStream;
+        document.getElementById('videoCallContainer').classList.add('active');
+        
+        // Create peer connection
+        peerConnection = new RTCPeerConnection(configuration);
+        
+        localCallStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localCallStream);
+        });
+        
+        peerConnection.ontrack = (event) => {
+            document.getElementById('remoteCallVideo').srcObject = event.streams[0];
+        };
+        
+        peerConnection.onicecandidate = (event) => {
+            if (event.candidate) {
+                sendSignalingMessage(currentCallPartner, {
+                    type: 'candidate',
+                    candidate: event.candidate
+                });
+            }
+        };
+        
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+        
+        sendSignalingMessage(targetUser, {
+            type: 'offer',
+            offer: offer
+        });
+        
+        alert(`Calling @${targetUser}... Waiting for answer.`);
+        checkForAnswer();
+        
+    } catch (error) {
+        console.error('Camera error:', error);
+        if (error.name === 'NotAllowedError') {
+            alert('Camera permission denied. Please allow camera access in your browser settings.');
+        } else if (error.name === 'NotFoundError') {
+            alert('No camera found on this device.');
+        } else {
+            alert('Cannot access camera. Please check permissions: ' + error.message);
+        }
+    }
+}
 
     function endVideoCall() {
         if (localCallStream) localCallStream.getTracks().forEach(t => t.stop());
