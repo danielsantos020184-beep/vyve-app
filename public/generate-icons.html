@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Vyve Icons</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial;
+        }
+        .icon {
+            width: 512px;
+            height: 512px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .icon-text {
+            font-size: 180px;
+            font-weight: bold;
+        }
+        .icon-sub {
+            font-size: 60px;
+            letter-spacing: 10px;
+        }
+        button {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 18px;
+            background: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            color: #667eea;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="icon" id="icon">
+            <div class="icon-text">V</div>
+            <div class="icon-sub">VYVE</div>
+        </div>
+        <button onclick="downloadIcon()">Download 512x512 Icon</button>
+        <button onclick="download192()">Download 192x192 Icon</button>
+    </div>
+    <script>
+        function downloadIcon() {
+            const icon = document.getElementById('icon');
+            html2canvas(icon).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'icon-512.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+        function download192() {
+            const icon = document.getElementById('icon');
+            html2canvas(icon, { scale: 0.375 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'icon-192.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
