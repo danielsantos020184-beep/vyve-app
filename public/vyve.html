@@ -97,14 +97,17 @@
         .badge-diamond { background: #00bcd4; color: white; }
         .badge-legend { background: #ff6b6b; color: white; }
         .trending-badge { background: #ff3b30; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 10px; }
+        
+        /* Video Call Styles */
         .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .video-call-container.active { display: flex; }
-        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 120px; height: 180px; background: #333; border-radius: 20px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
         .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
+        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 120px; height: 180px; background: #333; border-radius: 20px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
         .video-call-local video { width: 100%; height: 100%; object-fit: cover; }
         .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 2001; }
         .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; }
         .video-call-end { background: #ff3b30 !important; }
+        
         .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .story-viewer.active { display: flex; }
         .story-image { width: 100%; height: 100%; object-fit: contain; }
@@ -299,6 +302,19 @@
     <div style="margin: 20px;"><button onclick="logout()" style="width: 100%; background: rgba(255,68,68,0.2); border: 1px solid rgba(255,68,68,0.5); padding: 12px; border-radius: 40px; color: #ff4444; cursor: pointer;">Logout</button></div>
 </div>
 
+<!-- Video Call Container -->
+<div id="videoCallContainer" class="video-call-container">
+    <video id="remoteCallVideo" class="video-call-remote" autoplay playsinline></video>
+    <div class="video-call-local">
+        <video id="localCallVideo" autoplay playsinline muted></video>
+    </div>
+    <div class="video-call-controls">
+        <button onclick="toggleCallMic()">🎤</button>
+        <button onclick="toggleCallCamera()">📷</button>
+        <button class="video-call-end" onclick="endVideoCall()">📞</button>
+    </div>
+</div>
+
 <!-- Story Viewer -->
 <div id="storyViewer" class="story-viewer">
     <div class="story-progress" id="storyProgress"></div>
@@ -307,9 +323,6 @@
     <button onclick="closeStory()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white;">✕ Close</button>
     <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white;" id="storyUsername"></div>
 </div>
-
-cd C:\Users\juvex\mi-app\public
-notepad vyve.html
 
 <!-- Comments Modal -->
 <div id="commentsModal" class="comments-modal">
@@ -392,6 +405,9 @@ notepad vyve.html
     let currentDMUser = null;
     let currentViewingStream = null;
     let localCallStream = null;
+    let peerConnection = null;
+    let currentCallPartner = null;
+    let callActive = false;
     let currentStoryIndex = 0;
     let storyInterval = null;
 
@@ -412,6 +428,16 @@ notepad vyve.html
         ];
         localStorage.setItem('vyve_stories', JSON.stringify(stories));
     }
+
+    // WebRTC Configuration
+    const configuration = {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' }
+        ]
+    };
+    
+    let signalingData = JSON.parse(localStorage.getItem('vyve_signaling') || '{}');
 
     // ==================== STORIES ====================
     function loadStories() {
@@ -504,90 +530,157 @@ notepad vyve.html
         if (videoEl) videoEl.pause();
     }
 
-    // ==================== VIDEO CALL ====================
+    // ==================== VIDEO CALLS ====================
+    function sendSignalingMessage(toUser, message) {
+        const key = `call_${currentUser}_${toUser}`;
+        signalingData[key] = {
+            from: currentUser,
+            to: toUser,
+            message: message,
+            timestamp: Date.now()
+        };
+        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
+    }
+
     async function startVideoCall() {
-    let targetUser = prompt('Enter username to call:', '');
-    if (!targetUser || targetUser === currentUser) {
-        alert('Enter a valid username');
-        return;
-    }
-    
-    // Check if camera is available
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        alert('Your browser does not support video calls. Please use Chrome, Safari, or Edge on a recent device.');
-        return;
-    }
-    
-    currentCallPartner = targetUser;
-    
-    try {
-        // Request camera with specific constraints for mobile
-        localCallStream = await navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: 'user' },  // Use front camera on mobile
-            audio: true 
-        });
+        let targetUser = prompt('Enter username to call:', '');
+        if (!targetUser || targetUser === currentUser) {
+            alert('Enter a valid username');
+            return;
+        }
         
-        document.getElementById('localCallVideo').srcObject = localCallStream;
-        document.getElementById('videoCallContainer').classList.add('active');
+        currentCallPartner = targetUser;
         
-        // Create peer connection
-        peerConnection = new RTCPeerConnection(configuration);
-        
-        localCallStream.getTracks().forEach(track => {
-            peerConnection.addTrack(track, localCallStream);
-        });
-        
-        peerConnection.ontrack = (event) => {
-            document.getElementById('remoteCallVideo').srcObject = event.streams[0];
-        };
-        
-        peerConnection.onicecandidate = (event) => {
-            if (event.candidate) {
-                sendSignalingMessage(currentCallPartner, {
-                    type: 'candidate',
-                    candidate: event.candidate
-                });
-            }
-        };
-        
-        const offer = await peerConnection.createOffer();
-        await peerConnection.setLocalDescription(offer);
-        
-        sendSignalingMessage(targetUser, {
-            type: 'offer',
-            offer: offer
-        });
-        
-        alert(`Calling @${targetUser}... Waiting for answer.`);
-        checkForAnswer();
-        
-    } catch (error) {
-        console.error('Camera error:', error);
-        if (error.name === 'NotAllowedError') {
-            alert('Camera permission denied. Please allow camera access in your browser settings.');
-        } else if (error.name === 'NotFoundError') {
-            alert('No camera found on this device.');
-        } else {
-            alert('Cannot access camera. Please check permissions: ' + error.message);
+        try {
+            localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('localCallVideo').srcObject = localCallStream;
+            document.getElementById('videoCallContainer').classList.add('active');
+            
+            peerConnection = new RTCPeerConnection(configuration);
+            
+            localCallStream.getTracks().forEach(track => {
+                peerConnection.addTrack(track, localCallStream);
+            });
+            
+            peerConnection.ontrack = (event) => {
+                document.getElementById('remoteCallVideo').srcObject = event.streams[0];
+            };
+            
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    sendSignalingMessage(currentCallPartner, {
+                        type: 'candidate',
+                        candidate: event.candidate
+                    });
+                }
+            };
+            
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            
+            sendSignalingMessage(targetUser, {
+                type: 'offer',
+                offer: offer
+            });
+            
+            alert(`Calling @${targetUser}...`);
+            
+            // Check for answer
+            const checkInterval = setInterval(async () => {
+                const key = `call_${currentCallPartner}_${currentUser}`;
+                const incoming = signalingData[key];
+                if (incoming && incoming.message && incoming.message.type === 'answer') {
+                    clearInterval(checkInterval);
+                    await peerConnection.setRemoteDescription(new RTCSessionDescription(incoming.message.answer));
+                    callActive = true;
+                    alert('Call connected!');
+                    delete signalingData[key];
+                    localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
+                }
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Camera error:', error);
+            alert('Cannot access camera: ' + error.message);
         }
     }
-}
 
     function endVideoCall() {
-        if (localCallStream) localCallStream.getTracks().forEach(t => t.stop());
+        if (peerConnection) peerConnection.close();
+        if (localCallStream) localCallStream.getTracks().forEach(track => track.stop());
+        callActive = false;
+        peerConnection = null;
+        localCallStream = null;
         document.getElementById('videoCallContainer').classList.remove('active');
     }
 
     function toggleCallMic() {
         if (localCallStream) {
-            localCallStream.getAudioTracks().forEach(t => t.enabled = !t.enabled);
+            const enabled = localCallStream.getAudioTracks()[0].enabled;
+            localCallStream.getAudioTracks().forEach(track => track.enabled = !enabled);
         }
     }
 
     function toggleCallCamera() {
         if (localCallStream) {
-            localCallStream.getVideoTracks().forEach(t => t.enabled = !t.enabled);
+            const enabled = localCallStream.getVideoTracks()[0].enabled;
+            localCallStream.getVideoTracks().forEach(track => track.enabled = !enabled);
         }
+    }
+
+    // Listen for incoming calls
+    function listenForIncomingCalls() {
+        setInterval(async () => {
+            const keys = Object.keys(signalingData);
+            for (const key of keys) {
+                const call = signalingData[key];
+                if (call && call.to === currentUser && call.message && call.message.type === 'offer') {
+                    const accept = confirm(`📞 Incoming call from @${call.from}. Accept?`);
+                    
+                    if (accept) {
+                        currentCallPartner = call.from;
+                        
+                        localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                        document.getElementById('localCallVideo').srcObject = localCallStream;
+                        document.getElementById('videoCallContainer').classList.add('active');
+                        
+                        peerConnection = new RTCPeerConnection(configuration);
+                        localCallStream.getTracks().forEach(track => {
+                            peerConnection.addTrack(track, localCallStream);
+                        });
+                        
+                        peerConnection.ontrack = (event) => {
+                            document.getElementById('remoteCallVideo').srcObject = event.streams[0];
+                        };
+                        
+                        peerConnection.onicecandidate = (event) => {
+                            if (event.candidate) {
+                                sendSignalingMessage(currentCallPartner, {
+                                    type: 'candidate',
+                                    candidate: event.candidate
+                                });
+                            }
+                        };
+                        
+                        await peerConnection.setRemoteDescription(new RTCSessionDescription(call.message.offer));
+                        const answer = await peerConnection.createAnswer();
+                        await peerConnection.setLocalDescription(answer);
+                        
+                        sendSignalingMessage(currentCallPartner, {
+                            type: 'answer',
+                            answer: answer
+                        });
+                        
+                        callActive = true;
+                        delete signalingData[key];
+                        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
+                    } else {
+                        delete signalingData[key];
+                        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
+                    }
+                }
+            }
+        }, 3000);
     }
 
     // ==================== USER LEVELS / BADGES ====================
@@ -1176,6 +1269,9 @@ notepad vyve.html
 
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
+
+    // Start listening for incoming calls
+    listenForIncomingCalls();
 
     window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
     window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
