@@ -1,0 +1,8 @@
+{
+  "name": "Vyve",
+  "short_name": "Vyve",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#667eea",
+  "background_color": "#000000"
+}
