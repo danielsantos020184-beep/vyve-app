@@ -1,0 +1,1 @@
+﻿const stripe = Stripe('sk_live_...PbeZ');
