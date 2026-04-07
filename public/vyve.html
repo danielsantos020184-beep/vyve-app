@@ -1276,5 +1276,10 @@
     window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
     window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
 </body>
 </html>
