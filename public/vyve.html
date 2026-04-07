@@ -25,6 +25,9 @@
         .post-actions { position: absolute; bottom: 120px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
         .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
         .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
+        .story-ring { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #ff3b30, #ff6b35); display: flex; align-items: center; justify-content: center; margin: 5px; cursor: pointer; }
+        .story-inner { width: 65px; height: 65px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .stories-container { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: #000; border-bottom: 1px solid var(--glass-border); }
         .live-container { padding: 20px; min-height: 100vh; }
         .start-live-btn { background: linear-gradient(135deg, #ff3b30, #ff6b35); border: none; padding: 18px 40px; border-radius: 60px; color: white; font-size: 18px; font-weight: 700; cursor: pointer; margin: 20px auto; display: block; }
         .live-stream-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
@@ -94,6 +97,20 @@
         .badge-diamond { background: #00bcd4; color: white; }
         .badge-legend { background: #ff6b6b; color: white; }
         .trending-badge { background: #ff3b30; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 10px; }
+        .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
+        .video-call-container.active { display: flex; }
+        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 120px; height: 180px; background: #333; border-radius: 20px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
+        .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
+        .video-call-local video { width: 100%; height: 100%; object-fit: cover; }
+        .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 2001; }
+        .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; }
+        .video-call-end { background: #ff3b30 !important; }
+        .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
+        .story-viewer.active { display: flex; }
+        .story-image { width: 100%; height: 100%; object-fit: contain; }
+        .story-progress { position: absolute; top: 20px; left: 0; right: 0; display: flex; gap: 5px; padding: 10px; }
+        .story-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.3); border-radius: 3px; overflow: hidden; }
+        .story-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
     </style>
 </head>
 <body>
@@ -146,15 +163,18 @@
     </div>
 </div>
 
-<!-- Feed Screen -->
+<!-- Feed Screen with Stories -->
 <div id="feedScreen" class="screen">
-    <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 10px 15px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <div style="display: flex; gap: 8px; align-items: center; max-width: 500px; margin: 0 auto;">
-            <div style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VYVE</div>
-            <input type="text" id="searchInput" placeholder="🔍 Search users..." class="input-field" style="flex: 1; padding: 10px 15px; font-size: 14px; margin: 0;">
-            <button onclick="searchUsers()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer;">Find</button>
+    <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 100;">
+        <div style="padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div style="display: flex; gap: 8px; align-items: center; max-width: 500px; margin: 0 auto;">
+                <div style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VYVE</div>
+                <input type="text" id="searchInput" placeholder="🔍 Search users..." class="input-field" style="flex: 1; padding: 10px 15px; font-size: 14px; margin: 0;">
+                <button onclick="searchUsers()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer;">Find</button>
+            </div>
+            <div id="searchResults"></div>
         </div>
-        <div id="searchResults"></div>
+        <div class="stories-container" id="storiesContainer"></div>
     </div>
     <div class="feed-container" id="feedContainer"></div>
 </div>
@@ -221,7 +241,7 @@
     </div>
 </div>
 
-<!-- Shop Screen with DEMO MODE -->
+<!-- Shop Screen -->
 <div id="shopScreen" class="screen">
     <div class="balance"><p>💰 YOUR COINS</p><div class="balance-value" id="coinBalance">0</div></div>
     <div class="packages">
@@ -232,7 +252,7 @@
         <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙</div><b>500 Coins</b><br>$49.99<small>🎁 +25</small></div>
         <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
     </div>
-    <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins (Demo)</button></div>
+    <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
 
 <!-- Profile Screen -->
@@ -260,6 +280,8 @@
     
     <div style="margin: 20px;">
         <button onclick="openDirectMessages()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">💬 Direct Messages</button>
+        <button onclick="startVideoCall()" style="width: 100%; background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">📹 Start Video Call</button>
+        <button onclick="addStory()" style="width: 100%; background: linear-gradient(135deg, #ff9800, #ff5722); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold;">📸 Add Story</button>
     </div>
     
     <div class="notifications-panel">
@@ -273,7 +295,30 @@
     </div>
     <input type="file" id="videoUploadInput" class="hidden-file-input" accept="video/*" onchange="prepareEdit(this)">
     <input type="file" id="imageUploadInput" class="hidden-file-input" accept="image/*" onchange="prepareEdit(this)">
+    <input type="file" id="storyUploadInput" class="hidden-file-input" accept="image/*,video/*" onchange="uploadStory(this)">
     <div style="margin: 20px;"><button onclick="logout()" style="width: 100%; background: rgba(255,68,68,0.2); border: 1px solid rgba(255,68,68,0.5); padding: 12px; border-radius: 40px; color: #ff4444; cursor: pointer;">Logout</button></div>
+</div>
+
+<!-- Story Viewer -->
+<div id="storyViewer" class="story-viewer">
+    <div class="story-progress" id="storyProgress"></div>
+    <img id="storyImage" class="story-image" style="display: none;">
+    <video id="storyVideo" class="story-image" autoplay playsinline style="display: none;"></video>
+    <button onclick="closeStory()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white;">✕ Close</button>
+    <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white;" id="storyUsername"></div>
+</div>
+
+<!-- Video Call Container -->
+<div id="videoCallContainer" class="video-call-container">
+    <div class="video-call-local">
+        <video id="localCallVideo" autoplay playsinline muted></video>
+    </div>
+    <video id="remoteCallVideo" class="video-call-remote" autoplay playsinline></video>
+    <div class="video-call-controls">
+        <button onclick="toggleCallMic()">🎤</button>
+        <button onclick="toggleCallCamera()">📷</button>
+        <button class="video-call-end" onclick="endVideoCall()">📞</button>
+    </div>
 </div>
 
 <!-- Comments Modal -->
@@ -346,6 +391,7 @@
     let following = JSON.parse(localStorage.getItem('vyve_following') || '[]');
     let followers = JSON.parse(localStorage.getItem('vyve_followers') || '[]');
     let posts = JSON.parse(localStorage.getItem('vyve_posts') || '[]');
+    let stories = JSON.parse(localStorage.getItem('vyve_stories') || '[]');
     let pendingFile = null, pendingFileType = null, pendingFilter = '', pendingSound = null;
     let localStream = null, useFrontCamera = true, isLiveActive = false, viewerCountInterval = null;
     let activeStreams = JSON.parse(localStorage.getItem('vyve_active_streams') || '[]');
@@ -355,6 +401,9 @@
     let dms = JSON.parse(localStorage.getItem('vyve_dms') || '{}');
     let currentDMUser = null;
     let currentViewingStream = null;
+    let localCallStream = null;
+    let currentStoryIndex = 0;
+    let storyInterval = null;
 
     // Sample posts
     if (posts.length === 0) {
@@ -363,6 +412,135 @@
             { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', title: 'Playing the new update! 🎮', likes: '3400', comments: '234' }
         ];
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
+    }
+
+    // Sample stories
+    if (stories.length === 0) {
+        stories = [
+            { id: 1, username: 'traveler', type: 'image', url: 'https://picsum.photos/400/600?random=1', expiresAt: Date.now() + 86400000 },
+            { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', expiresAt: Date.now() + 86400000 }
+        ];
+        localStorage.setItem('vyve_stories', JSON.stringify(stories));
+    }
+
+    // ==================== STORIES ====================
+    function loadStories() {
+        let container = document.getElementById('storiesContainer');
+        if (!container) return;
+        let activeStories = stories.filter(s => s.expiresAt > Date.now());
+        let myStories = activeStories.filter(s => s.username === currentUser);
+        let otherStories = activeStories.filter(s => s.username !== currentUser);
+        let uniqueUsers = [...new Set([...myStories, ...otherStories].map(s => s.username))];
+        container.innerHTML = uniqueUsers.map(username => {
+            return `<div class="story-ring" onclick="viewStory('${username}')"><div class="story-inner">${username === currentUser ? '📸' : '👤'}</div><div style="font-size: 10px; margin-top: 5px;">@${username}</div></div>`;
+        }).join('');
+        if (uniqueUsers.length === 0) container.innerHTML = '<div style="color: #888; padding: 10px;">No stories available</div>';
+    }
+
+    function addStory() {
+        document.getElementById('storyUploadInput').click();
+    }
+
+    function uploadStory(input) {
+        if (input.files && input.files[0]) {
+            let file = input.files[0];
+            let url = URL.createObjectURL(file);
+            let newStory = {
+                id: Date.now(),
+                username: currentUser,
+                type: file.type.startsWith('video') ? 'video' : 'image',
+                url: url,
+                expiresAt: Date.now() + 86400000
+            };
+            stories.push(newStory);
+            localStorage.setItem('vyve_stories', JSON.stringify(stories));
+            loadStories();
+            alert('Story added! It will expire in 24 hours.');
+            input.value = '';
+        }
+    }
+
+    function viewStory(username) {
+        let userStories = stories.filter(s => s.username === username && s.expiresAt > Date.now());
+        if (userStories.length === 0) return;
+        currentStoryIndex = 0;
+        showStory(userStories, currentStoryIndex);
+        document.getElementById('storyViewer').classList.add('active');
+        document.getElementById('storyUsername').innerText = `@${username}`;
+        
+        if (storyInterval) clearInterval(storyInterval);
+        storyInterval = setInterval(() => {
+            currentStoryIndex++;
+            if (currentStoryIndex >= userStories.length) {
+                closeStory();
+            } else {
+                showStory(userStories, currentStoryIndex);
+            }
+        }, 5000);
+    }
+
+    function showStory(stories, index) {
+        let story = stories[index];
+        let imgEl = document.getElementById('storyImage');
+        let videoEl = document.getElementById('storyVideo');
+        if (story.type === 'image') {
+            imgEl.style.display = 'block';
+            videoEl.style.display = 'none';
+            imgEl.src = story.url;
+        } else {
+            imgEl.style.display = 'none';
+            videoEl.style.display = 'block';
+            videoEl.src = story.url;
+            videoEl.load();
+            videoEl.play();
+        }
+        let progressContainer = document.getElementById('storyProgress');
+        progressContainer.innerHTML = stories.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="progressFill${i}" style="width: ${i === index ? '0%' : i < index ? '100%' : '0%'}"></div></div>`).join('');
+        if (index === currentStoryIndex) {
+            let startTime = Date.now();
+            let fillInterval = setInterval(() => {
+                let elapsed = Date.now() - startTime;
+                let percent = (elapsed / 5000) * 100;
+                document.getElementById(`progressFill${index}`).style.width = Math.min(percent, 100) + '%';
+                if (percent >= 100) clearInterval(fillInterval);
+            }, 50);
+        }
+    }
+
+    function closeStory() {
+        document.getElementById('storyViewer').classList.remove('active');
+        if (storyInterval) clearInterval(storyInterval);
+        let videoEl = document.getElementById('storyVideo');
+        if (videoEl) videoEl.pause();
+    }
+
+    // ==================== VIDEO CALL ====================
+    async function startVideoCall() {
+        let targetUser = prompt('Enter username to call:');
+        if (!targetUser) return;
+        try {
+            localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('localCallVideo').srcObject = localCallStream;
+            document.getElementById('videoCallContainer').classList.add('active');
+            alert(`Calling @${targetUser}...\n\n(WebRTC would connect in production)`);
+        } catch (error) { alert('Cannot access camera'); }
+    }
+
+    function endVideoCall() {
+        if (localCallStream) localCallStream.getTracks().forEach(t => t.stop());
+        document.getElementById('videoCallContainer').classList.remove('active');
+    }
+
+    function toggleCallMic() {
+        if (localCallStream) {
+            localCallStream.getAudioTracks().forEach(t => t.enabled = !t.enabled);
+        }
+    }
+
+    function toggleCallCamera() {
+        if (localCallStream) {
+            localCallStream.getVideoTracks().forEach(t => t.enabled = !t.enabled);
+        }
     }
 
     // ==================== USER LEVELS / BADGES ====================
@@ -764,45 +942,44 @@
         if (input && input.value.trim()) { alert(`Message sent to ${currentViewingStream}: "${input.value}"`); input.value = ''; }
     }
 
-    // ==================== DEMO MODE BUY COINS ====================
-   // REAL STRIPE PAYMENT
-document.getElementById('buyBtn').addEventListener('click', async () => {
-    if (!selectedPackage) {
-        alert('Select a package first');
-        return;
-    }
-    
-    let buyBtn = document.getElementById('buyBtn');
-    let originalText = buyBtn.innerText;
-    buyBtn.innerText = '⏳ Processing...';
-    buyBtn.disabled = true;
-    
-    try {
-        const response = await fetch('/api/create-payment', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                coins: selectedPackage,
-                amount: selectedPrice,
-                username: currentUser
-            })
-        });
+    // ==================== STRIPE PAYMENT ====================
+    document.getElementById('buyBtn').addEventListener('click', async () => {
+        if (!selectedPackage) {
+            alert('Select a package first');
+            return;
+        }
         
-        const data = await response.json();
+        let buyBtn = document.getElementById('buyBtn');
+        let originalText = buyBtn.innerText;
+        buyBtn.innerText = '⏳ Processing...';
+        buyBtn.disabled = true;
         
-        if (data.url) {
-            window.location.href = data.url;
-        } else {
-            alert('Payment error: ' + (data.error || 'Unknown error'));
+        try {
+            const response = await fetch('/api/create-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    coins: selectedPackage,
+                    amount: selectedPrice,
+                    username: currentUser
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.url) {
+                window.location.href = data.url;
+            } else {
+                alert('Payment error: ' + (data.error || 'Unknown error'));
+                buyBtn.innerText = originalText;
+                buyBtn.disabled = false;
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
             buyBtn.innerText = originalText;
             buyBtn.disabled = false;
         }
-    } catch (error) {
-        alert('Error: ' + error.message);
-        buyBtn.innerText = originalText;
-        buyBtn.disabled = false;
-    }
-});
+    });
 
     // ==================== USER DATA ====================
     function saveUserData() { if (currentUser) localStorage.setItem('vyve_user', JSON.stringify({ username: currentUser, email: currentUserEmail, coins: coinBalance })); }
@@ -822,6 +999,7 @@ document.getElementById('buyBtn').addEventListener('click', async () => {
             updateNotificationsList();
             loadPosts();
             loadTrending();
+            loadStories();
             updateBadge();
             return true;
         }
@@ -855,6 +1033,7 @@ document.getElementById('buyBtn').addEventListener('click', async () => {
         document.getElementById('mainNav').style.display = 'flex';
         loadPosts();
         loadTrending();
+        loadStories();
         updateBadge();
         alert('Welcome ' + username + '!');
     }
@@ -875,6 +1054,7 @@ document.getElementById('buyBtn').addEventListener('click', async () => {
                 document.getElementById('mainNav').style.display = 'flex';
                 loadPosts();
                 loadTrending();
+                loadStories();
                 updateBadge();
                 alert('Welcome back ' + username + '!');
                 return;
@@ -898,6 +1078,7 @@ document.getElementById('buyBtn').addEventListener('click', async () => {
             updateActiveStreamsList();
             if (screen === 'profile') { updateNotificationsList(); updateBadge(); }
             if (screen === 'trending') { loadTrending(); }
+            if (screen === 'feed') { loadStories(); }
         });
     });
 
