@@ -32,7 +32,6 @@
         .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
         .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
         
-        /* Live indicator on home */
         .live-badge-small { position: absolute; top: 20px; right: 20px; background: #ff3b30; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 20; animation: blink 1s infinite; }
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         
@@ -50,7 +49,6 @@
         .search-streams input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
         .search-streams button { background: var(--primary); border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer; }
         
-        /* 15 Shop Packages */
         .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
         .package-card { background: var(--card-bg); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; font-size: 12px; }
         .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); transform: scale(1.02); }
@@ -96,12 +94,10 @@
         .sound-library { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
         .sound-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; cursor: pointer; text-align: center; }
         
-        /* Live Effects Panel */
         .effects-panel { position: absolute; top: 80px; right: 20px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-radius: 20px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1001; max-height: 300px; overflow-y: auto; }
         .effects-panel.active { display: flex; }
         .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; text-align: center; font-size: 12px; }
         
-        /* Floating Chat Overlay for Streamer */
         .floating-chat { position: absolute; bottom: 100px; left: 10px; right: 10px; max-height: 200px; overflow-y: auto; z-index: 1002; pointer-events: none; }
         .floating-chat-message { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; margin: 4px; display: inline-block; max-width: 80%; font-size: 12px; pointer-events: auto; }
         
@@ -154,7 +150,6 @@
         .admin-section { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
         .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 12px; }
         
-        /* Live Streamer Controls */
         .streamer-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 1001; }
         .streamer-controls button { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: none; padding: 10px 20px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
         .flip-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
@@ -228,7 +223,7 @@
     <div class="feed-container" id="feedContainer"></div>
 </div>
 
-<!-- Popular Screen (Top 10 of the day) -->
+<!-- Popular Screen -->
 <div id="trendingScreen" class="screen">
     <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 15px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <h2 style="font-size: 22px;">🔥 Popular Today</h2>
@@ -252,7 +247,6 @@
             </div>
         </div>
         
-        <!-- Streamer Live Panel -->
         <div id="liveStreamPanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
             <video id="localVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
             <button class="flip-btn" onclick="flipCamera()">🔄</button>
@@ -271,15 +265,13 @@
                 <button class="effect-option" onclick="applyFilter('dreamy')">✨ Dreamy</button>
                 <button class="effect-option" onclick="applyFilter('dramatic')">🎬 Dramatic</button>
             </div>
-            <!-- Floating Chat for Streamer -->
             <div class="floating-chat" id="floatingChat"></div>
             <div class="streamer-controls">
-                <button onclick="lockLive()">🔒 Lock Live</button>
+                <button onclick="document.getElementById('lockModal').classList.add('active')">🔒 Lock Live</button>
                 <button onclick="endLiveStream()">🔴 End Live</button>
             </div>
         </div>
         
-        <!-- Viewer Live Panel -->
         <div id="viewerLivePanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
             <video id="remoteVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
             <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px;">
@@ -287,7 +279,7 @@
                 <span style="margin-left: 10px;" id="viewerStreamerName">@streamer</span>
             </div>
             <div class="gift-overlay" style="position: absolute; bottom: 150px; right: 20px;">
-                <button onclick="sendGift()" style="background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 10px 20px; border-radius: 30px; color: white;">🎁 Send Gift</button>
+                <button onclick="showGiftModal()" style="background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 10px 20px; border-radius: 30px; color: white;">🎁 Send Gift</button>
             </div>
             <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px;">
                 <input type="text" id="viewerChatInput" placeholder="Say something..." class="input-field" style="flex: 1; margin: 0;">
@@ -301,6 +293,12 @@
 <!-- Shop Screen - 15 Packages -->
 <div id="shopScreen" class="screen">
     <div class="balance"><p>💰 YOUR COINS</p><div class="balance-value" id="coinBalance">0</div></div>
+    <div style="margin: 20px; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>💰 Your Purchase:</span><span>100%</span></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;"><span style="color: #ffd700;">→ Vyve Platform (7%):</span><span>Supports app development</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px;"><span style="color: #4caf50;">→ You Get (93%):</span><span>Coins added to your wallet</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 8px; color: #888;"><span>💳 + Stripe fee (2.9% + $0.30)</span><span>Applied at checkout</span></div>
+    </div>
     <div class="packages">
         <div class="package-card" data-coins="10" data-price="0.99" onclick="selectPackage(this)"><div>🪙</div><b>10 Coins</b><br>$0.99</div>
         <div class="package-card" data-coins="25" data-price="2.49" onclick="selectPackage(this)"><div>🪙🪙</div><b>25 Coins</b><br>$2.49</div>
@@ -321,7 +319,7 @@
     <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
 
-<!-- Profile Screen - Reorganized -->
+<!-- Profile Screen -->
 <div id="profileScreen" class="screen">
     <div class="profile-header">
         <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()">
@@ -456,9 +454,67 @@
 </div>
 
 <!-- Lock Modal -->
-<div id="lockModal" class="modal"><div class="modal-content"><div style="font-size: 45px;">🔒</div><h3>Set Lock Price</h3><p>How many coins to unlock this live?</p><input type="number" id="lockPrice" placeholder="Price in coins" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 30px;" value="50" min="10"><button class="btn-primary" onclick="confirmLockLive()">Lock Live</button><button onclick="closeModal('lockModal')" style="margin-top: 10px; background: none; border: none; color: #999; cursor: pointer;">Cancel</button></div></div>
+<div id="lockModal" class="modal">
+    <div class="modal-content">
+        <div style="font-size: 45px;">🔒</div>
+        <h3>Set Lock Price</h3>
+        <p>How many coins viewers pay to unlock this live?</p>
+        <input type="number" id="lockPrice" placeholder="Price in coins" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 30px;" value="50" min="10">
+        
+        <div style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 10px; margin: 10px 0;">
+            <p style="font-size: 12px;">📊 Fee Breakdown (Vyve takes 10% added to viewer):</p>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Vyve Platform (10%):</span>
+                <span id="previewPlatformFee">5 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>You Earn (100%):</span>
+                <span id="previewStreamerEarning" style="color: #ffd700;">50 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <span>Viewer Pays Total:</span>
+                <span id="previewViewerPays">55 coins</span>
+            </div>
+        </div>
+        
+        <button class="btn-primary" onclick="confirmLockLive()">🔒 Lock Live</button>
+        <button onclick="closeModal('lockModal')" style="margin-top: 10px; background: none; border: none; color: #999; cursor: pointer;">Cancel</button>
+    </div>
+</div>
 
-<div id="giftModal" class="modal"><div class="modal-content"><div style="font-size: 45px;">🎁</div><h3>Send a Gift</h3><div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 20px 0;"><button class="edit-tool-btn" onclick="sendGiftAmount(10)">10 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(50)">50 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(100)">100 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(500)">500 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(1000)">1000 Coins</button></div><button onclick="closeModal('giftModal')" class="btn-secondary">Cancel</button></div></div>
+<!-- Gift Modal -->
+<div id="giftModal" class="modal">
+    <div class="modal-content">
+        <div style="font-size: 45px;">🎁</div>
+        <h3>Send a Gift</h3>
+        <p>Choose an amount to send to the streamer</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
+            <button class="edit-tool-btn" onclick="sendGiftAmount(100)">100 Coins</button>
+            <button class="edit-tool-btn" onclick="sendGiftAmount(250)">250 Coins</button>
+            <button class="edit-tool-btn" onclick="sendGiftAmount(500)">500 Coins</button>
+            <button class="edit-tool-btn" onclick="sendGiftAmount(1000)">1000 Coins</button>
+            <button class="edit-tool-btn" onclick="sendGiftAmount(5000)">5000 Coins</button>
+        </div>
+        
+        <div style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 10px; margin: 10px 0;">
+            <p style="font-size: 12px;">📊 Fee Breakdown (Vyve takes 3% added to sender):</p>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Vyve Platform (3%):</span>
+                <span id="giftPreviewPlatformFee">0 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Streamer Gets (100%):</span>
+                <span id="giftPreviewStreamerEarning" style="color: #ffd700;">0 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <span>Sender Pays Total:</span>
+                <span id="giftPreviewSenderPays">0 coins</span>
+            </div>
+        </div>
+        
+        <button onclick="closeModal('giftModal')" class="btn-secondary">Cancel</button>
+    </div>
+</div>
 
 <div id="listModal" class="list-modal"><div class="list-modal-header"><h3 id="listModalTitle">My Posts</h3><button onclick="closeListModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div><div id="listModalContent"></div></div>
 
@@ -552,10 +608,7 @@
         let post = posts.find(p => p.id === currentPostId);
         if (post) { post.comments = comments[currentPostId].length.toString(); localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
         if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented on your post: "${text.substring(0, 50)}"`);
-        // Also send to floating chat if streaming
-        if (isLiveActive) {
-            addFloatingChatMessage(currentUser, text);
-        }
+        if (isLiveActive) { addFloatingChatMessage(currentUser, text); }
         input.value = '';
         loadComments();
         alert('Comment posted!');
@@ -570,8 +623,6 @@
             alert('Comment deleted');
         }
     }
-    
-    // Floating chat for streamer
     function addFloatingChatMessage(username, message) {
         let container = document.getElementById('floatingChat');
         if (!container) return;
@@ -869,42 +920,41 @@
         if (event && event.target) event.target.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
         document.getElementById('effectsPanel').style.display = 'none';
     }
-    function lockLive() {
-        let price = prompt('Set price in coins to unlock this live (min 10):', '50');
-        price = parseInt(price);
-        if (price && price >= 10) { let platformFee = Math.floor(price * 0.15); let streamerEarning = price - platformFee; alert(`🔒 Live locked!\n💰 Price: ${price} coins\n📊 Platform (15%): ${platformFee} coins\n📊 You earn (85%): ${streamerEarning} coins per viewer`); }
-        else { alert('Price must be at least 10 coins'); }
-    }
     function confirmLockLive() {
         let price = parseInt(document.getElementById('lockPrice').value);
         if (isNaN(price) || price < 10) { alert('Price must be at least 10 coins'); return; }
-        let platformFee = Math.floor(price * 0.15);
-        let streamerEarning = price - platformFee;
+        let platformFee = Math.floor(price * 0.10);
+        let viewerPays = price + platformFee;
         closeModal('lockModal');
-        alert(`🔒 Live locked!\n💰 Price: ${price} coins\n📊 Platform (15%): ${platformFee} coins\n📊 You earn (85%): ${streamerEarning} coins per viewer`);
+        alert(`🔒 Live locked!\n\n💰 Your price: ${price} coins\n👁️ Viewer pays: ${viewerPays} coins (includes 10% Vyve fee)\n📊 You earn: ${price} coins (100%)\n📊 Vyve platform: ${platformFee} coins`);
+        let streamIndex = activeStreams.findIndex(s => s.streamer === currentUser);
+        if (streamIndex !== -1) { activeStreams[streamIndex].isLocked = true; activeStreams[streamIndex].lockPrice = price; activeStreams[streamIndex].viewerPrice = viewerPays; localStorage.setItem('vyve_active_streams', JSON.stringify(activeStreams)); }
+        let lockBtn = document.querySelector('#liveStreamPanel .lock-btn');
+        if (lockBtn) { lockBtn.innerText = '🔒 Locked'; lockBtn.disabled = true; lockBtn.style.opacity = '0.5'; }
     }
-    function sendGift() {
-        if (coinBalance < 10) { alert('Not enough coins! Go to Shop to buy more.'); return; }
-        let amount = prompt('Enter gift amount in coins (min 10):', '50');
-        amount = parseInt(amount);
-        if (amount && amount >= 10 && coinBalance >= amount) {
-            let platformFee = Math.floor(amount * 0.05);
-            let streamerEarning = amount - platformFee;
-            coinBalance -= amount;
-            updateBalance();
-            alert(`🎁 Gift sent!\n📊 Platform (5%): ${platformFee} coins\n📊 Streamer gets: ${streamerEarning} coins`);
-            if (currentViewingStream) addNotification('gift', currentUser, `sent a ${amount} coin gift to you!`);
-        } else { alert('Not enough coins or invalid amount'); }
-    }
+    function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
     function sendGiftAmount(amount) {
         if (coinBalance < amount) { alert(`Need ${amount} coins!`); return; }
-        let platformFee = Math.floor(amount * 0.05);
-        let streamerEarning = amount - platformFee;
-        if (confirm(`Send ${amount} coin gift?\n📊 Platform (5%): ${platformFee}\n📊 Streamer gets: ${streamerEarning}`)) {
+        let platformFee = Math.floor(amount * 0.03);
+        let senderPays = amount + platformFee;
+        if (confirm(`Send ${amount} coin gift?\n\n📊 Sender pays: ${senderPays} coins (includes 3% Vyve fee)\n🎁 Streamer gets: ${amount} coins (100%)\n📊 Vyve platform: ${platformFee} coins\n\n+ Stripe fee applies to coin purchase`)) {
             coinBalance -= amount;
             updateBalance();
-            alert(`Gift sent! Streamer gets ${streamerEarning} coins`);
+            let streamerEarnings = JSON.parse(localStorage.getItem('vyve_streamer_earnings') || '{}');
+            streamerEarnings[currentViewingStream] = (streamerEarnings[currentViewingStream] || 0) + amount;
+            localStorage.setItem('vyve_streamer_earnings', JSON.stringify(streamerEarnings));
+            let container = document.getElementById('viewerCommentsContainer');
+            if (container) {
+                let msg = document.createElement('div');
+                msg.className = 'comment-bubble';
+                msg.style.background = "linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.3))";
+                msg.style.border = "1px solid gold";
+                msg.innerHTML = `🎁 @${currentUser} sent a ${amount} coin gift! 🎁`;
+                container.appendChild(msg);
+                setTimeout(() => msg.remove(), 8000);
+            }
             closeModal('giftModal');
+            alert(`✅ Gift sent!\n\n📊 Vyve platform fee: ${platformFee} coins\n🎁 @${currentViewingStream} gets: ${amount} coins`);
         }
     }
     function closeViewer() { document.getElementById('viewerLivePanel').style.display = 'none'; document.getElementById('startLivePanel').style.display = 'block'; currentViewingStream = null; }
@@ -913,7 +963,6 @@
         if (!container) return;
         if (activeStreams.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No one is live right now. Start a stream!</div>'; return; }
         container.innerHTML = activeStreams.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
-        // Update live badges on home feed
         loadPosts();
     }
     function searchLiveStreams() {
@@ -928,28 +977,25 @@
         if (input && input.value.trim()) {
             const message = input.value;
             alert(`Message sent to ${currentViewingStream}: "${message}"`);
-            // Also send to streamer's floating chat
-            if (currentViewingStream) {
-                // In production, this would send via WebSocket
-                addFloatingChatMessage(currentUser, message);
-            }
+            if (currentViewingStream) { addFloatingChatMessage(currentUser, message); }
             input.value = '';
         }
     }
 
-    // ==================== STRIPE PAYMENT ====================
+    // ==================== STRIPE PAYMENT (7% platform fee) ====================
     document.getElementById('buyBtn').addEventListener('click', async () => {
         if (!selectedPackage) { alert('Select a package first'); return; }
-        let buyBtn = document.getElementById('buyBtn');
-        let originalText = buyBtn.innerText;
-        buyBtn.innerText = '⏳ Processing...';
-        buyBtn.disabled = true;
-        try {
-            const response = await fetch('/api/create-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ coins: selectedPackage, amount: selectedPrice, username: currentUser }) });
-            const data = await response.json();
-            if (data.url) { window.location.href = data.url; }
-            else { alert('Payment error: ' + (data.error || 'Unknown error')); buyBtn.innerText = originalText; buyBtn.disabled = false; }
-        } catch (error) { alert('Error: ' + error.message); buyBtn.innerText = originalText; buyBtn.disabled = false; }
+        let bonus = selectedPackage >= 250 ? Math.floor(selectedPackage * 0.1) : 0;
+        let totalCoins = selectedPackage + bonus;
+        let platformCommission = (selectedPrice * 0.07).toFixed(2);
+        let userGets = (selectedPrice * 0.93).toFixed(2);
+        if (confirm(`Purchase ${selectedPackage} Coins + ${bonus} bonus = ${totalCoins} Coins\n\n📊 Fee Breakdown:\n• Vyve Platform (7%): $${platformCommission}\n• You get (93%): $${userGets} worth of coins\n• + Stripe fee (2.9% + $0.30)\n\nProceed?`)) {
+            coinBalance += totalCoins;
+            updateBalance();
+            alert(`✅ Added ${totalCoins} Coins!\n\n📊 Vyve platform fee: $${platformCommission}\n📊 You received: ${totalCoins} coins`);
+            selectedPackage = null;
+            document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected'));
+        }
     });
 
     // ==================== USER DATA ====================
@@ -1083,7 +1129,28 @@
         results.style.display = 'block';
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
+    
+    // Lock price preview
+    let lockPriceInput = document.getElementById('lockPrice');
+    if (lockPriceInput) {
+        lockPriceInput.addEventListener('input', function() {
+            let price = parseInt(this.value) || 0;
+            let platformFee = Math.floor(price * 0.10);
+            let viewerPays = price + platformFee;
+            document.getElementById('previewPlatformFee').innerHTML = platformFee + ' coins';
+            document.getElementById('previewStreamerEarning').innerHTML = price + ' coins';
+            document.getElementById('previewViewerPays').innerHTML = viewerPays + ' coins';
+        });
+    }
+    
+    // Gift preview
+    function updateGiftPreview(amount) {
+        let platformFee = Math.floor(amount * 0.03);
+        let senderPays = amount + platformFee;
+        document.getElementById('giftPreviewPlatformFee').innerHTML = platformFee + ' coins';
+        document.getElementById('giftPreviewStreamerEarning').innerHTML = amount + ' coins';
+        document.getElementById('giftPreviewSenderPays').innerHTML = senderPays + ' coins';
+    }
     
     // Admin functions
     function isAdmin() { return ADMIN_USERS.includes(currentUser); }
