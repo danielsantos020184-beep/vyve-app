@@ -25,25 +25,12 @@
         .post-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
         .post-media { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
         .post-info { position: absolute; bottom: 120px; left: 20px; z-index: 10; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 30px; }
-        .username { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
-        .username:hover { text-decoration: underline; }
+        .username { font-weight: 700; font-size: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .follow-btn { background: var(--primary); border: none; padding: 4px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
         .follow-btn.following { background: #4caf50; }
         .post-actions { position: absolute; bottom: 120px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
         .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
         .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
-        
-        .like-list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
-        .like-list-modal.active { transform: translateY(0); }
-        .like-list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .like-list-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        
-        .profile-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; overflow-y: auto; }
-        .profile-modal.active { display: flex; }
-        .profile-modal-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 30px; text-align: center; position: relative; }
-        .profile-modal-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.5); border: none; padding: 10px; border-radius: 50%; color: white; font-size: 20px; cursor: pointer; }
-        .profile-modal-avatar { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
-        .profile-modal-stats { display: flex; justify-content: space-around; padding: 20px; background: rgba(0,0,0,0.3); margin: 20px; border-radius: 20px; }
         
         .live-badge-small { position: absolute; top: 20px; right: 20px; background: #ff3b30; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 20; animation: blink 1s infinite; }
         @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
@@ -65,7 +52,6 @@
         .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
         .package-card { background: var(--card-bg); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; font-size: 12px; }
         .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); transform: scale(1.02); }
-        .package-icon { font-size: 32px; margin-bottom: 8px; }
         .balance { background: var(--card-bg); padding: 25px; text-align: center; margin: 20px; border-radius: 28px; }
         .balance-value { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -95,12 +81,8 @@
         .list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
         .list-modal.active { transform: translateY(0); }
         .list-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--glass-border); }
-        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .list-item-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
         #searchResults { margin-top: 10px; display: none; background: rgba(0,0,0,0.95); border-radius: 16px; padding: 10px; max-width: 500px; margin: 10px auto 0 auto; }
-        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .search-result-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
         .edit-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         .edit-modal.active { display: flex; }
@@ -123,7 +105,7 @@
         .comments-modal.active { transform: translateY(0); }
         .comments-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; }
         .comments-list { flex: 1; overflow-y: auto; margin-bottom: 15px; }
-        .comment-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .comment-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .comment-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         .comment-content { flex: 1; }
         .comment-username { font-weight: bold; font-size: 14px; }
@@ -172,9 +154,6 @@
         .streamer-controls button { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: none; padding: 10px 20px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
         .flip-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
         .effects-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
-        
-        /* Watermark */
-        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 20px; font-size: 10px; z-index: 15; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -235,7 +214,7 @@
             <div style="display: flex; gap: 8px; align-items: center; max-width: 500px; margin: 0 auto;">
                 <div style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VYVE</div>
                 <input type="text" id="searchInput" placeholder="🔍 Search users..." class="input-field" style="flex: 1; padding: 10px 15px; font-size: 14px; margin: 0;">
-                <button onclick="searchUsersGlobal()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer;">Find</button>
+                <button onclick="searchUsers()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer;">Find</button>
             </div>
             <div id="searchResults"></div>
         </div>
@@ -311,22 +290,31 @@
     </div>
 </div>
 
-<!-- Shop Screen - Premium Icons -->
+<!-- Shop Screen - 15 Packages -->
 <div id="shopScreen" class="screen">
     <div class="balance"><p>💰 YOUR COINS</p><div class="balance-value" id="coinBalance">0</div></div>
+    <div style="margin: 20px; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>💰 Your Purchase:</span><span>100%</span></div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 12px;"><span style="color: #ffd700;">→ Vyve Platform (7%):</span><span>Supports app development</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px;"><span style="color: #4caf50;">→ You Get (93%):</span><span>Coins added to your wallet</span></div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 8px; color: #888;"><span>💳 + Stripe fee (2.9% + $0.30)</span><span>Applied at checkout</span></div>
+    </div>
     <div class="packages">
-        <div class="package-card" data-coins="10" data-price="0.99" onclick="selectPackage(this)"><div class="package-icon">🌹</div><b>10 Coins</b><br>$0.99</div>
-        <div class="package-card" data-coins="50" data-price="4.99" onclick="selectPackage(this)"><div class="package-icon">🦋</div><b>50 Coins</b><br>$4.99</div>
-        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div class="package-icon">🌟</div><b>100 Coins</b><br>$9.99<small>🎁 +5</small></div>
-        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div class="package-icon">💎</div><b>250 Coins</b><br>$24.99<small>🎁 +15</small></div>
-        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div class="package-icon">👑</div><b>500 Coins</b><br>$49.99<small>🎁 +35</small></div>
-        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div class="package-icon">🏰</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
-        <div class="package-card" data-coins="2500" data-price="249.99" onclick="selectPackage(this)"><div class="package-icon">🏎️</div><b>2500 Coins</b><br>$249.99<small>🎁 +300</small></div>
-        <div class="package-card" data-coins="5000" data-price="499.99" onclick="selectPackage(this)"><div class="package-icon">🌍</div><b>5000 Coins</b><br>$499.99<small>🎁 +750</small></div>
-        <div class="package-card" data-coins="10000" data-price="999.99" onclick="selectPackage(this)"><div class="package-icon">🌙</div><b>10000 Coins</b><br>$999.99<small>🎁 +2000</small></div>
-        <div class="package-card" data-coins="25000" data-price="2499.99" onclick="selectPackage(this)"><div class="package-icon">✨🌌</div><b>25000 Coins</b><br>$2,499.99<small>🎁 +5000</small></div>
-        <div class="package-card" data-coins="50000" data-price="4999.99" onclick="selectPackage(this)"><div class="package-icon">💖</div><b>50000 Coins</b><br>$4,999.99<small>🎁 +10000</small></div>
-        <div class="package-card" data-coins="100000" data-price="9999.99" onclick="selectPackage(this)"><div class="package-icon">⭐🌠</div><b>100000 Coins</b><br>$9,999.99<small>🎁 +25000</small></div>
+        <div class="package-card" data-coins="10" data-price="0.99" onclick="selectPackage(this)"><div>🪙</div><b>10 Coins</b><br>$0.99</div>
+        <div class="package-card" data-coins="25" data-price="2.49" onclick="selectPackage(this)"><div>🪙🪙</div><b>25 Coins</b><br>$2.49</div>
+        <div class="package-card" data-coins="50" data-price="4.99" onclick="selectPackage(this)"><div>🪙🪙🪙</div><b>50 Coins</b><br>$4.99</div>
+        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙</div><b>100 Coins</b><br>$9.99<small>🎁 +5</small></div>
+        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙</div><b>250 Coins</b><br>$24.99<small>🎁 +15</small></div>
+        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙</div><b>500 Coins</b><br>$49.99<small>🎁 +35</small></div>
+        <div class="package-card" data-coins="750" data-price="74.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙🪙</div><b>750 Coins</b><br>$74.99<small>🎁 +60</small></div>
+        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙🪙🪙</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
+        <div class="package-card" data-coins="2000" data-price="199.99" onclick="selectPackage(this)"><div>🪙✨</div><b>2000 Coins</b><br>$199.99<small>🎁 +250</small></div>
+        <div class="package-card" data-coins="5000" data-price="499.99" onclick="selectPackage(this)"><div>🪙💎</div><b>5000 Coins</b><br>$499.99<small>🎁 +750</small></div>
+        <div class="package-card" data-coins="10000" data-price="999.99" onclick="selectPackage(this)"><div>💎💎</div><b>10000 Coins</b><br>$999.99<small>🎁 +2000</small></div>
+        <div class="package-card" data-coins="25000" data-price="2499.99" onclick="selectPackage(this)"><div>👑</div><b>25000 Coins</b><br>$2,499.99<small>🎁 +5000</small></div>
+        <div class="package-card" data-coins="50000" data-price="4999.99" onclick="selectPackage(this)"><div>👑👑</div><b>50000 Coins</b><br>$4,999.99<small>🎁 +10000</small></div>
+        <div class="package-card" data-coins="100000" data-price="9999.99" onclick="selectPackage(this)"><div>⭐</div><b>100000 Coins</b><br>$9,999.99<small>🎁 +25000</small></div>
+        <div class="package-card" data-coins="250000" data-price="24999.99" onclick="selectPackage(this)"><div>🏆</div><b>250000 Coins</b><br>$24,999.99<small>🎁 +100000</small></div>
     </div>
     <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
@@ -374,32 +362,6 @@
         <h3 style="margin-bottom: 10px;">🔔 Notifications</h3>
         <div id="notificationsList"></div>
     </div>
-</div>
-
-<!-- Profile Modal (for viewing other users) -->
-<div id="profileModal" class="profile-modal">
-    <div class="profile-modal-header">
-        <button class="profile-modal-close" onclick="closeProfileModal()">✕</button>
-        <div class="profile-modal-avatar" id="modalAvatar">👤</div>
-        <div style="font-size: 22px; font-weight: 700;" id="modalUsername">@user</div>
-        <div style="font-size: 12px; opacity: 0.8;" id="modalBio">Member since...</div>
-        <div id="modalBadge" style="margin-top: 8px;"></div>
-    </div>
-    <div class="profile-modal-stats">
-        <div><div style="font-size: 20px; font-weight: 700;" id="modalFollowers">0</div><div>Followers</div></div>
-        <div><div style="font-size: 20px; font-weight: 700;" id="modalFollowing">0</div><div>Following</div></div>
-        <div><div style="font-size: 20px; font-weight: 700;" id="modalPosts">0</div><div>Posts</div></div>
-    </div>
-    <div class="profile-buttons" style="margin: 15px;">
-        <button id="modalFollowBtn" class="profile-btn" onclick="followUserFromModal()">+ Follow</button>
-        <button class="profile-btn secondary" onclick="sendMessageFromModal()">💬 Send Message</button>
-    </div>
-</div>
-
-<!-- Like List Modal -->
-<div id="likeListModal" class="like-list-modal">
-    <div class="list-modal-header"><h3>❤️ Liked by</h3><button onclick="closeLikeListModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
-    <div id="likeListContent"></div>
 </div>
 
 <!-- Admin Panel -->
@@ -498,12 +460,23 @@
         <h3>Set Lock Price</h3>
         <p>How many coins viewers pay to unlock this live?</p>
         <input type="number" id="lockPrice" placeholder="Price in coins" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 30px;" value="50" min="10">
+        
         <div style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 10px; margin: 10px 0;">
-            <p style="font-size: 12px;">📊 Fee Breakdown:</p>
-            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Vyve Platform (10%):</span><span id="previewPlatformFee">5 coins</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>You Earn (100%):</span><span id="previewStreamerEarning" style="color: #ffd700;">50 coins</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px;"><span>Viewer Pays:</span><span id="previewViewerPays">55 coins</span></div>
+            <p style="font-size: 12px;">📊 Fee Breakdown (Vyve takes 10% added to viewer):</p>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Vyve Platform (10%):</span>
+                <span id="previewPlatformFee">5 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>You Earn (100%):</span>
+                <span id="previewStreamerEarning" style="color: #ffd700;">50 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <span>Viewer Pays Total:</span>
+                <span id="previewViewerPays">55 coins</span>
+            </div>
         </div>
+        
         <button class="btn-primary" onclick="confirmLockLive()">🔒 Lock Live</button>
         <button onclick="closeModal('lockModal')" style="margin-top: 10px; background: none; border: none; color: #999; cursor: pointer;">Cancel</button>
     </div>
@@ -514,6 +487,7 @@
     <div class="modal-content">
         <div style="font-size: 45px;">🎁</div>
         <h3>Send a Gift</h3>
+        <p>Choose an amount to send to the streamer</p>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 20px 0;">
             <button class="edit-tool-btn" onclick="sendGiftAmount(100)">100 Coins</button>
             <button class="edit-tool-btn" onclick="sendGiftAmount(250)">250 Coins</button>
@@ -521,12 +495,23 @@
             <button class="edit-tool-btn" onclick="sendGiftAmount(1000)">1000 Coins</button>
             <button class="edit-tool-btn" onclick="sendGiftAmount(5000)">5000 Coins</button>
         </div>
+        
         <div style="background: rgba(255,255,255,0.1); border-radius: 20px; padding: 10px; margin: 10px 0;">
-            <p style="font-size: 12px;">📊 Fee Breakdown:</p>
-            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Vyve Platform (3%):</span><span id="giftPreviewPlatformFee">0 coins</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 11px;"><span>Streamer Gets:</span><span id="giftPreviewStreamerEarning" style="color: #ffd700;">0 coins</span></div>
-            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px;"><span>You Pay:</span><span id="giftPreviewSenderPays">0 coins</span></div>
+            <p style="font-size: 12px;">📊 Fee Breakdown (Vyve takes 3% added to sender):</p>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Vyve Platform (3%):</span>
+                <span id="giftPreviewPlatformFee">0 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px;">
+                <span>Streamer Gets (100%):</span>
+                <span id="giftPreviewStreamerEarning" style="color: #ffd700;">0 coins</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.1);">
+                <span>Sender Pays Total:</span>
+                <span id="giftPreviewSenderPays">0 coins</span>
+            </div>
         </div>
+        
         <button onclick="closeModal('giftModal')" class="btn-secondary">Cancel</button>
     </div>
 </div>
@@ -552,15 +537,14 @@
     let localCallStream = null;
     let currentStoryIndex = 0;
     let storyInterval = null;
-    let currentViewingProfile = null;
-    let currentLikePostId = null;
+    let analytics = JSON.parse(localStorage.getItem('vyve_analytics') || '{"views":0,"likes":0,"comments":0,"activity":[]}');
     const ADMIN_USERS = ['admin', 'daniel', 'vyve_admin'];
 
-    // Sample posts with watermark support
+    // Sample posts
     if (posts.length === 0) {
         posts = [
-            { id: 1, username: 'traveler', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: 'Beautiful sunset at Maldives 🌅', likes: '12500', comments: '892', likesList: [] },
-            { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', title: 'Playing the new update! 🎮', likes: '3400', comments: '234', likesList: [] }
+            { id: 1, username: 'traveler', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: 'Beautiful sunset at Maldives 🌅', likes: '12500', comments: '892' },
+            { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', title: 'Playing the new update! 🎮', likes: '3400', comments: '234' }
         ];
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
     }
@@ -570,116 +554,6 @@
             { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', expiresAt: Date.now() + 86400000 }
         ];
         localStorage.setItem('vyve_stories', JSON.stringify(stories));
-    }
-
-    // ==================== WATERMARK FUNCTION ====================
-    function addWatermarkToVideo(videoElement, username) {
-        // Create canvas overlay with watermark
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-        ctx.font = '16px Arial';
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.shadowBlur = 0;
-        ctx.fillText(`@${username} | Vyve`, canvas.width - 150, canvas.height - 20);
-        return canvas.toDataURL();
-    }
-
-    // ==================== PROFILE MODAL ====================
-    function showUserProfile(username) {
-        currentViewingProfile = username;
-        document.getElementById('modalUsername').innerText = '@' + username;
-        document.getElementById('modalAvatar').innerHTML = '👤';
-        
-        let userPosts = posts.filter(p => p.username === username);
-        document.getElementById('modalPosts').innerText = userPosts.length;
-        document.getElementById('modalFollowers').innerText = followers.filter(f => f === username).length;
-        document.getElementById('modalFollowing').innerText = following.filter(f => f === username).length;
-        
-        let isFollowing = following.includes(username);
-        let followBtn = document.getElementById('modalFollowBtn');
-        if (isFollowing) {
-            followBtn.innerText = 'Following ✓';
-            followBtn.style.background = '#4caf50';
-        } else {
-            followBtn.innerText = '+ Follow';
-            followBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-        }
-        
-        document.getElementById('profileModal').classList.add('active');
-    }
-    
-    function closeProfileModal() {
-        document.getElementById('profileModal').classList.remove('active');
-        currentViewingProfile = null;
-    }
-    
-    function followUserFromModal() {
-        if (currentViewingProfile && !following.includes(currentViewingProfile)) {
-            following.push(currentViewingProfile);
-            localStorage.setItem('vyve_following', JSON.stringify(following));
-            document.getElementById('modalFollowBtn').innerText = 'Following ✓';
-            document.getElementById('modalFollowBtn').style.background = '#4caf50';
-            alert(`Now following @${currentViewingProfile}`);
-            updateFollowingCount();
-        }
-    }
-    
-    function sendMessageFromModal() {
-        closeProfileModal();
-        setTimeout(() => {
-            openDirectMessages();
-            selectDMUser(currentViewingProfile);
-        }, 300);
-    }
-
-    // ==================== LIKE LIST ====================
-    function showLikeList(postId) {
-        currentLikePostId = postId;
-        let post = posts.find(p => p.id === postId);
-        let likesList = post.likesList || [];
-        
-        let container = document.getElementById('likeListContent');
-        if (likesList.length === 0) {
-            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No likes yet</div>';
-        } else {
-            container.innerHTML = likesList.map(likeUser => `
-                <div class="like-list-item" onclick="showUserProfile('${likeUser}')">
-                    <div class="like-list-avatar">${likeUser.charAt(0).toUpperCase()}</div>
-                    <div><strong>@${likeUser}</strong></div>
-                </div>
-            `).join('');
-        }
-        document.getElementById('likeListModal').classList.add('active');
-    }
-    
-    function closeLikeListModal() {
-        document.getElementById('likeListModal').classList.remove('active');
-    }
-
-    // ==================== GLOBAL SEARCH ====================
-    function searchUsersGlobal() {
-        let term = document.getElementById('searchInput').value.toLowerCase().trim();
-        let results = document.getElementById('searchResults');
-        if (!term) { results.style.display = 'none'; return; }
-        
-        let allUsers = [...new Set(posts.map(p => p.username))];
-        let matched = allUsers.filter(u => u.includes(term) && u !== currentUser);
-        
-        if (matched.length === 0) {
-            results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>';
-        } else {
-            results.innerHTML = matched.map(u => `
-                <div class="search-result-item" onclick="showUserProfile('${u}')">
-                    <div class="search-result-avatar">${u.charAt(0).toUpperCase()}</div>
-                    <div><strong>@${u}</strong></div>
-                    <button class="follow-btn" onclick="event.stopPropagation(); followUser('${u}', this)" style="margin-left: auto;">${following.includes(u) ? 'Following ✓' : '+ Follow'}</button>
-                </div>
-            `).join('');
-        }
-        results.style.display = 'block';
     }
 
     // ==================== NOTIFICATIONS ====================
@@ -693,13 +567,11 @@
             });
         }
     }
-    
     function sendLocalNotification(title, body) {
         if (localStorage.getItem('notifications_enabled') === 'true' && 'Notification' in window && Notification.permission === 'granted') {
             new Notification(title, { body: body, icon: '/icon-192.png' });
         }
     }
-    
     function addNotification(type, from, message) {
         let newNotif = { id: Date.now(), type: type, from: from, message: message, time: new Date().toLocaleString(), read: false };
         notifications.unshift(newNotif);
@@ -708,12 +580,11 @@
         updateNotificationsList();
         sendLocalNotification(`@${from} ${type === 'like' ? 'liked' : type === 'follow' ? 'followed' : 'commented'}`, message);
     }
-    
     function updateNotificationsList() {
         let container = document.getElementById('notificationsList');
         if (!container) return;
         if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No notifications yet</div>'; return; }
-        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="showUserProfile('${notif.from}')"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
+        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="markNotificationRead(${notif.id})"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
     }
     function markNotificationRead(id) { let notif = notifications.find(n => n.id === id); if (notif) notif.read = true; localStorage.setItem('vyve_notifications', JSON.stringify(notifications)); updateNotificationsList(); }
 
@@ -724,7 +595,7 @@
         let postComments = comments[currentPostId] || [];
         let container = document.getElementById('commentsList');
         if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet. Be the first!</div>'; return; }
-        container.innerHTML = postComments.map(comment => `<div class="comment-item" onclick="showUserProfile('${comment.username}')"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="event.stopPropagation(); deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
+        container.innerHTML = postComments.map(comment => `<div class="comment-item"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
     }
     function postComment() {
         let input = document.getElementById('commentInput');
@@ -881,7 +752,7 @@
             <div class="post-card">
                 ${post.type === 'video' ? `<video class="post-media" src="${post.url}" loop muted playsinline></video>` : `<img class="post-media" src="${post.url}" style="object-fit: contain;">`}
                 <div class="post-info">
-                    <div class="username" onclick="showUserProfile('${post.username}')">@${post.username} ✓ <span class="trending-badge">🔥 #${trendingPosts.indexOf(post)+1}</span><button class="follow-btn" onclick="event.stopPropagation(); followUser('${post.username}', this)">+ Follow</button></div>
+                    <div class="username">@${post.username} ✓ <span class="trending-badge">🔥 #${trendingPosts.indexOf(post)+1}</span><button class="follow-btn" onclick="followUser('${post.username}', this)">+ Follow</button></div>
                     <div>${post.title}</div>
                 </div>
                 <div class="post-actions">
@@ -889,7 +760,6 @@
                     <div class="action-btn" onclick="openComments(${post.id})"><div>💬</div><div>${post.comments}</div></div>
                     <div class="action-btn" onclick="sharePost('${post.url}')"><div>📤</div><div>Share</div></div>
                 </div>
-                <div class="watermark">@${post.username} | Vyve</div>
             </div>
         `).join('');
         let videos = document.querySelectorAll('#trendingContainer .post-media');
@@ -907,7 +777,7 @@
                 ${post.type === 'video' ? `<video class="post-media" src="${post.url}" loop muted playsinline></video>` : `<img class="post-media" src="${post.url}" style="object-fit: contain;">`}
                 ${activeStreams.some(s => s.streamer === post.username) ? `<div class="live-badge-small">🔴 LIVE</div>` : ''}
                 <div class="post-info">
-                    <div class="username" onclick="showUserProfile('${post.username}')">@${post.username} ✓ <button class="follow-btn" onclick="event.stopPropagation(); followUser('${post.username}', this)">+ Follow</button></div>
+                    <div class="username">@${post.username} ✓ <button class="follow-btn" onclick="followUser('${post.username}', this)">+ Follow</button></div>
                     <div>${post.title}</div>
                 </div>
                 <div class="post-actions">
@@ -916,7 +786,6 @@
                     <div class="action-btn" onclick="sharePost('${post.url}')"><div>📤</div><div>Share</div></div>
                     ${post.username === currentUser ? `<button class="delete-btn" onclick="deletePost(${post.id})">🗑️ Delete</button>` : ''}
                 </div>
-                <div class="watermark">@${post.username} | Vyve</div>
             </div>
         `).join('');
         let videos = document.querySelectorAll('.post-media');
@@ -929,8 +798,6 @@
         if (post) {
             let likes = parseInt(post.likes) || 0;
             post.likes = (likes + 1).toString();
-            if (!post.likesList) post.likesList = [];
-            if (!post.likesList.includes(currentUser)) post.likesList.push(currentUser);
             localStorage.setItem('vyve_posts', JSON.stringify(posts));
             let countSpan = btn.querySelector('.action-count');
             if (countSpan) countSpan.innerText = parseInt(post.likes).toLocaleString();
@@ -938,7 +805,6 @@
             loadTrending();
         }
     }
-    
     function sharePost(url) { navigator.clipboard.writeText(url); alert('Link copied!'); }
     function deletePost(postId) { if (confirm('Delete this post?')) { posts = posts.filter(p => p.id !== postId); localStorage.setItem('vyve_posts', JSON.stringify(posts)); document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length; loadPosts(); loadTrending(); alert('Post deleted'); } }
     function showMyPostsList() {
@@ -946,7 +812,7 @@
         document.getElementById('listModalTitle').innerText = 'My Posts';
         let content = document.getElementById('listModalContent');
         if (myPosts.length === 0) content.innerHTML = '<div style="text-align:center;padding:20px;">No posts yet</div>';
-        else content.innerHTML = myPosts.map(post => `<div class="list-item" onclick="showUserProfile('${post.username}')"><div class="list-item-avatar">${post.username.charAt(0).toUpperCase()}</div><div>${post.title}</div><button onclick="event.stopPropagation(); deletePost(${post.id}); closeListModal();" style="background:#ff4444; border:none; padding:5px 15px; border-radius:20px; color:white; margin-left:auto;">Delete</button></div>`).join('');
+        else content.innerHTML = myPosts.map(post => `<div class="list-item" style="display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div>${post.type === 'video' ? '📹' : '🖼️'} ${post.title}</div><button onclick="deletePost(${post.id}); closeListModal();" style="background:#ff4444; border:none; padding:5px 15px; border-radius:20px; color:white;">Delete</button></div>`).join('');
         document.getElementById('listModal').classList.add('active');
     }
 
@@ -983,7 +849,7 @@
         let title = prompt('Enter title:', 'My post');
         if (!title) title = 'Untitled';
         let url = URL.createObjectURL(pendingFile);
-        let newPost = { id: Date.now(), username: currentUser, type: pendingFileType, url: url, title: title, likes: '0', comments: '0', sound: pendingSound, filter: pendingFilter, likesList: [] };
+        let newPost = { id: Date.now(), username: currentUser, type: pendingFileType, url: url, title: title, likes: '0', comments: '0', sound: pendingSound, filter: pendingFilter };
         posts.unshift(newPost);
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
         document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
@@ -1238,25 +1104,30 @@
     }
     function followUser(username, btn) {
         if (!currentUser) { alert('Login first'); return; }
-        if (!following.includes(username)) { following.push(username); localStorage.setItem('vyve_following', JSON.stringify(following)); if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); } addNotification('follow', currentUser, `started following you`); alert(`Following @${username}`); updateFollowingCount(); }
+        if (!following.includes(username)) { following.push(username); localStorage.setItem('vyve_following', JSON.stringify(following)); if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); } addNotification('follow', currentUser, `started following you`); alert(`Following @${username}`); }
     }
-    function updateFollowingCount() { document.getElementById('followingCount').innerText = following.length; }
     function showFollowersList() {
         document.getElementById('listModalTitle').innerText = 'Followers';
-        let container = document.getElementById('listModalContent');
-        if (followers.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;">No followers yet</div>'; }
-        else { container.innerHTML = followers.map(f => `<div class="list-item" onclick="showUserProfile('${f}')"><div class="list-item-avatar">${f.charAt(0).toUpperCase()}</div><div>@${f}</div></div>`).join(''); }
+        document.getElementById('listModalContent').innerHTML = followers.length ? followers.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">No followers yet</div>';
         document.getElementById('listModal').classList.add('active');
     }
     function showFollowingList() {
         document.getElementById('listModalTitle').innerText = 'Following';
-        let container = document.getElementById('listModalContent');
-        if (following.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;">Not following anyone yet</div>'; }
-        else { container.innerHTML = following.map(f => `<div class="list-item" onclick="showUserProfile('${f}')"><div class="list-item-avatar">${f.charAt(0).toUpperCase()}</div><div>@${f}</div></div>`).join(''); }
+        document.getElementById('listModalContent').innerHTML = following.length ? following.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">Not following anyone yet</div>';
         document.getElementById('listModal').classList.add('active');
     }
     function closeListModal() { document.getElementById('listModal').classList.remove('active'); }
     function selectPackage(el) { selectedPackage = parseInt(el.dataset.coins); selectedPrice = parseFloat(el.dataset.price); document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected')); el.classList.add('selected'); }
+    function searchUsers() {
+        let term = document.getElementById('searchInput').value.toLowerCase().trim();
+        let results = document.getElementById('searchResults');
+        if (!term) { results.style.display = 'none'; return; }
+        let users = [...new Set(posts.map(p => p.username))];
+        let matched = users.filter(u => u.includes(term) && u !== currentUser);
+        if (matched.length === 0) { results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>'; results.style.display = 'block'; return; }
+        results.innerHTML = matched.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;"><span>👤 @${u}</span><button class="follow-btn" onclick="followUser('${u}', this)">+ Follow</button></div>`).join('');
+        results.style.display = 'block';
+    }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     
     // Lock price preview
