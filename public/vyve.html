@@ -15,7 +15,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
         .nav { display: flex; justify-content: space-around; padding: 12px 20px; background: rgba(15,15,35,0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
-        .nav-item { color: #888; font-size: 12px; text-align: center; cursor: pointer; padding: 8px 20px; border-radius: 30px; transition: all 0.3s; min-height: 44px; }
+        .nav-item { color: #888; font-size: 12px; text-align: center; cursor: pointer; padding: 8px 16px; border-radius: 30px; transition: all 0.3s; }
         .nav-item.active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
         
         .screen { display: none; min-height: 100vh; padding-bottom: 70px; }
@@ -29,9 +29,12 @@
         .follow-btn { background: var(--primary); border: none; padding: 4px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
         .follow-btn.following { background: #4caf50; }
         .post-actions { position: absolute; bottom: 120px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
-        .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; transition: transform 0.05s; }
-        .action-btn:active { transform: scale(0.95); }
+        .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
         .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
+        
+        /* Live indicator on home */
+        .live-badge-small { position: absolute; top: 20px; right: 20px; background: #ff3b30; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 20; animation: blink 1s infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         
         .story-ring { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #ff3b30, #ff6b35); display: flex; align-items: center; justify-content: center; margin: 5px; cursor: pointer; }
         .story-inner { width: 65px; height: 65px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 30px; }
@@ -42,13 +45,15 @@
         .live-stream-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
         .live-indicator { width: 50px; height: 50px; background: #ff3b30; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
         .search-streams { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-streams input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
         .search-streams button { background: var(--primary); border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer; }
         
-        .packages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
-        .package-card { background: var(--card-bg); padding: 15px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; }
-        .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        /* 15 Shop Packages */
+        .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
+        .package-card { background: var(--card-bg); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; font-size: 12px; }
+        .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); transform: scale(1.02); }
         .balance { background: var(--card-bg); padding: 25px; text-align: center; margin: 20px; border-radius: 28px; }
         .balance-value { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -57,14 +62,15 @@
         .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--primary); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid white; }
         .hidden-file-input { display: none; }
         
-        .profile-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 50px 30px 40px; text-align: center; }
-        .stats { display: flex; justify-content: space-around; padding: 20px; margin: 20px; background: var(--card-bg); border-radius: 24px; cursor: pointer; }
+        .profile-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 40px 20px 30px; text-align: center; }
+        .stats { display: flex; justify-content: space-around; padding: 15px; margin: 15px; background: var(--card-bg); border-radius: 20px; cursor: pointer; }
         .stat-item { text-align: center; flex: 1; }
-        .stat-number { font-size: 28px; font-weight: 700; }
-        .stat-label { font-size: 12px; opacity: 0.8; }
+        .stat-number { font-size: 24px; font-weight: 700; }
+        .stat-label { font-size: 11px; opacity: 0.8; }
         
-        .upload-options { display: flex; gap: 15px; margin: 20px; justify-content: center; }
-        .upload-option { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; padding: 15px 25px; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; flex: 1; text-align: center; }
+        .profile-buttons { display: flex; flex-direction: column; gap: 10px; margin: 15px; }
+        .profile-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; padding: 12px; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; width: 100%; text-align: center; }
+        .profile-btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
         
         .input-field { width: 100%; padding: 14px 20px; margin: 12px 0; border-radius: 40px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; font-size: 16px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 14px 28px; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
@@ -90,7 +96,14 @@
         .sound-library { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
         .sound-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; cursor: pointer; text-align: center; }
         
-        .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 30px; color: white; cursor: pointer; text-align: center; }
+        /* Live Effects Panel */
+        .effects-panel { position: absolute; top: 80px; right: 20px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-radius: 20px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1001; max-height: 300px; overflow-y: auto; }
+        .effects-panel.active { display: flex; }
+        .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; text-align: center; font-size: 12px; }
+        
+        /* Floating Chat Overlay for Streamer */
+        .floating-chat { position: absolute; bottom: 100px; left: 10px; right: 10px; max-height: 200px; overflow-y: auto; z-index: 1002; pointer-events: none; }
+        .floating-chat-message { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; margin: 4px; display: inline-block; max-width: 80%; font-size: 12px; pointer-events: auto; }
         
         .comments-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; display: flex; flex-direction: column; }
         .comments-modal.active { transform: translateY(0); }
@@ -105,15 +118,15 @@
         .comment-input-container { display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--glass-border); }
         .comment-input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
         
-        .notifications-panel { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; margin: 20px; max-height: 300px; overflow-y: auto; }
-        .notification-item { padding: 12px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
+        .notifications-panel { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; margin: 20px; max-height: 200px; overflow-y: auto; }
+        .notification-item { padding: 10px; border-bottom: 1px solid var(--glass-border); cursor: pointer; font-size: 12px; }
         .notification-unread { background: rgba(102,126,234,0.2); }
         
         .dm-user-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
-        .dm-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .dm-message-bubble { display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 20px; max-width: 80%; margin: 5px 0; }
+        .dm-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .dm-message-bubble { display: inline-block; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; max-width: 80%; margin: 5px 0; font-size: 13px; }
         
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; margin-left: 8px; }
         .badge-bronze { background: #cd7f32; color: white; }
         .badge-silver { background: #c0c0c0; color: #333; }
         .badge-gold { background: #ffd700; color: #333; }
@@ -125,10 +138,10 @@
         .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .video-call-container.active { display: flex; }
         .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
-        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 120px; height: 180px; background: #333; border-radius: 20px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
+        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 150px; background: #333; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
         .video-call-local video { width: 100%; height: 100%; object-fit: cover; }
-        .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 2001; }
-        .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; }
+        .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 2001; }
+        .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 12px; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; }
         .video-call-end { background: #ff3b30 !important; }
         
         .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
@@ -138,25 +151,23 @@
         .story-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.3); border-radius: 3px; overflow: hidden; }
         .story-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
         
-        /* Analytics Cards */
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2)); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
-        .stat-number { font-size: 32px; font-weight: bold; }
-        .stat-label { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+        .admin-section { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 12px; }
         
-        /* Admin Panel */
-        .admin-section { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
-        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        /* Live Streamer Controls */
+        .streamer-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 1001; }
+        .streamer-controls button { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: none; padding: 10px 20px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .flip-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
+        .effects-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
     </style>
 </head>
 <body>
 
 <div class="nav" id="mainNav" style="display: none;">
     <div class="nav-item" data-screen="feed">🏠 Home</div>
-    <div class="nav-item" data-screen="trending">🔥 Trending</div>
+    <div class="nav-item" data-screen="trending">🔥 Popular</div>
     <div class="nav-item" data-screen="live">🔴 Live</div>
     <div class="nav-item" data-screen="shop">🪙 Shop</div>
-    <div class="nav-item" data-screen="analytics">📊 Stats</div>
     <div class="nav-item" data-screen="profile">👤 Profile</div>
     <div class="nav-item" data-screen="admin" id="adminNavItem" style="display: none;">👑 Admin</div>
 </div>
@@ -201,7 +212,7 @@
     </div>
 </div>
 
-<!-- Feed Screen -->
+<!-- Home Feed Screen -->
 <div id="feedScreen" class="screen">
     <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 100;">
         <div style="padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -217,11 +228,11 @@
     <div class="feed-container" id="feedContainer"></div>
 </div>
 
-<!-- Trending Screen -->
+<!-- Popular Screen (Top 10 of the day) -->
 <div id="trendingScreen" class="screen">
     <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 15px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
-        <h2 style="font-size: 22px;">🔥 Trending Now</h2>
-        <p style="font-size: 12px; opacity: 0.7;">Most popular videos this week</p>
+        <h2 style="font-size: 22px;">🔥 Popular Today</h2>
+        <p style="font-size: 12px; opacity: 0.7;">Top 10 videos of the day</p>
     </div>
     <div class="feed-container" id="trendingContainer"></div>
 </div>
@@ -240,27 +251,35 @@
                 <div id="activeStreamsContainer"></div>
             </div>
         </div>
+        
+        <!-- Streamer Live Panel -->
         <div id="liveStreamPanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
             <video id="localVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
-            <button onclick="flipCamera()" style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 12px; border-radius: 50%; width: 44px; height: 44px; font-size: 20px; color: white; z-index: 1001;">🔄</button>
-            <button onclick="toggleEffects()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 12px; border-radius: 50%; width: 44px; height: 44px; font-size: 20px; color: white; z-index: 1001;">✨</button>
-            <div id="effectsPanel" style="position: absolute; top: 80px; right: 20px; background: rgba(0,0,0,0.9); border-radius: 20px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1001;">
+            <button class="flip-btn" onclick="flipCamera()">🔄</button>
+            <button class="effects-btn" onclick="toggleEffects()">✨</button>
+            <div id="effectsPanel" class="effects-panel">
                 <button class="effect-option" onclick="applyFilter('normal')">✨ Natural</button>
                 <button class="effect-option" onclick="applyFilter('brightness')">☀️ Bright</button>
                 <button class="effect-option" onclick="applyFilter('sepia')">📷 Vintage</button>
                 <button class="effect-option" onclick="applyFilter('grayscale')">⚫ B&W</button>
                 <button class="effect-option" onclick="applyFilter('blur')">🌸 Soft</button>
+                <button class="effect-option" onclick="applyFilter('contrast')">🎨 High Contrast</button>
+                <button class="effect-option" onclick="applyFilter('saturate')">🌈 Saturated</button>
+                <button class="effect-option" onclick="applyFilter('vignette')">🎭 Vignette</button>
+                <button class="effect-option" onclick="applyFilter('warm')">🔥 Warm</button>
+                <button class="effect-option" onclick="applyFilter('cool')">❄️ Cool</button>
+                <button class="effect-option" onclick="applyFilter('dreamy')">✨ Dreamy</button>
+                <button class="effect-option" onclick="applyFilter('dramatic')">🎬 Dramatic</button>
             </div>
-            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px; z-index: 1001;">
-                <span style="color: #ff3b30;">🔴 LIVE</span>
-                <span style="margin-left: 10px;" id="liveViewerCount">0 watching</span>
+            <!-- Floating Chat for Streamer -->
+            <div class="floating-chat" id="floatingChat"></div>
+            <div class="streamer-controls">
+                <button onclick="lockLive()">🔒 Lock Live</button>
+                <button onclick="endLiveStream()">🔴 End Live</button>
             </div>
-            <div style="position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 1001;">
-                <button onclick="lockLive()" style="background: linear-gradient(135deg, #ff9800, #ff5722); border: none; padding: 12px 24px; border-radius: 50px; color: white; font-weight: bold;">🔒 Lock Live</button>
-                <button onclick="endLiveStream()" style="background: linear-gradient(135deg, #ff3b30, #c0392b); border: none; padding: 12px 24px; border-radius: 50px; color: white; font-weight: bold;">🔴 End Live</button>
-            </div>
-            <button onclick="endLiveStream()" style="position: absolute; top: 20px; right: 80px; background: rgba(0,0,0,0.6); border: none; padding: 8px 16px; border-radius: 30px; color: white; z-index: 1001;">✕</button>
         </div>
+        
+        <!-- Viewer Live Panel -->
         <div id="viewerLivePanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
             <video id="remoteVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
             <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px;">
@@ -268,7 +287,7 @@
                 <span style="margin-left: 10px;" id="viewerStreamerName">@streamer</span>
             </div>
             <div class="gift-overlay" style="position: absolute; bottom: 150px; right: 20px;">
-                <button onclick="sendGift()" style="background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 12px 24px; border-radius: 30px; color: white;">🎁 Send Gift</button>
+                <button onclick="sendGift()" style="background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 10px 20px; border-radius: 30px; color: white;">🎁 Send Gift</button>
             </div>
             <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px;">
                 <input type="text" id="viewerChatInput" placeholder="Say something..." class="input-field" style="flex: 1; margin: 0;">
@@ -279,35 +298,30 @@
     </div>
 </div>
 
-<!-- Shop Screen -->
+<!-- Shop Screen - 15 Packages -->
 <div id="shopScreen" class="screen">
     <div class="balance"><p>💰 YOUR COINS</p><div class="balance-value" id="coinBalance">0</div></div>
     <div class="packages">
         <div class="package-card" data-coins="10" data-price="0.99" onclick="selectPackage(this)"><div>🪙</div><b>10 Coins</b><br>$0.99</div>
-        <div class="package-card" data-coins="50" data-price="4.99" onclick="selectPackage(this)"><div>🪙🪙</div><b>50 Coins</b><br>$4.99</div>
-        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div>🪙🪙🪙</div><b>100 Coins</b><br>$9.99</div>
-        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙</div><b>250 Coins</b><br>$24.99<small>🎁 +10</small></div>
-        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙</div><b>500 Coins</b><br>$49.99<small>🎁 +25</small></div>
-        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
+        <div class="package-card" data-coins="25" data-price="2.49" onclick="selectPackage(this)"><div>🪙🪙</div><b>25 Coins</b><br>$2.49</div>
+        <div class="package-card" data-coins="50" data-price="4.99" onclick="selectPackage(this)"><div>🪙🪙🪙</div><b>50 Coins</b><br>$4.99</div>
+        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙</div><b>100 Coins</b><br>$9.99<small>🎁 +5</small></div>
+        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙</div><b>250 Coins</b><br>$24.99<small>🎁 +15</small></div>
+        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙</div><b>500 Coins</b><br>$49.99<small>🎁 +35</small></div>
+        <div class="package-card" data-coins="750" data-price="74.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙🪙</div><b>750 Coins</b><br>$74.99<small>🎁 +60</small></div>
+        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div>🪙🪙🪙🪙🪙🪙🪙🪙</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
+        <div class="package-card" data-coins="2000" data-price="199.99" onclick="selectPackage(this)"><div>🪙✨</div><b>2000 Coins</b><br>$199.99<small>🎁 +250</small></div>
+        <div class="package-card" data-coins="5000" data-price="499.99" onclick="selectPackage(this)"><div>🪙💎</div><b>5000 Coins</b><br>$499.99<small>🎁 +750</small></div>
+        <div class="package-card" data-coins="10000" data-price="999.99" onclick="selectPackage(this)"><div>💎💎</div><b>10000 Coins</b><br>$999.99<small>🎁 +2000</small></div>
+        <div class="package-card" data-coins="25000" data-price="2499.99" onclick="selectPackage(this)"><div>👑</div><b>25000 Coins</b><br>$2,499.99<small>🎁 +5000</small></div>
+        <div class="package-card" data-coins="50000" data-price="4999.99" onclick="selectPackage(this)"><div>👑👑</div><b>50000 Coins</b><br>$4,999.99<small>🎁 +10000</small></div>
+        <div class="package-card" data-coins="100000" data-price="9999.99" onclick="selectPackage(this)"><div>⭐</div><b>100000 Coins</b><br>$9,999.99<small>🎁 +25000</small></div>
+        <div class="package-card" data-coins="250000" data-price="24999.99" onclick="selectPackage(this)"><div>🏆</div><b>250000 Coins</b><br>$24,999.99<small>🎁 +100000</small></div>
     </div>
     <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
 
-<!-- Analytics Screen -->
-<div id="analyticsScreen" class="screen">
-    <div style="padding: 20px;">
-        <h2 style="margin-bottom: 20px;">📊 Your Analytics</h2>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-number" id="totalViews">0</div><div class="stat-label">Total Views</div></div>
-            <div class="stat-card"><div class="stat-number" id="totalLikes">0</div><div class="stat-label">Total Likes</div></div>
-            <div class="stat-card"><div class="stat-number" id="totalComments">0</div><div class="stat-label">Comments</div></div>
-            <div class="stat-card"><div class="stat-number" id="totalEarningsAnalytics">$0</div><div class="stat-label">Earnings</div></div>
-        </div>
-        <div class="admin-section"><h3 style="margin-bottom: 15px;">📋 Recent Activity</h3><div id="recentActivity"></div></div>
-    </div>
-</div>
-
-<!-- Profile Screen -->
+<!-- Profile Screen - Reorganized -->
 <div id="profileScreen" class="screen">
     <div class="profile-header">
         <div class="profile-pic-container" onclick="document.getElementById('profilePicInput').click()">
@@ -316,55 +330,55 @@
         </div>
         <input type="file" id="profilePicInput" class="hidden-file-input" accept="image/*" onchange="uploadProfilePicture(this)">
         <div style="font-size: 22px; font-weight: 700;" id="profileUsername">@user</div>
-        <div style="font-size: 13px;" id="profileEmail">user@example.com</div>
-        <div id="userBadge" style="margin-top: 10px;"></div>
+        <div style="font-size: 12px;" id="profileEmail">user@example.com</div>
+        <div id="userBadge" style="margin-top: 8px;"></div>
     </div>
+    
     <div class="stats">
         <div class="stat-item" onclick="showFollowersList()"><div class="stat-number" id="followersCount">0</div><div class="stat-label">Followers</div></div>
         <div class="stat-item" onclick="showFollowingList()"><div class="stat-number" id="followingCount">0</div><div class="stat-label">Following</div></div>
-        <div class="stat-item" onclick="showMyPostsList()"><div class="stat-number" id="postsCount">0</div><div class="stat-label">My Posts</div></div>
-    </div>
-    <div style="margin: 20px;">
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; margin-bottom: 10px;"><span>💰 Available Coins</span><span style="float: right; color: #667eea;" id="profileBalance">0</span></div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; margin-bottom: 10px;"><span>💵 Total Earned</span><span style="float: right; color: #4caf50;" id="totalEarned">$0.00</span></div>
-        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px;"><span>🎁 Gifts Received</span><span style="float: right; color: #ff9800;" id="giftsReceived">0</span></div>
+        <div class="stat-item" onclick="showMyPostsList()"><div class="stat-number" id="postsCount">0</div><div class="stat-label">Posts</div></div>
     </div>
     
-    <div style="margin: 20px;">
-        <button onclick="openDirectMessages()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">💬 Direct Messages</button>
-        <button onclick="startVideoCall()" style="width: 100%; background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">📹 Start Video Call</button>
-        <button onclick="addStory()" style="width: 100%; background: linear-gradient(135deg, #ff9800, #ff5722); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold;">📸 Add Story</button>
-        <button onclick="requestNotificationPermission()" style="width: 100%; background: linear-gradient(135deg, #2196f3, #0b7dda); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-top: 15px;">🔔 Enable Notifications</button>
+    <div style="margin: 15px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; margin-bottom: 10px;"><span>💰 Available Coins</span><span style="float: right; color: #667eea;" id="profileBalance">0</span></div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; margin-bottom: 10px;"><span>💵 Total Earned</span><span style="float: right; color: #4caf50;" id="totalEarned">$0.00</span></div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px;"><span>🎁 Gifts Received</span><span style="float: right; color: #ff9800;" id="giftsReceived">0</span></div>
     </div>
+    
+    <div class="profile-buttons">
+        <button class="profile-btn" onclick="startVideoCall()">📹 Start Video Call</button>
+        <button class="profile-btn" onclick="document.getElementById('videoUploadInput').click()">📹 Upload Video</button>
+        <button class="profile-btn" onclick="document.getElementById('imageUploadInput').click()">🖼️ Upload Picture</button>
+        <button class="profile-btn" onclick="addStory()">📸 Add Story</button>
+        <button class="profile-btn" onclick="openDirectMessages()">💬 Direct Messages</button>
+        <button class="profile-btn secondary" onclick="requestNotificationPermission()">🔔 Enable Notifications</button>
+        <button class="profile-btn secondary" onclick="logout()">🚪 Logout</button>
+    </div>
+    
+    <input type="file" id="videoUploadInput" class="hidden-file-input" accept="video/*" onchange="prepareEdit(this)">
+    <input type="file" id="imageUploadInput" class="hidden-file-input" accept="image/*" onchange="prepareEdit(this)">
+    <input type="file" id="storyUploadInput" class="hidden-file-input" accept="image/*,video/*" onchange="uploadStory(this)">
     
     <div class="notifications-panel">
         <h3 style="margin-bottom: 10px;">🔔 Notifications</h3>
         <div id="notificationsList"></div>
     </div>
-    
-    <div class="upload-options">
-        <div class="upload-option" onclick="document.getElementById('videoUploadInput').click()">📹 Upload Video</div>
-        <div class="upload-option" onclick="document.getElementById('imageUploadInput').click()">🖼️ Upload Picture</div>
-    </div>
-    <input type="file" id="videoUploadInput" class="hidden-file-input" accept="video/*" onchange="prepareEdit(this)">
-    <input type="file" id="imageUploadInput" class="hidden-file-input" accept="image/*" onchange="prepareEdit(this)">
-    <input type="file" id="storyUploadInput" class="hidden-file-input" accept="image/*,video/*" onchange="uploadStory(this)">
-    <div style="margin: 20px;"><button onclick="logout()" style="width: 100%; background: rgba(255,68,68,0.2); border: 1px solid rgba(255,68,68,0.5); padding: 12px; border-radius: 40px; color: #ff4444; cursor: pointer;">Logout</button></div>
 </div>
 
-<!-- Admin Panel Screen -->
+<!-- Admin Panel -->
 <div id="adminScreen" class="screen">
     <div style="padding: 20px;">
         <h2 style="margin-bottom: 20px;">👑 Admin Panel</h2>
         <div class="admin-section">
-            <h3 style="margin-bottom: 15px;">👥 User Management</h3>
+            <h3 style="margin-bottom: 10px;">👥 User Management</h3>
             <div id="adminUserList"></div>
         </div>
         <div class="admin-section">
-            <h3 style="margin-bottom: 15px;">📊 Platform Stats</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Users:</span><span id="adminTotalUsers">0</span></div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Posts:</span><span id="adminTotalPosts">0</span></div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Coins:</span><span id="adminTotalCoins">0</span></div>
+            <h3 style="margin-bottom: 10px;">📊 Platform Stats</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Users:</span><span id="adminTotalUsers">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Posts:</span><span id="adminTotalPosts">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Coins:</span><span id="adminTotalCoins">0</span></div>
             <div style="display: flex; justify-content: space-between;"><span>Platform Revenue:</span><span id="adminRevenue">$0</span></div>
         </div>
     </div>
@@ -442,7 +456,7 @@
 </div>
 
 <!-- Lock Modal -->
-<div id="lockModal" class="modal"><div class="modal-content"><div style="font-size: 45px;">🔒</div><h3>Set Lock Price</h3><p>How many coins viewers pay to unlock this live?</p><input type="number" id="lockPrice" placeholder="Price in coins" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 30px;" value="50" min="10"><button class="btn-primary" onclick="confirmLockLive()">Lock Live</button><button onclick="closeModal('lockModal')" style="margin-top: 10px; background: none; border: none; color: #999; cursor: pointer;">Cancel</button></div></div>
+<div id="lockModal" class="modal"><div class="modal-content"><div style="font-size: 45px;">🔒</div><h3>Set Lock Price</h3><p>How many coins to unlock this live?</p><input type="number" id="lockPrice" placeholder="Price in coins" style="width: 100%; padding: 12px; margin: 15px 0; border-radius: 30px;" value="50" min="10"><button class="btn-primary" onclick="confirmLockLive()">Lock Live</button><button onclick="closeModal('lockModal')" style="margin-top: 10px; background: none; border: none; color: #999; cursor: pointer;">Cancel</button></div></div>
 
 <div id="giftModal" class="modal"><div class="modal-content"><div style="font-size: 45px;">🎁</div><h3>Send a Gift</h3><div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 20px 0;"><button class="edit-tool-btn" onclick="sendGiftAmount(10)">10 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(50)">50 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(100)">100 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(500)">500 Coins</button><button class="edit-tool-btn" onclick="sendGiftAmount(1000)">1000 Coins</button></div><button onclick="closeModal('giftModal')" class="btn-secondary">Cancel</button></div></div>
 
@@ -467,11 +481,7 @@
     let localCallStream = null;
     let currentStoryIndex = 0;
     let storyInterval = null;
-    
-    // Analytics
     let analytics = JSON.parse(localStorage.getItem('vyve_analytics') || '{"views":0,"likes":0,"comments":0,"activity":[]}');
-    
-    // Admin users
     const ADMIN_USERS = ['admin', 'daniel', 'vyve_admin'];
 
     // Sample posts
@@ -482,8 +492,6 @@
         ];
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
     }
-
-    // Sample stories
     if (stories.length === 0) {
         stories = [
             { id: 1, username: 'traveler', type: 'image', url: 'https://picsum.photos/400/600?random=1', expiresAt: Date.now() + 86400000 },
@@ -491,10 +499,6 @@
         ];
         localStorage.setItem('vyve_stories', JSON.stringify(stories));
     }
-
-    // WebRTC Configuration
-    const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }] };
-    let signalingData = JSON.parse(localStorage.getItem('vyve_signaling') || '{}');
 
     // ==================== NOTIFICATIONS ====================
     function requestNotificationPermission() {
@@ -507,58 +511,109 @@
             });
         }
     }
-
     function sendLocalNotification(title, body) {
         if (localStorage.getItem('notifications_enabled') === 'true' && 'Notification' in window && Notification.permission === 'granted') {
             new Notification(title, { body: body, icon: '/icon-192.png' });
         }
     }
-
-    // ==================== ANALYTICS ====================
-    function trackView() { analytics.views++; saveAnalytics(); updateAnalyticsDisplay(); }
-    function trackLike() { analytics.likes++; saveAnalytics(); updateAnalyticsDisplay(); addActivity('liked a video', '❤️'); }
-    function trackComment() { analytics.comments++; saveAnalytics(); updateAnalyticsDisplay(); addActivity('commented on a video', '💬'); }
-    function addActivity(action, emoji) {
-        analytics.activity.unshift({ action: action, emoji: emoji, time: new Date().toLocaleString() });
-        if (analytics.activity.length > 20) analytics.activity.pop();
-        saveAnalytics();
-        updateRecentActivity();
+    function addNotification(type, from, message) {
+        let newNotif = { id: Date.now(), type: type, from: from, message: message, time: new Date().toLocaleString(), read: false };
+        notifications.unshift(newNotif);
+        if (notifications.length > 50) notifications.pop();
+        localStorage.setItem('vyve_notifications', JSON.stringify(notifications));
+        updateNotificationsList();
+        sendLocalNotification(`@${from} ${type === 'like' ? 'liked' : type === 'follow' ? 'followed' : 'commented'}`, message);
     }
-    function saveAnalytics() { localStorage.setItem('vyve_analytics', JSON.stringify(analytics)); }
-    function updateAnalyticsDisplay() {
-        document.getElementById('totalViews').innerText = analytics.views.toLocaleString();
-        document.getElementById('totalLikes').innerText = analytics.likes.toLocaleString();
-        document.getElementById('totalComments').innerText = analytics.comments.toLocaleString();
-        document.getElementById('totalEarningsAnalytics').innerText = '$' + (coinBalance / 10).toFixed(2);
-    }
-    function updateRecentActivity() {
-        let container = document.getElementById('recentActivity');
+    function updateNotificationsList() {
+        let container = document.getElementById('notificationsList');
         if (!container) return;
-        if (analytics.activity.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No activity yet</div>'; return; }
-        container.innerHTML = analytics.activity.map(a => `<div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div style="font-size: 24px;">${a.emoji}</div><div style="flex: 1;">You ${a.action}</div><div style="font-size: 11px; opacity: 0.5;">${a.time}</div></div>`).join('');
+        if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No notifications yet</div>'; return; }
+        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="markNotificationRead(${notif.id})"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
+    }
+    function markNotificationRead(id) { let notif = notifications.find(n => n.id === id); if (notif) notif.read = true; localStorage.setItem('vyve_notifications', JSON.stringify(notifications)); updateNotificationsList(); }
+
+    // ==================== COMMENTS ====================
+    function openComments(postId) { currentPostId = postId; loadComments(); document.getElementById('commentsModal').classList.add('active'); }
+    function closeCommentsModal() { document.getElementById('commentsModal').classList.remove('active'); currentPostId = null; }
+    function loadComments() {
+        let postComments = comments[currentPostId] || [];
+        let container = document.getElementById('commentsList');
+        if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet. Be the first!</div>'; return; }
+        container.innerHTML = postComments.map(comment => `<div class="comment-item"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
+    }
+    function postComment() {
+        let input = document.getElementById('commentInput');
+        let text = input.value.trim();
+        if (!text) { alert('Write a comment first'); return; }
+        if (!comments[currentPostId]) comments[currentPostId] = [];
+        let newComment = { id: Date.now(), username: currentUser, text: text, time: new Date().toLocaleString() };
+        comments[currentPostId].unshift(newComment);
+        localStorage.setItem('vyve_comments', JSON.stringify(comments));
+        let post = posts.find(p => p.id === currentPostId);
+        if (post) { post.comments = comments[currentPostId].length.toString(); localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
+        if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented on your post: "${text.substring(0, 50)}"`);
+        // Also send to floating chat if streaming
+        if (isLiveActive) {
+            addFloatingChatMessage(currentUser, text);
+        }
+        input.value = '';
+        loadComments();
+        alert('Comment posted!');
+    }
+    function deleteComment(commentId) {
+        if (confirm('Delete this comment?')) {
+            comments[currentPostId] = comments[currentPostId].filter(c => c.id !== commentId);
+            localStorage.setItem('vyve_comments', JSON.stringify(comments));
+            let post = posts.find(p => p.id === currentPostId);
+            if (post) { post.comments = comments[currentPostId]?.length.toString() || '0'; localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
+            loadComments();
+            alert('Comment deleted');
+        }
+    }
+    
+    // Floating chat for streamer
+    function addFloatingChatMessage(username, message) {
+        let container = document.getElementById('floatingChat');
+        if (!container) return;
+        let msgDiv = document.createElement('div');
+        msgDiv.className = 'floating-chat-message';
+        msgDiv.innerHTML = `<strong>@${username}:</strong> ${message}`;
+        container.appendChild(msgDiv);
+        setTimeout(() => { if (msgDiv) msgDiv.remove(); }, 10000);
+        if (container.children.length > 10) container.removeChild(container.firstChild);
     }
 
-    // ==================== ADMIN PANEL ====================
-    function isAdmin() { return ADMIN_USERS.includes(currentUser); }
-    function showAdminPanel() {
-        let adminNav = document.getElementById('adminNavItem');
-        if (adminNav) adminNav.style.display = isAdmin() ? 'block' : 'none';
-        if (isAdmin()) updateAdminData();
+    // ==================== DIRECT MESSAGES ====================
+    function openDirectMessages() { loadDMUsers(); document.getElementById('dmsModal').classList.add('active'); }
+    function closeDMsModal() { document.getElementById('dmsModal').classList.remove('active'); currentDMUser = null; }
+    function loadDMUsers() {
+        let users = [...new Set([...Object.keys(dms), ...following])];
+        let container = document.getElementById('dmsContent');
+        if (users.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Follow someone to start messaging</div>'; return; }
+        container.innerHTML = `<div style="margin-bottom: 15px;"><input type="text" id="dmSearchInput" placeholder="🔍 Search users..." class="input-field" oninput="searchDMUsers()"></div><div id="dmUsersList">${users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('')}</div>`;
     }
-    function updateAdminData() {
-        let allUsers = [];
-        for(let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if(key === 'vyve_user') { let user = JSON.parse(localStorage.getItem(key)); allUsers.push(user); }
-        }
-        document.getElementById('adminTotalUsers').innerText = allUsers.length;
-        document.getElementById('adminTotalPosts').innerText = posts.length;
-        let totalCoins = allUsers.reduce((sum, u) => sum + (u.coins || 0), 0);
-        document.getElementById('adminTotalCoins').innerText = totalCoins.toLocaleString();
-        document.getElementById('adminRevenue').innerText = '$' + (totalCoins / 10).toFixed(2);
-        document.getElementById('adminUserList').innerHTML = allUsers.map(u => `<div class="admin-user-item"><span>👤 @${u.username}</span><span>💰 ${u.coins || 0} coins</span><button onclick="adminAction('${u.username}')" style="background: #ff4444; border: none; padding: 5px 10px; border-radius: 10px; color: white;">Delete</button></div>`).join('');
+    function searchDMUsers() {
+        let term = document.getElementById('dmSearchInput').value.toLowerCase();
+        let users = [...new Set([...Object.keys(dms), ...following])].filter(u => u.toLowerCase().includes(term));
+        document.getElementById('dmUsersList').innerHTML = users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('');
     }
-    function adminAction(username) { if(confirm(`Delete user @${username}?`)) { localStorage.removeItem('vyve_user'); alert('User deleted'); updateAdminData(); } }
+    function selectDMUser(username) { currentDMUser = username; loadDMMessages(); }
+    function loadDMMessages() {
+        let messages = dms[currentDMUser] || [];
+        let container = document.getElementById('dmsContent');
+        container.innerHTML = `<div style="margin-bottom: 15px;"><button onclick="loadDMUsers()" style="background: none; border: none; color: #667eea;">← Back</button> <strong style="margin-left: 10px;">@${currentDMUser}</strong></div><div id="dmMessagesList" style="flex: 1; overflow-y: auto; max-height: 400px; margin-bottom: 15px;">${messages.map(msg => `<div style="text-align: ${msg.from === currentUser ? 'right' : 'left'}; margin: 10px 0;"><div class="dm-message-bubble" style="${msg.from === currentUser ? 'background: linear-gradient(135deg, #667eea, #764ba2);' : 'background: rgba(255,255,255,0.1);'}"><div>${msg.text}</div><div style="font-size: 10px; opacity: 0.5;">${msg.time}</div></div></div>`).join('')}</div><div class="comment-input-container"><input type="text" id="dmMessageInput" placeholder="Type a message..." class="comment-input"><button onclick="sendDMToUser()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Send</button></div>`;
+    }
+    function sendDMToUser() {
+        let input = document.getElementById('dmMessageInput');
+        let text = input.value.trim();
+        if (!text || !currentDMUser) return;
+        if (!dms[currentDMUser]) dms[currentDMUser] = [];
+        dms[currentDMUser].push({ id: Date.now(), from: currentUser, to: currentDMUser, text: text, time: new Date().toLocaleString() });
+        localStorage.setItem('vyve_dms', JSON.stringify(dms));
+        input.value = '';
+        loadDMMessages();
+        addNotification('message', currentUser, `sent you a message: "${text.substring(0, 50)}"`);
+    }
 
     // ==================== STORIES ====================
     function loadStories() {
@@ -637,7 +692,7 @@
     }
     function updateBadge() { let level = getUserLevel(); let badgeElement = document.getElementById('userBadge'); if (badgeElement) badgeElement.innerHTML = `<span class="badge ${level.className}">${level.badge} ${level.level} Creator</span>`; }
 
-    // ==================== TRENDING PAGE ====================
+    // ==================== TRENDING ====================
     function loadTrending() {
         let container = document.getElementById('trendingContainer');
         if (!container) return;
@@ -646,7 +701,7 @@
             <div class="post-card">
                 ${post.type === 'video' ? `<video class="post-media" src="${post.url}" loop muted playsinline></video>` : `<img class="post-media" src="${post.url}" style="object-fit: contain;">`}
                 <div class="post-info">
-                    <div class="username">@${post.username} ✓ <span class="trending-badge">🔥 Trending</span><button class="follow-btn" onclick="followUser('${post.username}', this)">+ Follow</button></div>
+                    <div class="username">@${post.username} ✓ <span class="trending-badge">🔥 #${trendingPosts.indexOf(post)+1}</span><button class="follow-btn" onclick="followUser('${post.username}', this)">+ Follow</button></div>
                     <div>${post.title}</div>
                 </div>
                 <div class="post-actions">
@@ -661,91 +716,6 @@
         videos.forEach(video => observer.observe(video));
     }
 
-    // ==================== NOTIFICATIONS LIST ====================
-    function addNotification(type, from, message) {
-        let newNotif = { id: Date.now(), type: type, from: from, message: message, time: new Date().toLocaleString(), read: false };
-        notifications.unshift(newNotif);
-        if (notifications.length > 50) notifications.pop();
-        localStorage.setItem('vyve_notifications', JSON.stringify(notifications));
-        updateNotificationsList();
-        sendLocalNotification(`@${from} ${type === 'like' ? 'liked' : type === 'follow' ? 'followed' : 'commented'}`, message);
-    }
-    function updateNotificationsList() {
-        let container = document.getElementById('notificationsList');
-        if (!container) return;
-        if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No notifications yet</div>'; return; }
-        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="markNotificationRead(${notif.id})"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
-    }
-    function markNotificationRead(id) { let notif = notifications.find(n => n.id === id); if (notif) notif.read = true; localStorage.setItem('vyve_notifications', JSON.stringify(notifications)); updateNotificationsList(); }
-
-    // ==================== COMMENTS ====================
-    function openComments(postId) { currentPostId = postId; loadComments(); document.getElementById('commentsModal').classList.add('active'); }
-    function closeCommentsModal() { document.getElementById('commentsModal').classList.remove('active'); currentPostId = null; }
-    function loadComments() {
-        let postComments = comments[currentPostId] || [];
-        let container = document.getElementById('commentsList');
-        if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet. Be the first!</div>'; return; }
-        container.innerHTML = postComments.map(comment => `<div class="comment-item"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
-    }
-    function postComment() {
-        let input = document.getElementById('commentInput');
-        let text = input.value.trim();
-        if (!text) { alert('Write a comment first'); return; }
-        if (!comments[currentPostId]) comments[currentPostId] = [];
-        let newComment = { id: Date.now(), username: currentUser, text: text, time: new Date().toLocaleString() };
-        comments[currentPostId].unshift(newComment);
-        localStorage.setItem('vyve_comments', JSON.stringify(comments));
-        let post = posts.find(p => p.id === currentPostId);
-        if (post) { post.comments = comments[currentPostId].length.toString(); localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
-        if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented on your post: "${text.substring(0, 50)}"`);
-        trackComment();
-        input.value = '';
-        loadComments();
-        alert('Comment posted!');
-    }
-    function deleteComment(commentId) {
-        if (confirm('Delete this comment?')) {
-            comments[currentPostId] = comments[currentPostId].filter(c => c.id !== commentId);
-            localStorage.setItem('vyve_comments', JSON.stringify(comments));
-            let post = posts.find(p => p.id === currentPostId);
-            if (post) { post.comments = comments[currentPostId]?.length.toString() || '0'; localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
-            loadComments();
-            alert('Comment deleted');
-        }
-    }
-
-    // ==================== DIRECT MESSAGES ====================
-    function openDirectMessages() { loadDMUsers(); document.getElementById('dmsModal').classList.add('active'); }
-    function closeDMsModal() { document.getElementById('dmsModal').classList.remove('active'); currentDMUser = null; }
-    function loadDMUsers() {
-        let users = [...new Set([...Object.keys(dms), ...following])];
-        let container = document.getElementById('dmsContent');
-        if (users.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Follow someone to start messaging</div>'; return; }
-        container.innerHTML = `<div style="margin-bottom: 15px;"><input type="text" id="dmSearchInput" placeholder="🔍 Search users..." class="input-field" oninput="searchDMUsers()"></div><div id="dmUsersList">${users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('')}</div>`;
-    }
-    function searchDMUsers() {
-        let term = document.getElementById('dmSearchInput').value.toLowerCase();
-        let users = [...new Set([...Object.keys(dms), ...following])].filter(u => u.toLowerCase().includes(term));
-        document.getElementById('dmUsersList').innerHTML = users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('');
-    }
-    function selectDMUser(username) { currentDMUser = username; loadDMMessages(); }
-    function loadDMMessages() {
-        let messages = dms[currentDMUser] || [];
-        let container = document.getElementById('dmsContent');
-        container.innerHTML = `<div style="margin-bottom: 15px;"><button onclick="loadDMUsers()" style="background: none; border: none; color: #667eea;">← Back</button> <strong style="margin-left: 10px;">@${currentDMUser}</strong></div><div id="dmMessagesList" style="flex: 1; overflow-y: auto; max-height: 400px; margin-bottom: 15px;">${messages.map(msg => `<div style="text-align: ${msg.from === currentUser ? 'right' : 'left'}; margin: 10px 0;"><div class="dm-message-bubble" style="${msg.from === currentUser ? 'background: linear-gradient(135deg, #667eea, #764ba2);' : 'background: rgba(255,255,255,0.1);'}"><div>${msg.text}</div><div style="font-size: 10px; opacity: 0.5;">${msg.time}</div></div></div>`).join('')}</div><div class="comment-input-container"><input type="text" id="dmMessageInput" placeholder="Type a message..." class="comment-input"><button onclick="sendDMToUser()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Send</button></div>`;
-    }
-    function sendDMToUser() {
-        let input = document.getElementById('dmMessageInput');
-        let text = input.value.trim();
-        if (!text || !currentDMUser) return;
-        if (!dms[currentDMUser]) dms[currentDMUser] = [];
-        dms[currentDMUser].push({ id: Date.now(), from: currentUser, to: currentDMUser, text: text, time: new Date().toLocaleString() });
-        localStorage.setItem('vyve_dms', JSON.stringify(dms));
-        input.value = '';
-        loadDMMessages();
-        addNotification('message', currentUser, `sent you a message: "${text.substring(0, 50)}"`);
-    }
-
     // ==================== LOAD POSTS ====================
     function loadPosts() {
         let container = document.getElementById('feedContainer');
@@ -754,6 +724,7 @@
         container.innerHTML = allPosts.map(post => `
             <div class="post-card">
                 ${post.type === 'video' ? `<video class="post-media" src="${post.url}" loop muted playsinline></video>` : `<img class="post-media" src="${post.url}" style="object-fit: contain;">`}
+                ${activeStreams.some(s => s.streamer === post.username) ? `<div class="live-badge-small">🔴 LIVE</div>` : ''}
                 <div class="post-info">
                     <div class="username">@${post.username} ✓ <button class="follow-btn" onclick="followUser('${post.username}', this)">+ Follow</button></div>
                     <div>${post.title}</div>
@@ -780,7 +751,6 @@
             let countSpan = btn.querySelector('.action-count');
             if (countSpan) countSpan.innerText = parseInt(post.likes).toLocaleString();
             if (post.username !== currentUser) addNotification('like', currentUser, `liked your video "${post.title.substring(0, 30)}"`);
-            trackLike();
             loadTrending();
         }
     }
@@ -886,6 +856,13 @@
             case 'sepia': video.style.filter = 'sepia(0.8)'; break;
             case 'grayscale': video.style.filter = 'grayscale(1)'; break;
             case 'blur': video.style.filter = 'blur(3px)'; break;
+            case 'contrast': video.style.filter = 'contrast(1.4)'; break;
+            case 'saturate': video.style.filter = 'saturate(1.5)'; break;
+            case 'vignette': video.style.filter = 'brightness(0.9) contrast(1.2)'; break;
+            case 'warm': video.style.filter = 'sepia(0.3) brightness(1.1)'; break;
+            case 'cool': video.style.filter = 'hue-rotate(180deg) brightness(1.05)'; break;
+            case 'dreamy': video.style.filter = 'blur(1px) brightness(1.1) saturate(1.2)'; break;
+            case 'dramatic': video.style.filter = 'contrast(1.5) brightness(0.9) grayscale(0.2)'; break;
             default: video.style.filter = 'none';
         }
         document.querySelectorAll('.effect-option').forEach(btn => btn.style.background = 'rgba(255,255,255,0.2)');
@@ -936,6 +913,8 @@
         if (!container) return;
         if (activeStreams.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No one is live right now. Start a stream!</div>'; return; }
         container.innerHTML = activeStreams.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
+        // Update live badges on home feed
+        loadPosts();
     }
     function searchLiveStreams() {
         const term = document.getElementById('searchStreamInput').value.toLowerCase();
@@ -944,7 +923,19 @@
         if (filtered.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No matching streams found</div>'; return; }
         container.innerHTML = filtered.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
     }
-    function sendViewerMessage() { const input = document.getElementById('viewerChatInput'); if (input && input.value.trim()) { alert(`Message sent to ${currentViewingStream}: "${input.value}"`); input.value = ''; } }
+    function sendViewerMessage() {
+        const input = document.getElementById('viewerChatInput');
+        if (input && input.value.trim()) {
+            const message = input.value;
+            alert(`Message sent to ${currentViewingStream}: "${message}"`);
+            // Also send to streamer's floating chat
+            if (currentViewingStream) {
+                // In production, this would send via WebSocket
+                addFloatingChatMessage(currentUser, message);
+            }
+            input.value = '';
+        }
+    }
 
     // ==================== STRIPE PAYMENT ====================
     document.getElementById('buyBtn').addEventListener('click', async () => {
@@ -980,7 +971,6 @@
             loadTrending();
             loadStories();
             updateBadge();
-            updateAnalyticsDisplay();
             showAdminPanel();
             return true;
         }
@@ -1055,7 +1045,6 @@
             if (screen === 'profile') { updateNotificationsList(); updateBadge(); }
             if (screen === 'trending') { loadTrending(); }
             if (screen === 'feed') { loadStories(); }
-            if (screen === 'analytics') { updateAnalyticsDisplay(); updateRecentActivity(); }
             if (screen === 'admin' && isAdmin()) { updateAdminData(); }
         });
     });
@@ -1066,7 +1055,6 @@
         document.getElementById('totalEarned').innerText = '$' + (coinBalance / 10).toFixed(2);
         saveUserData();
         updateBadge();
-        updateAnalyticsDisplay();
     }
     function followUser(username, btn) {
         if (!currentUser) { alert('Login first'); return; }
@@ -1089,13 +1077,35 @@
         let results = document.getElementById('searchResults');
         if (!term) { results.style.display = 'none'; return; }
         let users = [...new Set(posts.map(p => p.username))];
-        let matched = users.filter(u => u.includes(term));
+        let matched = users.filter(u => u.includes(term) && u !== currentUser);
         if (matched.length === 0) { results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>'; results.style.display = 'block'; return; }
         results.innerHTML = matched.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;"><span>👤 @${u}</span><button class="follow-btn" onclick="followUser('${u}', this)">+ Follow</button></div>`).join('');
         results.style.display = 'block';
     }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
+    
+    // Admin functions
+    function isAdmin() { return ADMIN_USERS.includes(currentUser); }
+    function showAdminPanel() {
+        let adminNav = document.getElementById('adminNavItem');
+        if (adminNav) adminNav.style.display = isAdmin() ? 'block' : 'none';
+        if (isAdmin()) updateAdminData();
+    }
+    function updateAdminData() {
+        let allUsers = [];
+        for(let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if(key === 'vyve_user') { let user = JSON.parse(localStorage.getItem(key)); allUsers.push(user); }
+        }
+        document.getElementById('adminTotalUsers').innerText = allUsers.length;
+        document.getElementById('adminTotalPosts').innerText = posts.length;
+        let totalCoins = allUsers.reduce((sum, u) => sum + (u.coins || 0), 0);
+        document.getElementById('adminTotalCoins').innerText = totalCoins.toLocaleString();
+        document.getElementById('adminRevenue').innerText = '$' + (totalCoins / 10).toFixed(2);
+        document.getElementById('adminUserList').innerHTML = allUsers.map(u => `<div class="admin-user-item"><span>👤 @${u.username}</span><span>💰 ${u.coins || 0} coins</span><button onclick="adminAction('${u.username}')" style="background: #ff4444; border: none; padding: 5px 10px; border-radius: 10px; color: white;">Delete</button></div>`).join('');
+    }
+    function adminAction(username) { if(confirm(`Delete user @${username}?`)) { localStorage.removeItem('vyve_user'); alert('User deleted'); updateAdminData(); } }
 
     window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
     window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
