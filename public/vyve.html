@@ -1123,28 +1123,66 @@
 
     // ==================== USER DATA ====================
     function saveUserData() { if (currentUser) localStorage.setItem('vyve_user', JSON.stringify({ username: currentUser, email: currentUserEmail, coins: coinBalance })); }
+async function loadUserData() {
+    let saved = localStorage.getItem('vyve_user');
+    if (saved) {
+        let data = JSON.parse(saved);
+        currentUser = data.username;
+        currentUserEmail = data.email;
+        coinBalance = data.coins || 100;
+        
+        // Load followers/following from server
+        await loadFollowersFromServer();
+        await loadFollowingFromServer();
+        
+        document.getElementById('profileUsername').innerText = '@' + currentUser;
+        document.getElementById('profileEmail').innerText = currentUserEmail;
+        updateBalance();
+        document.getElementById('createProfileScreen').classList.remove('active');
+        document.getElementById('feedScreen').classList.add('active');
+        document.getElementById('mainNav').style.display = 'flex';
+        document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
+        
+        // Load posts from server
+        await loadPostsFromServer();
+        
+        loadStories();
+        updateBadge();
+        return true;
+    }
+    return false;
+}
 
-    function loadUserData() {
-        let saved = localStorage.getItem('vyve_user');
-        if (saved) {
-            let data = JSON.parse(saved);
-            currentUser = data.username; currentUserEmail = data.email; coinBalance = data.coins || 100;
-            document.getElementById('profileUsername').innerText = '@' + currentUser;
-            document.getElementById('profileEmail').innerText = currentUserEmail;
-            updateBalance();
-            document.getElementById('createProfileScreen').classList.remove('active');
-            document.getElementById('feedScreen').classList.add('active');
-            document.getElementById('mainNav').style.display = 'flex';
-            document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
-            updateNotificationsList();
+async function loadFollowersFromServer() {
+    try {
+        const response = await fetch(`/api/followers/${currentUser}`);
+        followers = await response.json();
+        localStorage.setItem('vyve_followers', JSON.stringify(followers));
+        document.getElementById('followersCount').innerText = followers.length;
+    } catch(e) { console.log(e); }
+}
+
+async function loadFollowingFromServer() {
+    try {
+        const response = await fetch(`/api/following/${currentUser}`);
+        following = await response.json();
+        localStorage.setItem('vyve_following', JSON.stringify(following));
+        document.getElementById('followingCount').innerText = following.length;
+    } catch(e) { console.log(e); }
+}
+
+async function loadPostsFromServer() {
+    try {
+        const response = await fetch('/api/posts');
+        const serverPosts = await response.json();
+        if (serverPosts.length > 0) {
+            posts = serverPosts;
+            localStorage.setItem('vyve_posts', JSON.stringify(posts));
             loadPosts();
             loadTrending();
-            loadStories();
-            updateBadge();
-            return true;
         }
-        return false;
-    }
+    } catch(e) { console.log(e); }
+}}
 
     function uploadProfilePicture(input) {
         if (input.files && input.files[0]) {
@@ -1230,11 +1268,21 @@
         updateBadge();
     }
 
-    function followUser(username, btn) {
-        if (!currentUser) { alert('Login first'); return; }
-        if (!following.includes(username)) { following.push(username); localStorage.setItem('vyve_following', JSON.stringify(following)); if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); } addNotification('follow', currentUser, `started following you`); alert(`Following @${username}`); }
+   async function followUser(username, btn) {
+    if (!currentUser) { alert('Login first'); return; }
+    if (!following.includes(username)) {
+        following.push(username);
+        await fetch('/api/follow', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ follower: currentUser, following: username })
+        });
+        localStorage.setItem('vyve_following', JSON.stringify(following));
+        if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); }
+        addNotification('follow', currentUser, `started following you`);
+        alert(`Following @${username}`);
     }
-
+}
     function showFollowersList() {
         document.getElementById('listModalTitle').innerText = 'Followers';
         document.getElementById('listModalContent').innerHTML = followers.length ? followers.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">No followers yet</div>';
@@ -1257,28 +1305,32 @@
     }
 
     function searchUsers() {
-        let term = document.getElementById('searchInput').value.toLowerCase().trim();
-        let results = document.getElementById('searchResults');
-        if (!term) { results.style.display = 'none'; return; }
-        let users = [...new Set(posts.map(p => p.username))];
-        let matched = users.filter(u => u.includes(term));
-        if (matched.length === 0) { results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>'; results.style.display = 'block'; return; }
-        results.innerHTML = matched.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;"><span>👤 @${u}</span><button class="follow-btn" onclick="followUser('${u}', this)">+ Follow</button></div>`).join('');
+        async function searchUsers() {
+    let term = document.getElementById('searchInput').value.toLowerCase().trim();
+    let results = document.getElementById('searchResults');
+    if (!term) { results.style.display = 'none'; return; }
+    
+    try {
+        const response = await fetch('/api/users');
+        const allUsers = await response.json();
+        let matched = allUsers.filter(u => 
+            u.username.toLowerCase().includes(term) && u.username !== currentUser
+        );
+        
+        if (matched.length === 0) {
+            results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>';
+        } else {
+            results.innerHTML = matched.map(u => `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;">
+                    <span>👤 @${u.username}</span>
+                    <button class="follow-btn" onclick="followUser('${u.username}', this)">
+                        ${following.includes(u.username) ? 'Following ✓' : '+ Follow'}
+                    </button>
+                </div>
+            `).join('');
+        }
         results.style.display = 'block';
-    }
-
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
-
-    // Start listening for incoming calls
-    listenForIncomingCalls();
-
-    window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
-    window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js');
+    } catch(e) { console.log(e); }
 }
 </script>
 </body>
