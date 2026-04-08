@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>:<link rel="manifest" href="/manifest.json">
+<head>
     <title>Vyve - Live Streaming Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <style>
@@ -97,8 +97,6 @@
         .badge-diamond { background: #00bcd4; color: white; }
         .badge-legend { background: #ff6b6b; color: white; }
         .trending-badge { background: #ff3b30; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 10px; }
-        
-        /* Video Call Styles */
         .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .video-call-container.active { display: flex; }
         .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
@@ -107,7 +105,6 @@
         .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 2001; }
         .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; }
         .video-call-end { background: #ff3b30 !important; }
-        
         .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .story-viewer.active { display: flex; }
         .story-image { width: 100%; height: 100%; object-fit: contain; }
@@ -166,7 +163,7 @@
     </div>
 </div>
 
-<!-- Feed Screen with Stories -->
+<!-- Feed Screen -->
 <div id="feedScreen" class="screen">
     <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 100;">
         <div style="padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
@@ -405,9 +402,6 @@
     let currentDMUser = null;
     let currentViewingStream = null;
     let localCallStream = null;
-    let peerConnection = null;
-    let currentCallPartner = null;
-    let callActive = false;
     let currentStoryIndex = 0;
     let storyInterval = null;
 
@@ -1123,66 +1117,28 @@
 
     // ==================== USER DATA ====================
     function saveUserData() { if (currentUser) localStorage.setItem('vyve_user', JSON.stringify({ username: currentUser, email: currentUserEmail, coins: coinBalance })); }
-async function loadUserData() {
-    let saved = localStorage.getItem('vyve_user');
-    if (saved) {
-        let data = JSON.parse(saved);
-        currentUser = data.username;
-        currentUserEmail = data.email;
-        coinBalance = data.coins || 100;
-        
-        // Load followers/following from server
-        await loadFollowersFromServer();
-        await loadFollowingFromServer();
-        
-        document.getElementById('profileUsername').innerText = '@' + currentUser;
-        document.getElementById('profileEmail').innerText = currentUserEmail;
-        updateBalance();
-        document.getElementById('createProfileScreen').classList.remove('active');
-        document.getElementById('feedScreen').classList.add('active');
-        document.getElementById('mainNav').style.display = 'flex';
-        document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
-        
-        // Load posts from server
-        await loadPostsFromServer();
-        
-        loadStories();
-        updateBadge();
-        return true;
-    }
-    return false;
-}
 
-async function loadFollowersFromServer() {
-    try {
-        const response = await fetch(`/api/followers/${currentUser}`);
-        followers = await response.json();
-        localStorage.setItem('vyve_followers', JSON.stringify(followers));
-        document.getElementById('followersCount').innerText = followers.length;
-    } catch(e) { console.log(e); }
-}
-
-async function loadFollowingFromServer() {
-    try {
-        const response = await fetch(`/api/following/${currentUser}`);
-        following = await response.json();
-        localStorage.setItem('vyve_following', JSON.stringify(following));
-        document.getElementById('followingCount').innerText = following.length;
-    } catch(e) { console.log(e); }
-}
-
-async function loadPostsFromServer() {
-    try {
-        const response = await fetch('/api/posts');
-        const serverPosts = await response.json();
-        if (serverPosts.length > 0) {
-            posts = serverPosts;
-            localStorage.setItem('vyve_posts', JSON.stringify(posts));
+    function loadUserData() {
+        let saved = localStorage.getItem('vyve_user');
+        if (saved) {
+            let data = JSON.parse(saved);
+            currentUser = data.username; currentUserEmail = data.email; coinBalance = data.coins || 100;
+            document.getElementById('profileUsername').innerText = '@' + currentUser;
+            document.getElementById('profileEmail').innerText = currentUserEmail;
+            updateBalance();
+            document.getElementById('createProfileScreen').classList.remove('active');
+            document.getElementById('feedScreen').classList.add('active');
+            document.getElementById('mainNav').style.display = 'flex';
+            document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
+            updateNotificationsList();
             loadPosts();
             loadTrending();
+            loadStories();
+            updateBadge();
+            return true;
         }
-    } catch(e) { console.log(e); }
-}}
+        return false;
+    }
 
     function uploadProfilePicture(input) {
         if (input.files && input.files[0]) {
@@ -1268,21 +1224,11 @@ async function loadPostsFromServer() {
         updateBadge();
     }
 
-   async function followUser(username, btn) {
-    if (!currentUser) { alert('Login first'); return; }
-    if (!following.includes(username)) {
-        following.push(username);
-        await fetch('/api/follow', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ follower: currentUser, following: username })
-        });
-        localStorage.setItem('vyve_following', JSON.stringify(following));
-        if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); }
-        addNotification('follow', currentUser, `started following you`);
-        alert(`Following @${username}`);
+    function followUser(username, btn) {
+        if (!currentUser) { alert('Login first'); return; }
+        if (!following.includes(username)) { following.push(username); localStorage.setItem('vyve_following', JSON.stringify(following)); if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); } addNotification('follow', currentUser, `started following you`); alert(`Following @${username}`); }
     }
-}
+
     function showFollowersList() {
         document.getElementById('listModalTitle').innerText = 'Followers';
         document.getElementById('listModalContent').innerHTML = followers.length ? followers.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">No followers yet</div>';
@@ -1305,33 +1251,24 @@ async function loadPostsFromServer() {
     }
 
     function searchUsers() {
-        async function searchUsers() {
-    let term = document.getElementById('searchInput').value.toLowerCase().trim();
-    let results = document.getElementById('searchResults');
-    if (!term) { results.style.display = 'none'; return; }
-    
-    try {
-        const response = await fetch('/api/users');
-        const allUsers = await response.json();
-        let matched = allUsers.filter(u => 
-            u.username.toLowerCase().includes(term) && u.username !== currentUser
-        );
-        
-        if (matched.length === 0) {
-            results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>';
-        } else {
-            results.innerHTML = matched.map(u => `
-                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;">
-                    <span>👤 @${u.username}</span>
-                    <button class="follow-btn" onclick="followUser('${u.username}', this)">
-                        ${following.includes(u.username) ? 'Following ✓' : '+ Follow'}
-                    </button>
-                </div>
-            `).join('');
-        }
+        let term = document.getElementById('searchInput').value.toLowerCase().trim();
+        let results = document.getElementById('searchResults');
+        if (!term) { results.style.display = 'none'; return; }
+        let users = [...new Set(posts.map(p => p.username))];
+        let matched = users.filter(u => u.includes(term));
+        if (matched.length === 0) { results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>'; results.style.display = 'block'; return; }
+        results.innerHTML = matched.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;"><span>👤 @${u}</span><button class="follow-btn" onclick="followUser('${u}', this)">+ Follow</button></div>`).join('');
         results.style.display = 'block';
-    } catch(e) { console.log(e); }
-}
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
+
+    // Start listening for incoming calls
+    listenForIncomingCalls();
+
+    window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
+    window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
 </script>
 </body>
 </html>
