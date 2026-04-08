@@ -1145,48 +1145,93 @@
         }
     }
     function loadProfilePicture() { let saved = localStorage.getItem('vyve_profile_pic'); if (saved) document.getElementById('profilePreview').src = saved; }
-    function createProfile() {
-        let username = document.getElementById('signupUsername').value;
-        let email = document.getElementById('signupEmail').value;
-        let birthdate = document.getElementById('signupBirthdate').value;
-        let password = document.getElementById('signupPassword').value;
-        if (!username || !email || !birthdate || !password) { alert('Please fill all fields'); return; }
-        let age = new Date().getFullYear() - new Date(birthdate).getFullYear();
-        if (age < 18) { alert('You must be 18+ to join Vyve'); return; }
-        currentUser = username; currentUserEmail = email; coinBalance = 100;
-        document.getElementById('profileUsername').innerText = '@' + username;
-        document.getElementById('profileEmail').innerText = email;
-        updateBalance(); saveUserData();
-        document.getElementById('createProfileScreen').classList.remove('active');
-        document.getElementById('feedScreen').classList.add('active');
-        document.getElementById('mainNav').style.display = 'flex';
-        loadPosts();
-        loadTrending();
-        loadStories();
-        updateBadge();
-        alert('Welcome ' + username + '!');
+   function createProfile() {
+    let username = document.getElementById('signupUsername').value;
+    let email = document.getElementById('signupEmail').value;
+    let birthdate = document.getElementById('signupBirthdate').value;
+    let password = document.getElementById('signupPassword').value;
+    
+    if (!username || !email || !birthdate || !password) {
+        alert('Please fill all fields');
+        return;
     }
+    
+    let age = new Date().getFullYear() - new Date(birthdate).getFullYear();
+    if (age < 18) {
+        alert('You must be 18+ to join Vyve');
+        return;
+    }
+    
+    currentUser = username;
+    currentUserEmail = email;
+    coinBalance = 100;
+    
+    let userData = {
+        username: currentUser,
+        email: currentUserEmail,
+        coins: coinBalance
+    };
+    localStorage.setItem('vyve_user', JSON.stringify(userData));
+    
+    document.getElementById('profileUsername').innerText = '@' + currentUser;
+    document.getElementById('profileEmail').innerText = currentUserEmail;
+    document.getElementById('walletBalance').innerText = coinBalance + ' coins';
+    updateBalance();
+    
+    document.getElementById('createProfileScreen').classList.remove('active');
+    document.getElementById('feedScreen').classList.add('active');
+    document.getElementById('mainNav').style.display = 'flex';
+    
+    loadPosts();
+    loadTrending();
+    loadStories();
+    updateBadge();
+    
+    alert('Welcome ' + username + '! You received 100 free coins.');
+}
     function login() {
-        let username = document.getElementById('loginUsername').value;
-        if (!username) { alert('Enter username'); return; }
-        let saved = localStorage.getItem('vyve_user');
-        if (saved) {
-            let data = JSON.parse(saved);
-            if (data.username === username) {
-                currentUser = data.username; currentUserEmail = data.email; coinBalance = data.coins || 100;
-                document.getElementById('profileUsername').innerText = '@' + currentUser;
-                document.getElementById('profileEmail').innerText = currentUserEmail;
-                updateBalance();
-                document.getElementById('loginScreen').classList.remove('active');
-                document.getElementById('feedScreen').classList.add('active');
-                document.getElementById('mainNav').style.display = 'flex';
-                loadPosts();
-                loadTrending();
-                loadStories();
-                updateBadge();
-                alert('Welcome back ' + username + '!');
-                return;
-            }
+    let username = document.getElementById('loginUsername').value;
+    let password = document.getElementById('loginPassword').value;
+    
+    if (!username) {
+        alert('Enter username');
+        return;
+    }
+    
+    let saved = localStorage.getItem('vyve_user');
+    if (saved) {
+        let data = JSON.parse(saved);
+        if (data.username === username) {
+            currentUser = data.username;
+            currentUserEmail = data.email;
+            coinBalance = data.coins || 100;
+            
+            document.getElementById('profileUsername').innerText = '@' + currentUser;
+            document.getElementById('profileEmail').innerText = currentUserEmail;
+            document.getElementById('walletBalance').innerText = coinBalance + ' coins';
+            updateBalance();
+            
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('feedScreen').classList.add('active');
+            document.getElementById('mainNav').style.display = 'flex';
+            
+            loadPosts();
+            loadTrending();
+            loadStories();
+            updateBadge();
+            updateNotificationsList();
+            
+            alert('Welcome back ' + username + '!');
+            return;
+        }
+    }
+    
+    // If user not found, ask to create account
+    let createNew = confirm('User not found. Create a new account?');
+    if (createNew) {
+        showCreateProfile();
+    }
+}
         }
         alert('User not found. Create an account first.');
     }
