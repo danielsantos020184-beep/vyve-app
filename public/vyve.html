@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<head>
+<head><script src="https://unpkg.com/@daily-co/daily-js"></script>
     <title>Vyve - Live Streaming Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <style>
@@ -524,16 +524,90 @@
         if (videoEl) videoEl.pause();
     }
 
-    // ==================== VIDEO CALLS ====================
-    function sendSignalingMessage(toUser, message) {
-        const key = `call_${currentUser}_${toUser}`;
-        signalingData[key] = {
-            from: currentUser,
-            to: toUser,
-            message: message,
-            timestamp: Date.now()
-        };
-        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
+       // ==================== DAILY.CO VIDEO CALLS ====================
+    let callFrame = null;
+    let currentCallRoom = null;
+
+    async function startVideoCall() {
+        let targetUser = prompt('Enter username to call:', '');
+        if (!targetUser || targetUser === currentUser) {
+            alert('Enter a valid username');
+            return;
+        }
+        
+        // Create a unique room name
+        const roomName = `vyve_${currentUser}_to_${targetUser}_${Date.now()}`;
+        currentCallRoom = roomName;
+        
+        try {
+            // First get local camera preview
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('localCallVideo').srcObject = stream;
+            document.getElementById('videoCallContainer').classList.add('active');
+            
+            alert(`📞 Calling @${targetUser}...\n\nShare this room link with them:\n\nhttps://vyve-video.daily.co/${roomName}\n\n(They need to click the link to join the call)`);
+            
+            // Create a shareable link
+            const shareLink = `https://vyve-video.daily.co/${roomName}`;
+            console.log('Share this link:', shareLink);
+            
+        } catch (error) {
+            alert('Cannot access camera: ' + error.message);
+        }
+    }
+    
+    // Create a video room (for production)
+    async function createVideoRoom(roomName) {
+        // In production, call your backend to create a room
+        // For demo, Daily.co auto-creates rooms when you join
+        return roomName;
+    }
+    
+    function joinVideoCall(roomUrl) {
+        if (callFrame) {
+            callFrame.destroy();
+        }
+        
+        callFrame = window.DailyIframe.createFrame({
+            showLeaveButton: true,
+            showFullscreenButton: true,
+            iframeStyle: {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                border: '0'
+            }
+        });
+        
+        callFrame.join({ url: roomUrl });
+        document.getElementById('videoCallContainer').classList.add('active');
+    }
+    
+    function endVideoCall() {
+        if (callFrame) {
+            callFrame.destroy();
+            callFrame = null;
+        }
+        document.getElementById('videoCallContainer').classList.remove('active');
+        currentCallRoom = null;
+    }
+    
+    function toggleCallMic() {
+        if (callFrame) {
+            callFrame.setLocalAudio(!callFrame.participants().local.audio);
+        } else {
+            alert('Join a call first');
+        }
+    }
+    
+    function toggleCallCamera() {
+        if (callFrame) {
+            callFrame.setLocalVideo(!callFrame.participants().local.video);
+        } else {
+            alert('Join a call first');
+        }
     }
 
     async function startVideoCall() {
