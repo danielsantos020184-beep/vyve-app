@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head><script src="https://unpkg.com/@daily-co/daily-js"></script>
+<head>
     <title>Vyve - Live Streaming Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icon-192.png">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root { --primary: #667eea; --secondary: #764ba2; --card-bg: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.1); }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; overflow-x: hidden; }
+        
         @keyframes gradientFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         @keyframes expandWidth { 0% { width: 30px; opacity: 0.5; } 50% { width: 80px; opacity: 1; } 100% { width: 30px; opacity: 0.5; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
         .nav { display: flex; justify-content: space-around; padding: 12px 20px; background: rgba(15,15,35,0.95); backdrop-filter: blur(20px); border-top: 1px solid var(--glass-border); position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
-        .nav-item { color: #888; font-size: 12px; text-align: center; cursor: pointer; padding: 8px 20px; border-radius: 30px; }
+        .nav-item { color: #888; font-size: 12px; text-align: center; cursor: pointer; padding: 8px 20px; border-radius: 30px; transition: all 0.3s; min-height: 44px; }
         .nav-item.active { color: #fff; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        
         .screen { display: none; min-height: 100vh; padding-bottom: 70px; }
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        
         .feed-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
         .post-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
         .post-media { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
@@ -23,11 +29,14 @@
         .follow-btn { background: var(--primary); border: none; padding: 4px 12px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; }
         .follow-btn.following { background: #4caf50; }
         .post-actions { position: absolute; bottom: 120px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
-        .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
+        .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; transition: transform 0.05s; }
+        .action-btn:active { transform: scale(0.95); }
         .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
+        
         .story-ring { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #ff3b30, #ff6b35); display: flex; align-items: center; justify-content: center; margin: 5px; cursor: pointer; }
         .story-inner { width: 65px; height: 65px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 30px; }
         .stories-container { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: #000; border-bottom: 1px solid var(--glass-border); }
+        
         .live-container { padding: 20px; min-height: 100vh; }
         .start-live-btn { background: linear-gradient(135deg, #ff3b30, #ff6b35); border: none; padding: 18px 40px; border-radius: 60px; color: white; font-size: 18px; font-weight: 700; cursor: pointer; margin: 20px auto; display: block; }
         .live-stream-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
@@ -36,41 +45,53 @@
         .search-streams { display: flex; gap: 10px; margin-bottom: 20px; }
         .search-streams input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
         .search-streams button { background: var(--primary); border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer; }
+        
         .packages { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
-        .package-card { background: var(--card-bg); padding: 15px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); }
+        .package-card { background: var(--card-bg); padding: 15px; border-radius: 20px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; }
         .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); }
         .balance { background: var(--card-bg); padding: 25px; text-align: center; margin: 20px; border-radius: 28px; }
         .balance-value { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
         .profile-pic-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; cursor: pointer; }
         .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: white; border: 3px solid rgba(255,255,255,0.3); }
         .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--primary); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid white; }
         .hidden-file-input { display: none; }
+        
         .profile-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 50px 30px 40px; text-align: center; }
         .stats { display: flex; justify-content: space-around; padding: 20px; margin: 20px; background: var(--card-bg); border-radius: 24px; cursor: pointer; }
         .stat-item { text-align: center; flex: 1; }
         .stat-number { font-size: 28px; font-weight: 700; }
         .stat-label { font-size: 12px; opacity: 0.8; }
+        
         .upload-options { display: flex; gap: 15px; margin: 20px; justify-content: center; }
         .upload-option { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; padding: 15px 25px; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; flex: 1; text-align: center; }
+        
         .input-field { width: 100%; padding: 14px 20px; margin: 12px 0; border-radius: 40px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; font-size: 16px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 14px 28px; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-secondary { background: rgba(255,255,255,0.1); color: white; padding: 12px 24px; border: 1px solid var(--glass-border); border-radius: 40px; cursor: pointer; width: 100%; margin-top: 12px; }
+        
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; justify-content: center; align-items: center; }
         .modal.active { display: flex; }
         .modal-content { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 30px; border-radius: 40px; text-align: center; max-width: 320px; }
+        
         .list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
         .list-modal.active { transform: translateY(0); }
         .list-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+        
         #searchResults { margin-top: 10px; display: none; background: rgba(0,0,0,0.95); border-radius: 16px; padding: 10px; max-width: 500px; margin: 10px auto 0 auto; }
+        
         .edit-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         .edit-modal.active { display: flex; }
         .edit-tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; justify-content: center; }
         .edit-tool-btn { background: rgba(255,255,255,0.2); border: none; padding: 10px 20px; border-radius: 30px; color: white; cursor: pointer; }
         .preview-container { text-align: center; margin: 20px 0; }
         .preview-video, .preview-image { max-width: 100%; max-height: 60vh; border-radius: 20px; }
+        
         .sound-library { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
         .sound-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; cursor: pointer; text-align: center; }
+        
         .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 10px; border-radius: 30px; color: white; cursor: pointer; text-align: center; }
+        
         .comments-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; display: flex; flex-direction: column; }
         .comments-modal.active { transform: translateY(0); }
         .comments-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; }
@@ -83,12 +104,15 @@
         .comment-time { font-size: 10px; opacity: 0.5; margin-top: 4px; }
         .comment-input-container { display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--glass-border); }
         .comment-input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
+        
         .notifications-panel { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; margin: 20px; max-height: 300px; overflow-y: auto; }
         .notification-item { padding: 12px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
         .notification-unread { background: rgba(102,126,234,0.2); }
+        
         .dm-user-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
         .dm-avatar { width: 50px; height: 50px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .dm-message-bubble { display: inline-block; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 20px; max-width: 80%; margin: 5px 0; }
+        
         .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-left: 10px; }
         .badge-bronze { background: #cd7f32; color: white; }
         .badge-silver { background: #c0c0c0; color: #333; }
@@ -97,6 +121,7 @@
         .badge-diamond { background: #00bcd4; color: white; }
         .badge-legend { background: #ff6b6b; color: white; }
         .trending-badge { background: #ff3b30; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 10px; }
+        
         .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .video-call-container.active { display: flex; }
         .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
@@ -105,12 +130,23 @@
         .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 20px; z-index: 2001; }
         .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 15px; border-radius: 50%; width: 60px; height: 60px; font-size: 24px; cursor: pointer; }
         .video-call-end { background: #ff3b30 !important; }
+        
         .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
         .story-viewer.active { display: flex; }
         .story-image { width: 100%; height: 100%; object-fit: contain; }
         .story-progress { position: absolute; top: 20px; left: 0; right: 0; display: flex; gap: 5px; padding: 10px; }
         .story-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.3); border-radius: 3px; overflow: hidden; }
         .story-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
+        
+        /* Analytics Cards */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2)); backdrop-filter: blur(10px); padding: 20px; border-radius: 20px; text-align: center; border: 1px solid var(--glass-border); }
+        .stat-number { font-size: 32px; font-weight: bold; }
+        .stat-label { font-size: 12px; opacity: 0.8; margin-top: 5px; }
+        
+        /* Admin Panel */
+        .admin-section { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
@@ -120,7 +156,9 @@
     <div class="nav-item" data-screen="trending">🔥 Trending</div>
     <div class="nav-item" data-screen="live">🔴 Live</div>
     <div class="nav-item" data-screen="shop">🪙 Shop</div>
+    <div class="nav-item" data-screen="analytics">📊 Stats</div>
     <div class="nav-item" data-screen="profile">👤 Profile</div>
+    <div class="nav-item" data-screen="admin" id="adminNavItem" style="display: none;">👑 Admin</div>
 </div>
 
 <!-- Create Profile Screen -->
@@ -255,6 +293,20 @@
     <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
 
+<!-- Analytics Screen -->
+<div id="analyticsScreen" class="screen">
+    <div style="padding: 20px;">
+        <h2 style="margin-bottom: 20px;">📊 Your Analytics</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-number" id="totalViews">0</div><div class="stat-label">Total Views</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalLikes">0</div><div class="stat-label">Total Likes</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalComments">0</div><div class="stat-label">Comments</div></div>
+            <div class="stat-card"><div class="stat-number" id="totalEarningsAnalytics">$0</div><div class="stat-label">Earnings</div></div>
+        </div>
+        <div class="admin-section"><h3 style="margin-bottom: 15px;">📋 Recent Activity</h3><div id="recentActivity"></div></div>
+    </div>
+</div>
+
 <!-- Profile Screen -->
 <div id="profileScreen" class="screen">
     <div class="profile-header">
@@ -282,6 +334,7 @@
         <button onclick="openDirectMessages()" style="width: 100%; background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">💬 Direct Messages</button>
         <button onclick="startVideoCall()" style="width: 100%; background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-bottom: 15px;">📹 Start Video Call</button>
         <button onclick="addStory()" style="width: 100%; background: linear-gradient(135deg, #ff9800, #ff5722); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold;">📸 Add Story</button>
+        <button onclick="requestNotificationPermission()" style="width: 100%; background: linear-gradient(135deg, #2196f3, #0b7dda); border: none; padding: 15px; border-radius: 40px; color: white; font-weight: bold; margin-top: 15px;">🔔 Enable Notifications</button>
     </div>
     
     <div class="notifications-panel">
@@ -299,12 +352,28 @@
     <div style="margin: 20px;"><button onclick="logout()" style="width: 100%; background: rgba(255,68,68,0.2); border: 1px solid rgba(255,68,68,0.5); padding: 12px; border-radius: 40px; color: #ff4444; cursor: pointer;">Logout</button></div>
 </div>
 
+<!-- Admin Panel Screen -->
+<div id="adminScreen" class="screen">
+    <div style="padding: 20px;">
+        <h2 style="margin-bottom: 20px;">👑 Admin Panel</h2>
+        <div class="admin-section">
+            <h3 style="margin-bottom: 15px;">👥 User Management</h3>
+            <div id="adminUserList"></div>
+        </div>
+        <div class="admin-section">
+            <h3 style="margin-bottom: 15px;">📊 Platform Stats</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Users:</span><span id="adminTotalUsers">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Posts:</span><span id="adminTotalPosts">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span>Total Coins:</span><span id="adminTotalCoins">0</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Platform Revenue:</span><span id="adminRevenue">$0</span></div>
+        </div>
+    </div>
+</div>
+
 <!-- Video Call Container -->
 <div id="videoCallContainer" class="video-call-container">
     <video id="remoteCallVideo" class="video-call-remote" autoplay playsinline></video>
-    <div class="video-call-local">
-        <video id="localCallVideo" autoplay playsinline muted></video>
-    </div>
+    <div class="video-call-local"><video id="localCallVideo" autoplay playsinline muted></video></div>
     <div class="video-call-controls">
         <button onclick="toggleCallMic()">🎤</button>
         <button onclick="toggleCallCamera()">📷</button>
@@ -323,10 +392,7 @@
 
 <!-- Comments Modal -->
 <div id="commentsModal" class="comments-modal">
-    <div class="comments-header">
-        <h3>💬 Comments</h3>
-        <button onclick="closeCommentsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button>
-    </div>
+    <div class="comments-header"><h3>💬 Comments</h3><button onclick="closeCommentsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
     <div class="comments-list" id="commentsList"></div>
     <div class="comment-input-container">
         <input type="text" id="commentInput" placeholder="Write a comment..." class="comment-input">
@@ -336,10 +402,7 @@
 
 <!-- Direct Messages Modal -->
 <div id="dmsModal" class="comments-modal">
-    <div class="comments-header">
-        <h3>💬 Direct Messages</h3>
-        <button onclick="closeDMsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button>
-    </div>
+    <div class="comments-header"><h3>💬 Direct Messages</h3><button onclick="closeDMsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
     <div id="dmsContent"></div>
 </div>
 
@@ -404,6 +467,12 @@
     let localCallStream = null;
     let currentStoryIndex = 0;
     let storyInterval = null;
+    
+    // Analytics
+    let analytics = JSON.parse(localStorage.getItem('vyve_analytics') || '{"views":0,"likes":0,"comments":0,"activity":[]}');
+    
+    // Admin users
+    const ADMIN_USERS = ['admin', 'daniel', 'vyve_admin'];
 
     // Sample posts
     if (posts.length === 0) {
@@ -424,14 +493,72 @@
     }
 
     // WebRTC Configuration
-    const configuration = {
-        iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' }
-        ]
-    };
-    
+    const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }] };
     let signalingData = JSON.parse(localStorage.getItem('vyve_signaling') || '{}');
+
+    // ==================== NOTIFICATIONS ====================
+    function requestNotificationPermission() {
+        if ('Notification' in window) {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification('Vyve', { body: '🔔 You will now receive notifications!', icon: '/icon-192.png' });
+                    localStorage.setItem('notifications_enabled', 'true');
+                }
+            });
+        }
+    }
+
+    function sendLocalNotification(title, body) {
+        if (localStorage.getItem('notifications_enabled') === 'true' && 'Notification' in window && Notification.permission === 'granted') {
+            new Notification(title, { body: body, icon: '/icon-192.png' });
+        }
+    }
+
+    // ==================== ANALYTICS ====================
+    function trackView() { analytics.views++; saveAnalytics(); updateAnalyticsDisplay(); }
+    function trackLike() { analytics.likes++; saveAnalytics(); updateAnalyticsDisplay(); addActivity('liked a video', '❤️'); }
+    function trackComment() { analytics.comments++; saveAnalytics(); updateAnalyticsDisplay(); addActivity('commented on a video', '💬'); }
+    function addActivity(action, emoji) {
+        analytics.activity.unshift({ action: action, emoji: emoji, time: new Date().toLocaleString() });
+        if (analytics.activity.length > 20) analytics.activity.pop();
+        saveAnalytics();
+        updateRecentActivity();
+    }
+    function saveAnalytics() { localStorage.setItem('vyve_analytics', JSON.stringify(analytics)); }
+    function updateAnalyticsDisplay() {
+        document.getElementById('totalViews').innerText = analytics.views.toLocaleString();
+        document.getElementById('totalLikes').innerText = analytics.likes.toLocaleString();
+        document.getElementById('totalComments').innerText = analytics.comments.toLocaleString();
+        document.getElementById('totalEarningsAnalytics').innerText = '$' + (coinBalance / 10).toFixed(2);
+    }
+    function updateRecentActivity() {
+        let container = document.getElementById('recentActivity');
+        if (!container) return;
+        if (analytics.activity.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No activity yet</div>'; return; }
+        container.innerHTML = analytics.activity.map(a => `<div style="display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1);"><div style="font-size: 24px;">${a.emoji}</div><div style="flex: 1;">You ${a.action}</div><div style="font-size: 11px; opacity: 0.5;">${a.time}</div></div>`).join('');
+    }
+
+    // ==================== ADMIN PANEL ====================
+    function isAdmin() { return ADMIN_USERS.includes(currentUser); }
+    function showAdminPanel() {
+        let adminNav = document.getElementById('adminNavItem');
+        if (adminNav) adminNav.style.display = isAdmin() ? 'block' : 'none';
+        if (isAdmin()) updateAdminData();
+    }
+    function updateAdminData() {
+        let allUsers = [];
+        for(let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if(key === 'vyve_user') { let user = JSON.parse(localStorage.getItem(key)); allUsers.push(user); }
+        }
+        document.getElementById('adminTotalUsers').innerText = allUsers.length;
+        document.getElementById('adminTotalPosts').innerText = posts.length;
+        let totalCoins = allUsers.reduce((sum, u) => sum + (u.coins || 0), 0);
+        document.getElementById('adminTotalCoins').innerText = totalCoins.toLocaleString();
+        document.getElementById('adminRevenue').innerText = '$' + (totalCoins / 10).toFixed(2);
+        document.getElementById('adminUserList').innerHTML = allUsers.map(u => `<div class="admin-user-item"><span>👤 @${u.username}</span><span>💰 ${u.coins || 0} coins</span><button onclick="adminAction('${u.username}')" style="background: #ff4444; border: none; padding: 5px 10px; border-radius: 10px; color: white;">Delete</button></div>`).join('');
+    }
+    function adminAction(username) { if(confirm(`Delete user @${username}?`)) { localStorage.removeItem('vyve_user'); alert('User deleted'); updateAdminData(); } }
 
     // ==================== STORIES ====================
     function loadStories() {
@@ -441,27 +568,15 @@
         let myStories = activeStories.filter(s => s.username === currentUser);
         let otherStories = activeStories.filter(s => s.username !== currentUser);
         let uniqueUsers = [...new Set([...myStories, ...otherStories].map(s => s.username))];
-        container.innerHTML = uniqueUsers.map(username => {
-            return `<div class="story-ring" onclick="viewStory('${username}')"><div class="story-inner">${username === currentUser ? '📸' : '👤'}</div><div style="font-size: 10px; margin-top: 5px;">@${username}</div></div>`;
-        }).join('');
+        container.innerHTML = uniqueUsers.map(username => `<div class="story-ring" onclick="viewStory('${username}')"><div class="story-inner">${username === currentUser ? '📸' : '👤'}</div><div style="font-size: 10px; margin-top: 5px;">@${username}</div></div>`).join('');
         if (uniqueUsers.length === 0) container.innerHTML = '<div style="color: #888; padding: 10px;">No stories available</div>';
     }
-
-    function addStory() {
-        document.getElementById('storyUploadInput').click();
-    }
-
+    function addStory() { document.getElementById('storyUploadInput').click(); }
     function uploadStory(input) {
         if (input.files && input.files[0]) {
             let file = input.files[0];
             let url = URL.createObjectURL(file);
-            let newStory = {
-                id: Date.now(),
-                username: currentUser,
-                type: file.type.startsWith('video') ? 'video' : 'image',
-                url: url,
-                expiresAt: Date.now() + 86400000
-            };
+            let newStory = { id: Date.now(), username: currentUser, type: file.type.startsWith('video') ? 'video' : 'image', url: url, expiresAt: Date.now() + 86400000 };
             stories.push(newStory);
             localStorage.setItem('vyve_stories', JSON.stringify(stories));
             loadStories();
@@ -469,7 +584,6 @@
             input.value = '';
         }
     }
-
     function viewStory(username) {
         let userStories = stories.filter(s => s.username === username && s.expiresAt > Date.now());
         if (userStories.length === 0) return;
@@ -477,279 +591,38 @@
         showStory(userStories, currentStoryIndex);
         document.getElementById('storyViewer').classList.add('active');
         document.getElementById('storyUsername').innerText = `@${username}`;
-        
         if (storyInterval) clearInterval(storyInterval);
-        storyInterval = setInterval(() => {
-            currentStoryIndex++;
-            if (currentStoryIndex >= userStories.length) {
-                closeStory();
-            } else {
-                showStory(userStories, currentStoryIndex);
-            }
-        }, 5000);
+        storyInterval = setInterval(() => { currentStoryIndex++; if (currentStoryIndex >= userStories.length) closeStory(); else showStory(userStories, currentStoryIndex); }, 5000);
     }
-
     function showStory(stories, index) {
         let story = stories[index];
         let imgEl = document.getElementById('storyImage');
         let videoEl = document.getElementById('storyVideo');
-        if (story.type === 'image') {
-            imgEl.style.display = 'block';
-            videoEl.style.display = 'none';
-            imgEl.src = story.url;
-        } else {
-            imgEl.style.display = 'none';
-            videoEl.style.display = 'block';
-            videoEl.src = story.url;
-            videoEl.load();
-            videoEl.play();
-        }
+        if (story.type === 'image') { imgEl.style.display = 'block'; videoEl.style.display = 'none'; imgEl.src = story.url; }
+        else { imgEl.style.display = 'none'; videoEl.style.display = 'block'; videoEl.src = story.url; videoEl.load(); videoEl.play(); }
         let progressContainer = document.getElementById('storyProgress');
         progressContainer.innerHTML = stories.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="progressFill${i}" style="width: ${i === index ? '0%' : i < index ? '100%' : '0%'}"></div></div>`).join('');
         if (index === currentStoryIndex) {
             let startTime = Date.now();
-            let fillInterval = setInterval(() => {
-                let elapsed = Date.now() - startTime;
-                let percent = (elapsed / 5000) * 100;
-                document.getElementById(`progressFill${index}`).style.width = Math.min(percent, 100) + '%';
-                if (percent >= 100) clearInterval(fillInterval);
-            }, 50);
+            let fillInterval = setInterval(() => { let elapsed = Date.now() - startTime; let percent = (elapsed / 5000) * 100; document.getElementById(`progressFill${index}`).style.width = Math.min(percent, 100) + '%'; if (percent >= 100) clearInterval(fillInterval); }, 50);
         }
     }
+    function closeStory() { document.getElementById('storyViewer').classList.remove('active'); if (storyInterval) clearInterval(storyInterval); let videoEl = document.getElementById('storyVideo'); if (videoEl) videoEl.pause(); }
 
-    function closeStory() {
-        document.getElementById('storyViewer').classList.remove('active');
-        if (storyInterval) clearInterval(storyInterval);
-        let videoEl = document.getElementById('storyVideo');
-        if (videoEl) videoEl.pause();
-    }
-
-       // ==================== DAILY.CO VIDEO CALLS ====================
-    let callFrame = null;
-    let currentCallRoom = null;
-
+    // ==================== VIDEO CALLS ====================
     async function startVideoCall() {
         let targetUser = prompt('Enter username to call:', '');
-        if (!targetUser || targetUser === currentUser) {
-            alert('Enter a valid username');
-            return;
-        }
-        
-        // Create a unique room name
-        const roomName = `vyve_${currentUser}_to_${targetUser}_${Date.now()}`;
-        currentCallRoom = roomName;
-        
-        try {
-            // First get local camera preview
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            document.getElementById('localCallVideo').srcObject = stream;
-            document.getElementById('videoCallContainer').classList.add('active');
-            
-            alert(`📞 Calling @${targetUser}...\n\nShare this room link with them:\n\nhttps://vyve-video.daily.co/${roomName}\n\n(They need to click the link to join the call)`);
-            
-            // Create a shareable link
-            const shareLink = `https://vyve-video.daily.co/${roomName}`;
-            console.log('Share this link:', shareLink);
-            
-        } catch (error) {
-            alert('Cannot access camera: ' + error.message);
-        }
-    }
-    
-    // Create a video room (for production)
-    async function createVideoRoom(roomName) {
-        // In production, call your backend to create a room
-        // For demo, Daily.co auto-creates rooms when you join
-        return roomName;
-    }
-    
-    function joinVideoCall(roomUrl) {
-        if (callFrame) {
-            callFrame.destroy();
-        }
-        
-        callFrame = window.DailyIframe.createFrame({
-            showLeaveButton: true,
-            showFullscreenButton: true,
-            iframeStyle: {
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                border: '0'
-            }
-        });
-        
-        callFrame.join({ url: roomUrl });
-        document.getElementById('videoCallContainer').classList.add('active');
-    }
-    
-    function endVideoCall() {
-        if (callFrame) {
-            callFrame.destroy();
-            callFrame = null;
-        }
-        document.getElementById('videoCallContainer').classList.remove('active');
-        currentCallRoom = null;
-    }
-    
-    function toggleCallMic() {
-        if (callFrame) {
-            callFrame.setLocalAudio(!callFrame.participants().local.audio);
-        } else {
-            alert('Join a call first');
-        }
-    }
-    
-    function toggleCallCamera() {
-        if (callFrame) {
-            callFrame.setLocalVideo(!callFrame.participants().local.video);
-        } else {
-            alert('Join a call first');
-        }
-    }
-
-    async function startVideoCall() {
-        let targetUser = prompt('Enter username to call:', '');
-        if (!targetUser || targetUser === currentUser) {
-            alert('Enter a valid username');
-            return;
-        }
-        
-        currentCallPartner = targetUser;
-        
+        if (!targetUser || targetUser === currentUser) { alert('Enter a valid username'); return; }
         try {
             localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById('localCallVideo').srcObject = localCallStream;
             document.getElementById('videoCallContainer').classList.add('active');
-            
-            peerConnection = new RTCPeerConnection(configuration);
-            
-            localCallStream.getTracks().forEach(track => {
-                peerConnection.addTrack(track, localCallStream);
-            });
-            
-            peerConnection.ontrack = (event) => {
-                document.getElementById('remoteCallVideo').srcObject = event.streams[0];
-            };
-            
-            peerConnection.onicecandidate = (event) => {
-                if (event.candidate) {
-                    sendSignalingMessage(currentCallPartner, {
-                        type: 'candidate',
-                        candidate: event.candidate
-                    });
-                }
-            };
-            
-            const offer = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(offer);
-            
-            sendSignalingMessage(targetUser, {
-                type: 'offer',
-                offer: offer
-            });
-            
-            alert(`Calling @${targetUser}...`);
-            
-            // Check for answer
-            const checkInterval = setInterval(async () => {
-                const key = `call_${currentCallPartner}_${currentUser}`;
-                const incoming = signalingData[key];
-                if (incoming && incoming.message && incoming.message.type === 'answer') {
-                    clearInterval(checkInterval);
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(incoming.message.answer));
-                    callActive = true;
-                    alert('Call connected!');
-                    delete signalingData[key];
-                    localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
-                }
-            }, 2000);
-            
-        } catch (error) {
-            console.error('Camera error:', error);
-            alert('Cannot access camera: ' + error.message);
-        }
+            alert(`📞 Calling @${targetUser}...\n\nShare this link: https://vyve-app.onrender.com\n\nThey need to be online to accept the call.`);
+        } catch (error) { alert('Cannot access camera: ' + error.message); }
     }
-
-    function endVideoCall() {
-        if (peerConnection) peerConnection.close();
-        if (localCallStream) localCallStream.getTracks().forEach(track => track.stop());
-        callActive = false;
-        peerConnection = null;
-        localCallStream = null;
-        document.getElementById('videoCallContainer').classList.remove('active');
-    }
-
-    function toggleCallMic() {
-        if (localCallStream) {
-            const enabled = localCallStream.getAudioTracks()[0].enabled;
-            localCallStream.getAudioTracks().forEach(track => track.enabled = !enabled);
-        }
-    }
-
-    function toggleCallCamera() {
-        if (localCallStream) {
-            const enabled = localCallStream.getVideoTracks()[0].enabled;
-            localCallStream.getVideoTracks().forEach(track => track.enabled = !enabled);
-        }
-    }
-
-    // Listen for incoming calls
-    function listenForIncomingCalls() {
-        setInterval(async () => {
-            const keys = Object.keys(signalingData);
-            for (const key of keys) {
-                const call = signalingData[key];
-                if (call && call.to === currentUser && call.message && call.message.type === 'offer') {
-                    const accept = confirm(`📞 Incoming call from @${call.from}. Accept?`);
-                    
-                    if (accept) {
-                        currentCallPartner = call.from;
-                        
-                        localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                        document.getElementById('localCallVideo').srcObject = localCallStream;
-                        document.getElementById('videoCallContainer').classList.add('active');
-                        
-                        peerConnection = new RTCPeerConnection(configuration);
-                        localCallStream.getTracks().forEach(track => {
-                            peerConnection.addTrack(track, localCallStream);
-                        });
-                        
-                        peerConnection.ontrack = (event) => {
-                            document.getElementById('remoteCallVideo').srcObject = event.streams[0];
-                        };
-                        
-                        peerConnection.onicecandidate = (event) => {
-                            if (event.candidate) {
-                                sendSignalingMessage(currentCallPartner, {
-                                    type: 'candidate',
-                                    candidate: event.candidate
-                                });
-                            }
-                        };
-                        
-                        await peerConnection.setRemoteDescription(new RTCSessionDescription(call.message.offer));
-                        const answer = await peerConnection.createAnswer();
-                        await peerConnection.setLocalDescription(answer);
-                        
-                        sendSignalingMessage(currentCallPartner, {
-                            type: 'answer',
-                            answer: answer
-                        });
-                        
-                        callActive = true;
-                        delete signalingData[key];
-                        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
-                    } else {
-                        delete signalingData[key];
-                        localStorage.setItem('vyve_signaling', JSON.stringify(signalingData));
-                    }
-                }
-            }
-        }, 3000);
-    }
+    function endVideoCall() { if (localCallStream) localCallStream.getTracks().forEach(track => track.stop()); localCallStream = null; document.getElementById('videoCallContainer').classList.remove('active'); }
+    function toggleCallMic() { if (localCallStream) { let audioTrack = localCallStream.getAudioTracks()[0]; if (audioTrack) { audioTrack.enabled = !audioTrack.enabled; alert(audioTrack.enabled ? 'Microphone ON' : 'Microphone OFF'); } } }
+    function toggleCallCamera() { if (localCallStream) { let videoTrack = localCallStream.getVideoTracks()[0]; if (videoTrack) { videoTrack.enabled = !videoTrack.enabled; alert(videoTrack.enabled ? 'Camera ON' : 'Camera OFF'); } } }
 
     // ==================== USER LEVELS / BADGES ====================
     function getUserLevel() {
@@ -762,14 +635,7 @@
         if (postsCount >= 5 || totalEarnings >= 500) return { level: 'Silver', badge: '✨', className: 'badge-silver' };
         return { level: 'Bronze', badge: '🪙', className: 'badge-bronze' };
     }
-    
-    function updateBadge() {
-        let level = getUserLevel();
-        let badgeElement = document.getElementById('userBadge');
-        if (badgeElement) {
-            badgeElement.innerHTML = `<span class="badge ${level.className}">${level.badge} ${level.level} Creator</span>`;
-        }
-    }
+    function updateBadge() { let level = getUserLevel(); let badgeElement = document.getElementById('userBadge'); if (badgeElement) badgeElement.innerHTML = `<span class="badge ${level.className}">${level.badge} ${level.level} Creator</span>`; }
 
     // ==================== TRENDING PAGE ====================
     function loadTrending() {
@@ -791,54 +657,36 @@
             </div>
         `).join('');
         let videos = document.querySelectorAll('#trendingContainer .post-media');
-        let observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && entry.target.tagName === 'VIDEO') entry.target.play();
-                else if (entry.target.tagName === 'VIDEO') entry.target.pause();
-            });
-        }, { threshold: 0.5 });
+        let observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting && entry.target.tagName === 'VIDEO') entry.target.play(); else if (entry.target.tagName === 'VIDEO') entry.target.pause(); }); }, { threshold: 0.5 });
         videos.forEach(video => observer.observe(video));
     }
 
-    // ==================== NOTIFICATIONS ====================
+    // ==================== NOTIFICATIONS LIST ====================
     function addNotification(type, from, message) {
         let newNotif = { id: Date.now(), type: type, from: from, message: message, time: new Date().toLocaleString(), read: false };
         notifications.unshift(newNotif);
         if (notifications.length > 50) notifications.pop();
         localStorage.setItem('vyve_notifications', JSON.stringify(notifications));
         updateNotificationsList();
+        sendLocalNotification(`@${from} ${type === 'like' ? 'liked' : type === 'follow' ? 'followed' : 'commented'}`, message);
     }
-    
     function updateNotificationsList() {
         let container = document.getElementById('notificationsList');
         if (!container) return;
         if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No notifications yet</div>'; return; }
         container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="markNotificationRead(${notif.id})"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
     }
-    
-    function markNotificationRead(id) {
-        let notif = notifications.find(n => n.id === id);
-        if (notif) notif.read = true;
-        localStorage.setItem('vyve_notifications', JSON.stringify(notifications));
-        updateNotificationsList();
-    }
+    function markNotificationRead(id) { let notif = notifications.find(n => n.id === id); if (notif) notif.read = true; localStorage.setItem('vyve_notifications', JSON.stringify(notifications)); updateNotificationsList(); }
 
     // ==================== COMMENTS ====================
-    function openComments(postId) {
-        currentPostId = postId;
-        loadComments();
-        document.getElementById('commentsModal').classList.add('active');
-    }
-    
+    function openComments(postId) { currentPostId = postId; loadComments(); document.getElementById('commentsModal').classList.add('active'); }
     function closeCommentsModal() { document.getElementById('commentsModal').classList.remove('active'); currentPostId = null; }
-    
     function loadComments() {
         let postComments = comments[currentPostId] || [];
         let container = document.getElementById('commentsList');
         if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet. Be the first!</div>'; return; }
         container.innerHTML = postComments.map(comment => `<div class="comment-item"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
     }
-    
     function postComment() {
         let input = document.getElementById('commentInput');
         let text = input.value.trim();
@@ -850,11 +698,11 @@
         let post = posts.find(p => p.id === currentPostId);
         if (post) { post.comments = comments[currentPostId].length.toString(); localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
         if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented on your post: "${text.substring(0, 50)}"`);
+        trackComment();
         input.value = '';
         loadComments();
         alert('Comment posted!');
     }
-    
     function deleteComment(commentId) {
         if (confirm('Delete this comment?')) {
             comments[currentPostId] = comments[currentPostId].filter(c => c.id !== commentId);
@@ -869,31 +717,23 @@
     // ==================== DIRECT MESSAGES ====================
     function openDirectMessages() { loadDMUsers(); document.getElementById('dmsModal').classList.add('active'); }
     function closeDMsModal() { document.getElementById('dmsModal').classList.remove('active'); currentDMUser = null; }
-    
     function loadDMUsers() {
         let users = [...new Set([...Object.keys(dms), ...following])];
         let container = document.getElementById('dmsContent');
         if (users.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Follow someone to start messaging</div>'; return; }
         container.innerHTML = `<div style="margin-bottom: 15px;"><input type="text" id="dmSearchInput" placeholder="🔍 Search users..." class="input-field" oninput="searchDMUsers()"></div><div id="dmUsersList">${users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('')}</div>`;
     }
-    
     function searchDMUsers() {
         let term = document.getElementById('dmSearchInput').value.toLowerCase();
         let users = [...new Set([...Object.keys(dms), ...following])].filter(u => u.toLowerCase().includes(term));
         document.getElementById('dmUsersList').innerHTML = users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('');
     }
-    
-    function selectDMUser(username) {
-        currentDMUser = username;
-        loadDMMessages();
-    }
-    
+    function selectDMUser(username) { currentDMUser = username; loadDMMessages(); }
     function loadDMMessages() {
         let messages = dms[currentDMUser] || [];
         let container = document.getElementById('dmsContent');
         container.innerHTML = `<div style="margin-bottom: 15px;"><button onclick="loadDMUsers()" style="background: none; border: none; color: #667eea;">← Back</button> <strong style="margin-left: 10px;">@${currentDMUser}</strong></div><div id="dmMessagesList" style="flex: 1; overflow-y: auto; max-height: 400px; margin-bottom: 15px;">${messages.map(msg => `<div style="text-align: ${msg.from === currentUser ? 'right' : 'left'}; margin: 10px 0;"><div class="dm-message-bubble" style="${msg.from === currentUser ? 'background: linear-gradient(135deg, #667eea, #764ba2);' : 'background: rgba(255,255,255,0.1);'}"><div>${msg.text}</div><div style="font-size: 10px; opacity: 0.5;">${msg.time}</div></div></div>`).join('')}</div><div class="comment-input-container"><input type="text" id="dmMessageInput" placeholder="Type a message..." class="comment-input"><button onclick="sendDMToUser()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Send</button></div>`;
     }
-    
     function sendDMToUser() {
         let input = document.getElementById('dmMessageInput');
         let text = input.value.trim();
@@ -927,12 +767,7 @@
             </div>
         `).join('');
         let videos = document.querySelectorAll('.post-media');
-        let observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && entry.target.tagName === 'VIDEO') entry.target.play();
-                else if (entry.target.tagName === 'VIDEO') entry.target.pause();
-            });
-        }, { threshold: 0.5 });
+        let observer = new IntersectionObserver((entries) => { entries.forEach(entry => { if (entry.isIntersecting && entry.target.tagName === 'VIDEO') entry.target.play(); else if (entry.target.tagName === 'VIDEO') entry.target.pause(); }); }, { threshold: 0.5 });
         videos.forEach(video => observer.observe(video));
     }
 
@@ -945,23 +780,12 @@
             let countSpan = btn.querySelector('.action-count');
             if (countSpan) countSpan.innerText = parseInt(post.likes).toLocaleString();
             if (post.username !== currentUser) addNotification('like', currentUser, `liked your video "${post.title.substring(0, 30)}"`);
+            trackLike();
             loadTrending();
         }
     }
-
     function sharePost(url) { navigator.clipboard.writeText(url); alert('Link copied!'); }
-
-    function deletePost(postId) {
-        if (confirm('Delete this post?')) {
-            posts = posts.filter(p => p.id !== postId);
-            localStorage.setItem('vyve_posts', JSON.stringify(posts));
-            document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
-            loadPosts();
-            loadTrending();
-            alert('Post deleted');
-        }
-    }
-
+    function deletePost(postId) { if (confirm('Delete this post?')) { posts = posts.filter(p => p.id !== postId); localStorage.setItem('vyve_posts', JSON.stringify(posts)); document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length; loadPosts(); loadTrending(); alert('Post deleted'); } }
     function showMyPostsList() {
         let myPosts = posts.filter(p => p.username === currentUser);
         document.getElementById('listModalTitle').innerText = 'My Posts';
@@ -977,19 +801,11 @@
             pendingFile = input.files[0];
             pendingFileType = input.id === 'videoUploadInput' ? 'video' : 'image';
             let url = URL.createObjectURL(pendingFile);
-            if (pendingFileType === 'video') {
-                document.getElementById('editPreviewVideo').style.display = 'block';
-                document.getElementById('editPreviewImage').style.display = 'none';
-                document.getElementById('editPreviewVideo').src = url;
-            } else {
-                document.getElementById('editPreviewImage').style.display = 'block';
-                document.getElementById('editPreviewVideo').style.display = 'none';
-                document.getElementById('editPreviewImage').src = url;
-            }
+            if (pendingFileType === 'video') { document.getElementById('editPreviewVideo').style.display = 'block'; document.getElementById('editPreviewImage').style.display = 'none'; document.getElementById('editPreviewVideo').src = url; }
+            else { document.getElementById('editPreviewImage').style.display = 'block'; document.getElementById('editPreviewVideo').style.display = 'none'; document.getElementById('editPreviewImage').src = url; }
             document.getElementById('editModal').classList.add('active');
         }
     }
-
     function applyFilterToEdit(filter) {
         pendingFilter = filter;
         let img = document.getElementById('editPreviewImage');
@@ -1004,11 +820,9 @@
             }
         }
     }
-
     function resetEditFilters() { let img = document.getElementById('editPreviewImage'); if (img) img.style.filter = 'none'; pendingFilter = ''; }
     function showSoundLibrary() { let lib = document.getElementById('soundLibrary'); lib.style.display = lib.style.display === 'none' ? 'block' : 'none'; }
     function addSound(soundName) { pendingSound = soundName; alert(`Added sound: ${soundName}`); document.getElementById('soundLibrary').style.display = 'none'; }
-
     function saveEditedPost() {
         if (!pendingFile) return;
         let title = prompt('Enter title:', 'My post');
@@ -1025,7 +839,6 @@
         alert('Post published!');
         pendingFile = null; pendingSound = null; pendingFilter = '';
     }
-
     function closeEditModal() { document.getElementById('editModal').classList.remove('active'); pendingFile = null; }
 
     // ==================== REAL CAMERA LIVE ====================
@@ -1053,7 +866,6 @@
             alert('You are now live! Viewers can find you in the Live tab.');
         } catch (error) { alert('Cannot access camera. Please allow camera permissions.'); }
     }
-
     function endLiveStream() {
         isLiveActive = false;
         if (localStream) { localStream.getTracks().forEach(track => track.stop()); localStream = null; }
@@ -1065,10 +877,8 @@
         document.getElementById('startLivePanel').style.display = 'block';
         alert('Live stream ended');
     }
-
     function flipCamera() { useFrontCamera = !useFrontCamera; if (localStream) { localStream.getTracks().forEach(track => track.stop()); startLiveStream(); } }
     function toggleEffects() { const panel = document.getElementById('effectsPanel'); panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex'; }
-    
     function applyFilter(filter) {
         const video = document.getElementById('localVideo');
         switch(filter) {
@@ -1082,17 +892,12 @@
         if (event && event.target) event.target.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
         document.getElementById('effectsPanel').style.display = 'none';
     }
-
     function lockLive() {
         let price = prompt('Set price in coins to unlock this live (min 10):', '50');
         price = parseInt(price);
-        if (price && price >= 10) {
-            let platformFee = Math.floor(price * 0.15);
-            let streamerEarning = price - platformFee;
-            alert(`🔒 Live locked!\n💰 Price: ${price} coins\n📊 Platform (15%): ${platformFee} coins\n📊 You earn (85%): ${streamerEarning} coins per viewer`);
-        } else { alert('Price must be at least 10 coins'); }
+        if (price && price >= 10) { let platformFee = Math.floor(price * 0.15); let streamerEarning = price - platformFee; alert(`🔒 Live locked!\n💰 Price: ${price} coins\n📊 Platform (15%): ${platformFee} coins\n📊 You earn (85%): ${streamerEarning} coins per viewer`); }
+        else { alert('Price must be at least 10 coins'); }
     }
-
     function confirmLockLive() {
         let price = parseInt(document.getElementById('lockPrice').value);
         if (isNaN(price) || price < 10) { alert('Price must be at least 10 coins'); return; }
@@ -1101,7 +906,6 @@
         closeModal('lockModal');
         alert(`🔒 Live locked!\n💰 Price: ${price} coins\n📊 Platform (15%): ${platformFee} coins\n📊 You earn (85%): ${streamerEarning} coins per viewer`);
     }
-
     function sendGift() {
         if (coinBalance < 10) { alert('Not enough coins! Go to Shop to buy more.'); return; }
         let amount = prompt('Enter gift amount in coins (min 10):', '50');
@@ -1115,7 +919,6 @@
             if (currentViewingStream) addNotification('gift', currentUser, `sent a ${amount} coin gift to you!`);
         } else { alert('Not enough coins or invalid amount'); }
     }
-
     function sendGiftAmount(amount) {
         if (coinBalance < amount) { alert(`Need ${amount} coins!`); return; }
         let platformFee = Math.floor(amount * 0.05);
@@ -1127,16 +930,13 @@
             closeModal('giftModal');
         }
     }
-
     function closeViewer() { document.getElementById('viewerLivePanel').style.display = 'none'; document.getElementById('startLivePanel').style.display = 'block'; currentViewingStream = null; }
-
     function updateActiveStreamsList() {
         const container = document.getElementById('activeStreamsContainer');
         if (!container) return;
         if (activeStreams.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No one is live right now. Start a stream!</div>'; return; }
         container.innerHTML = activeStreams.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
     }
-
     function searchLiveStreams() {
         const term = document.getElementById('searchStreamInput').value.toLowerCase();
         const filtered = activeStreams.filter(s => s.streamer.toLowerCase().includes(term));
@@ -1144,54 +944,25 @@
         if (filtered.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No matching streams found</div>'; return; }
         container.innerHTML = filtered.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
     }
-
-    function sendViewerMessage() {
-        const input = document.getElementById('viewerChatInput');
-        if (input && input.value.trim()) { alert(`Message sent to ${currentViewingStream}: "${input.value}"`); input.value = ''; }
-    }
+    function sendViewerMessage() { const input = document.getElementById('viewerChatInput'); if (input && input.value.trim()) { alert(`Message sent to ${currentViewingStream}: "${input.value}"`); input.value = ''; } }
 
     // ==================== STRIPE PAYMENT ====================
     document.getElementById('buyBtn').addEventListener('click', async () => {
-        if (!selectedPackage) {
-            alert('Select a package first');
-            return;
-        }
-        
+        if (!selectedPackage) { alert('Select a package first'); return; }
         let buyBtn = document.getElementById('buyBtn');
         let originalText = buyBtn.innerText;
         buyBtn.innerText = '⏳ Processing...';
         buyBtn.disabled = true;
-        
         try {
-            const response = await fetch('/api/create-payment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    coins: selectedPackage,
-                    amount: selectedPrice,
-                    username: currentUser
-                })
-            });
-            
+            const response = await fetch('/api/create-payment', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ coins: selectedPackage, amount: selectedPrice, username: currentUser }) });
             const data = await response.json();
-            
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                alert('Payment error: ' + (data.error || 'Unknown error'));
-                buyBtn.innerText = originalText;
-                buyBtn.disabled = false;
-            }
-        } catch (error) {
-            alert('Error: ' + error.message);
-            buyBtn.innerText = originalText;
-            buyBtn.disabled = false;
-        }
+            if (data.url) { window.location.href = data.url; }
+            else { alert('Payment error: ' + (data.error || 'Unknown error')); buyBtn.innerText = originalText; buyBtn.disabled = false; }
+        } catch (error) { alert('Error: ' + error.message); buyBtn.innerText = originalText; buyBtn.disabled = false; }
     });
 
     // ==================== USER DATA ====================
     function saveUserData() { if (currentUser) localStorage.setItem('vyve_user', JSON.stringify({ username: currentUser, email: currentUserEmail, coins: coinBalance })); }
-
     function loadUserData() {
         let saved = localStorage.getItem('vyve_user');
         if (saved) {
@@ -1209,11 +980,12 @@
             loadTrending();
             loadStories();
             updateBadge();
+            updateAnalyticsDisplay();
+            showAdminPanel();
             return true;
         }
         return false;
     }
-
     function uploadProfilePicture(input) {
         if (input.files && input.files[0]) {
             let reader = new FileReader();
@@ -1221,9 +993,7 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
-
     function loadProfilePicture() { let saved = localStorage.getItem('vyve_profile_pic'); if (saved) document.getElementById('profilePreview').src = saved; }
-
     function createProfile() {
         let username = document.getElementById('signupUsername').value;
         let email = document.getElementById('signupEmail').value;
@@ -1245,7 +1015,6 @@
         updateBadge();
         alert('Welcome ' + username + '!');
     }
-
     function login() {
         let username = document.getElementById('loginUsername').value;
         if (!username) { alert('Enter username'); return; }
@@ -1270,7 +1039,6 @@
         }
         alert('User not found. Create an account first.');
     }
-
     function showLogin() { document.getElementById('createProfileScreen').classList.remove('active'); document.getElementById('loginScreen').classList.add('active'); }
     function showCreateProfile() { document.getElementById('loginScreen').classList.remove('active'); document.getElementById('createProfileScreen').classList.add('active'); }
     function logout() { localStorage.removeItem('vyve_user'); currentUser = null; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('createProfileScreen').classList.add('active'); document.getElementById('mainNav').style.display = 'none'; }
@@ -1287,6 +1055,8 @@
             if (screen === 'profile') { updateNotificationsList(); updateBadge(); }
             if (screen === 'trending') { loadTrending(); }
             if (screen === 'feed') { loadStories(); }
+            if (screen === 'analytics') { updateAnalyticsDisplay(); updateRecentActivity(); }
+            if (screen === 'admin' && isAdmin()) { updateAdminData(); }
         });
     });
 
@@ -1296,34 +1066,24 @@
         document.getElementById('totalEarned').innerText = '$' + (coinBalance / 10).toFixed(2);
         saveUserData();
         updateBadge();
+        updateAnalyticsDisplay();
     }
-
     function followUser(username, btn) {
         if (!currentUser) { alert('Login first'); return; }
         if (!following.includes(username)) { following.push(username); localStorage.setItem('vyve_following', JSON.stringify(following)); if (btn) { btn.innerText = 'Following ✓'; btn.classList.add('following'); } addNotification('follow', currentUser, `started following you`); alert(`Following @${username}`); }
     }
-
     function showFollowersList() {
         document.getElementById('listModalTitle').innerText = 'Followers';
         document.getElementById('listModalContent').innerHTML = followers.length ? followers.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">No followers yet</div>';
         document.getElementById('listModal').classList.add('active');
     }
-
     function showFollowingList() {
         document.getElementById('listModalTitle').innerText = 'Following';
         document.getElementById('listModalContent').innerHTML = following.length ? following.map(f => `<div class="list-item">👤 @${f}</div>`).join('') : '<div style="text-align:center;padding:20px;">Not following anyone yet</div>';
         document.getElementById('listModal').classList.add('active');
     }
-
     function closeListModal() { document.getElementById('listModal').classList.remove('active'); }
-
-    function selectPackage(el) {
-        selectedPackage = parseInt(el.dataset.coins);
-        selectedPrice = parseFloat(el.dataset.price);
-        document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected'));
-        el.classList.add('selected');
-    }
-
+    function selectPackage(el) { selectedPackage = parseInt(el.dataset.coins); selectedPrice = parseFloat(el.dataset.price); document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected')); el.classList.add('selected'); }
     function searchUsers() {
         let term = document.getElementById('searchInput').value.toLowerCase().trim();
         let results = document.getElementById('searchResults');
@@ -1334,12 +1094,8 @@
         results.innerHTML = matched.map(u => `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;"><span>👤 @${u}</span><button class="follow-btn" onclick="followUser('${u}', this)">+ Follow</button></div>`).join('');
         results.style.display = 'block';
     }
-
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
-
-    // Start listening for incoming calls
-    listenForIncomingCalls();
 
     window.onload = function() { loadUserData(); loadProfilePicture(); updateActiveStreamsList(); };
     window.onbeforeunload = function() { saveUserData(); if (isLiveActive) endLiveStream(); };
