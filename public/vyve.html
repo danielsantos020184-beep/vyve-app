@@ -169,50 +169,25 @@
 </div>
 
 <!-- Create Profile Screen -->
-function createProfile() {
-    let username = document.getElementById('signupUsername').value;
-    let email = document.getElementById('signupEmail').value;
-    let birthdate = document.getElementById('signupBirthdate').value;
-    let password = document.getElementById('signupPassword').value;
-    
-    if (!username || !email || !birthdate || !password) {
-        alert('Please fill all fields');
-        return;
-    }
-    
-    let age = new Date().getFullYear() - new Date(birthdate).getFullYear();
-    if (age < 18) {
-        alert('You must be 18+ to join Vyve');
-        return;
-    }
-    
-    currentUser = username;
-    currentUserEmail = email;
-    coinBalance = 100;
-    
-    let userData = {
-        username: currentUser,
-        email: currentUserEmail,
-        coins: coinBalance
-    };
-    localStorage.setItem('vyve_user', JSON.stringify(userData));
-    
-    document.getElementById('profileUsername').innerText = '@' + currentUser;
-    document.getElementById('profileEmail').innerText = currentUserEmail;
-    document.getElementById('walletBalance').innerText = coinBalance + ' coins';
-    updateBalance();
-    
-    document.getElementById('createProfileScreen').classList.remove('active');
-    document.getElementById('feedScreen').classList.add('active');
-    document.getElementById('mainNav').style.display = 'flex';
-    
-    loadPosts();
-    loadTrending();
-    loadStories();
-    updateBadge();
-    
-    alert('Welcome ' + username + '! You received 100 free coins.');
-}
+<div id="createProfileScreen" class="screen active">
+    <div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: linear-gradient(135deg, #667eea, #764ba2);">
+        <div style="max-width: 400px; width: 100%; text-align: center;">
+            <div style="margin-bottom: 40px;">
+                <h1 style="font-size: 64px; font-weight: 800; background: linear-gradient(135deg, #fff, #f0f0f0, #e0e0e0, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; background-size: 300% 300%; animation: gradientFlow 3s ease infinite; letter-spacing: 4px;">VYVE</h1>
+                <div style="width: 60px; height: 3px; background: linear-gradient(90deg, #fff, rgba(255,255,255,0.5)); margin: 15px auto; border-radius: 3px; animation: expandWidth 2s ease infinite;"></div>
+                <p style="font-size: 14px; opacity: 0.9; letter-spacing: 2px;">WATCH . STREAM . EARN</p>
+            </div>
+            <div style="background: rgba(255,255,255,0.15); border-radius: 32px; padding: 30px;">
+                <input type="text" id="signupUsername" placeholder="Username" class="input-field">
+                <input type="email" id="signupEmail" placeholder="Email" class="input-field">
+                <input type="date" id="signupBirthdate" class="input-field">
+                <input type="password" id="signupPassword" placeholder="Password" class="input-field">
+                <button class="btn-primary" onclick="createProfile()">✨ Create Profile</button>
+                <button class="btn-secondary" onclick="showLogin()">Already have an account? Log in</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Login Screen -->
 <div id="loginScreen" class="screen">
@@ -1191,50 +1166,27 @@ function createProfile() {
         updateBadge();
         alert('Welcome ' + username + '!');
     }
-   function showLogin() {
-    document.getElementById('createProfileScreen').classList.remove('active');
-    document.getElementById('loginScreen').classList.add('active');
-}
-
-function showCreateProfile() {
-    document.getElementById('loginScreen').classList.remove('active');
-    document.getElementById('createProfileScreen').classList.add('active');
-}
-    
-    let saved = localStorage.getItem('vyve_user');
-    if (saved) {
-        let data = JSON.parse(saved);
-        if (data.username === username) {
-            currentUser = data.username;
-            currentUserEmail = data.email;
-            coinBalance = data.coins || 100;
-            
-            document.getElementById('profileUsername').innerText = '@' + currentUser;
-            document.getElementById('profileEmail').innerText = currentUserEmail;
-            document.getElementById('walletBalance').innerText = coinBalance + ' coins';
-            updateBalance();
-            
-            document.getElementById('loginScreen').classList.remove('active');
-            document.getElementById('feedScreen').classList.add('active');
-            document.getElementById('mainNav').style.display = 'flex';
-            
-            loadPosts();
-            loadTrending();
-            loadStories();
-            updateBadge();
-            updateNotificationsList();
-            
-            alert('Welcome back ' + username + '!');
-            return;
-        }
-    }
-    
-    // If user not found, ask to create account
-    let createNew = confirm('User not found. Create a new account?');
-    if (createNew) {
-        showCreateProfile();
-    }
-}
+    function login() {
+        let username = document.getElementById('loginUsername').value;
+        if (!username) { alert('Enter username'); return; }
+        let saved = localStorage.getItem('vyve_user');
+        if (saved) {
+            let data = JSON.parse(saved);
+            if (data.username === username) {
+                currentUser = data.username; currentUserEmail = data.email; coinBalance = data.coins || 100;
+                document.getElementById('profileUsername').innerText = '@' + currentUser;
+                document.getElementById('profileEmail').innerText = currentUserEmail;
+                updateBalance();
+                document.getElementById('loginScreen').classList.remove('active');
+                document.getElementById('feedScreen').classList.add('active');
+                document.getElementById('mainNav').style.display = 'flex';
+                loadPosts();
+                loadTrending();
+                loadStories();
+                updateBadge();
+                alert('Welcome back ' + username + '!');
+                return;
+            }
         }
         alert('User not found. Create an account first.');
     }
