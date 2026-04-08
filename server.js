@@ -3,14 +3,15 @@ const path = require('path');
 const Stripe = require('stripe');
 const app = express();
 
-// IMPORTANT: Replace with your ACTUAL Stripe secret key from Live mode
-// Your key should start with sk_live_ or rk_live_
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
 app.use(express.json());
 app.use(express.static('public'));
 
+// In-memory storage (simple, works immediately)
 let users = {};
 
+// Save user data
 app.post('/api/save-user', (req, res) => {
     const { username, email, coins, giftsReceived } = req.body;
     if(!users[username]) {
@@ -22,31 +23,48 @@ app.post('/api/save-user', (req, res) => {
     res.json({ success: true });
 });
 
+// Get all users
 app.get('/api/users', (req, res) => {
     let list = Object.keys(users).map(u => ({ username: u, email: users[u].email, coins: users[u].coins }));
     res.json(list);
 });
 
-// STRIPE PAYMENT ENDPOINT
+// Follow user
+app.post('/api/follow', (req, res) => {
+    const { follower, following } = req.body;
+    if(!users[follower]) users[follower] = { username: follower, followers: [], following: [] };
+    if(!users[following]) users[following] = { username: following, followers: [], following: [] };
+    if(!users[follower].following) users[follower].following = [];
+    if(!users[following].followers) users[following].followers = [];
+    if(!users[follower].following.includes(following)) {
+        users[follower].following.push(following);
+        users[following].followers.push(follower);
+    }
+    res.json({ success: true });
+});
+
+// Get followers
+app.get('/api/followers/:username', (req, res) => {
+    const user = users[req.params.username];
+    res.json(user?.followers || []);
+});
+
+// Get following
+app.get('/api/following/:username', (req, res) => {
+    const user = users[req.params.username];
+    res.json(user?.following || []);
+});
+
+// Stripe payment
 app.post('/api/create-payment', async (req, res) => {
-    console.log('📦 Payment request received:', req.body);
-    
     try {
         const { coins, amount, username } = req.body;
-        
-        if (!coins || !amount || !username) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-        
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [{
                 price_data: {
                     currency: 'usd',
-                    product_data: {
-                        name: `${coins} Coins for Vyve`,
-                        description: `Purchase ${coins} coins to use on Vyve`,
-                    },
+                    product_data: { name: `${coins} Coins for Vyve` },
                     unit_amount: Math.round(amount * 100),
                 },
                 quantity: 1,
@@ -54,17 +72,10 @@ app.post('/api/create-payment', async (req, res) => {
             mode: 'payment',
             success_url: `https://vyve-app.onrender.com/payment-success.html?coins=${coins}&username=${username}`,
             cancel_url: `https://vyve-app.onrender.com/payment-cancel.html`,
-            metadata: {
-                username: username,
-                coins: coins
-            }
+            metadata: { username, coins }
         });
-        
-        console.log('✅ Stripe session created:', session.id);
         res.json({ url: session.url });
-        
     } catch (error) {
-        console.error('❌ Stripe error:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -79,6 +90,5 @@ app.get('/', (req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-    console.log(`🚀 Vyve server running on port ${port}`);
-    console.log(`💳 Stripe configured: ${stripe.apiKey ? 'YES' : 'NO'}`);
+    console.log(`Vyve server running on port ${port}`);
 });
