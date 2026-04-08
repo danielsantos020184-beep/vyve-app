@@ -21,7 +21,6 @@
         .screen { display: none; min-height: 100vh; padding-bottom: 70px; }
         .screen.active { display: block; animation: fadeIn 0.3s ease; }
         
-        /* Home Feed */
         .feed-container { height: 100vh; overflow-y: scroll; scroll-snap-type: y mandatory; }
         .post-card { height: 100vh; scroll-snap-align: start; position: relative; background: #000; }
         .post-media { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
@@ -32,96 +31,13 @@
         .follow-btn.following { background: #4caf50; }
         .post-actions { position: absolute; bottom: 120px; right: 20px; z-index: 10; display: flex; flex-direction: column; gap: 24px; }
         .action-btn { text-align: center; cursor: pointer; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); padding: 8px 12px; border-radius: 30px; }
+        .delete-btn { background: rgba(255,68,68,0.8); border: none; padding: 5px 10px; border-radius: 20px; color: white; font-size: 10px; cursor: pointer; margin-top: 5px; }
         
-        .live-badge-small { position: absolute; top: 20px; right: 20px; background: #ff3b30; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 20; animation: blink 1s infinite; }
-        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .like-list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
+        .like-list-modal.active { transform: translateY(0); }
+        .like-list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .like-list-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
         
-        /* Stories */
-        .story-ring { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #ff3b30, #ff6b35); display: flex; align-items: center; justify-content: center; margin: 5px; cursor: pointer; }
-        .story-inner { width: 65px; height: 65px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 30px; }
-        .stories-container { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: #000; border-bottom: 1px solid var(--glass-border); }
-        
-        /* Search Bar */
-        .search-bar { position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 10px 15px; z-index: 100; border-bottom: 1px solid var(--glass-border); }
-        .search-bar-inner { display: flex; gap: 8px; align-items: center; max-width: 500px; margin: 0 auto; }
-        .search-input { flex: 1; padding: 10px 15px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; font-size: 14px; }
-        .search-btn { background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer; }
-        
-        /* Live Screen */
-        .live-container { padding: 20px; min-height: 100vh; }
-        .start-live-btn { background: linear-gradient(135deg, #ff3b30, #ff6b35); border: none; padding: 18px 40px; border-radius: 60px; color: white; font-size: 18px; font-weight: 700; cursor: pointer; margin: 20px auto; display: block; }
-        .live-stream-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
-        .live-indicator { width: 50px; height: 50px; background: #ff3b30; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-        
-        /* Streamer Panel */
-        .live-stream-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: none; flex-direction: column; }
-        .live-stream-panel.active { display: flex; }
-        .live-video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
-        .live-stats { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px; z-index: 1001; display: flex; gap: 20px; }
-        .live-stat { display: flex; align-items: center; gap: 5px; font-size: 14px; }
-        .live-chat-overlay { position: absolute; bottom: 100px; left: 10px; right: 10px; max-height: 200px; overflow-y: auto; z-index: 1002; pointer-events: none; }
-        .live-chat-message { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; margin: 4px; display: inline-block; max-width: 80%; font-size: 12px; pointer-events: auto; }
-        .live-gift-message { background: linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.3)); border: 1px solid gold; }
-        .live-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 1001; }
-        .live-control-btn { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: none; padding: 10px 20px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
-        .flip-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
-        .effects-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
-        .effects-panel { position: absolute; top: 80px; right: 20px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-radius: 20px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1001; max-height: 300px; overflow-y: auto; }
-        .effects-panel.active { display: flex; }
-        .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; text-align: center; font-size: 12px; }
-        
-        /* Viewer Panel */
-        .viewer-panel { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000; display: none; flex-direction: column; }
-        .viewer-panel.active { display: flex; }
-        .viewer-video { width: 100%; height: 100%; object-fit: cover; }
-        .viewer-stats { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px; z-index: 1001; display: flex; gap: 20px; }
-        .viewer-chat-overlay { position: absolute; bottom: 100px; left: 10px; right: 10px; max-height: 200px; overflow-y: auto; z-index: 1002; pointer-events: none; }
-        .viewer-chat-message { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; margin: 4px; display: inline-block; max-width: 80%; font-size: 12px; pointer-events: auto; }
-        .viewer-gift-btn { position: absolute; bottom: 150px; right: 20px; background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 12px 24px; border-radius: 30px; color: white; cursor: pointer; z-index: 1001; }
-        .viewer-chat-input { position: absolute; bottom: 20px; left: 20px; right: 100px; background: rgba(0,0,0,0.7); border: 1px solid var(--glass-border); padding: 12px; border-radius: 30px; color: white; z-index: 1001; }
-        .viewer-chat-send { position: absolute; bottom: 20px; right: 20px; background: #667eea; border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer; z-index: 1001; }
-        .viewer-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white; cursor: pointer; z-index: 1001; }
-        
-        /* Shop - 15 packages .99 to 5000 */
-        .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
-        .package-card { background: var(--card-bg); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; }
-        .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); transform: scale(1.02); }
-        .package-icon { font-size: 28px; margin-bottom: 5px; }
-        .balance { background: var(--card-bg); padding: 20px; text-align: center; margin: 20px; border-radius: 28px; }
-        .balance-value { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* Gold Wallet Icon */
-        .wallet-icon { display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #ffd700, #ffb347); border-radius: 20px; padding: 15px 20px; margin: 15px; cursor: pointer; }
-        .wallet-left { display: flex; align-items: center; gap: 15px; }
-        .wallet-gold { font-size: 32px; }
-        .wallet-info { display: flex; flex-direction: column; }
-        .wallet-label { font-size: 12px; opacity: 0.8; }
-        .wallet-amount { font-size: 24px; font-weight: bold; color: #fff; }
-        .wallet-arrow { font-size: 20px; }
-        
-        /* Wallet Modal */
-        .wallet-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 60vh; overflow-y: auto; }
-        .wallet-modal.active { transform: translateY(0); }
-        .wallet-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid var(--glass-border); }
-        
-        /* Small Action Buttons (1/4 size) */
-        .action-buttons-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; gap: 10px; }
-        .action-group-left { display: flex; gap: 10px; flex: 1; justify-content: flex-start; }
-        .action-group-center { flex: 1; display: flex; justify-content: center; }
-        .action-group-right { display: flex; gap: 10px; flex: 1; justify-content: flex-end; }
-        .small-action-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; padding: 8px 12px; border-radius: 30px; color: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .small-action-btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
-        
-        /* Short Notifications Panel */
-        .notifications-panel { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 12px; margin: 15px; max-height: 150px; overflow-y: auto; }
-        .notification-item { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; font-size: 11px; }
-        
-        /* Bottom Right Buttons */
-        .bottom-buttons { display: flex; justify-content: flex-end; padding: 10px 15px; gap: 10px; }
-        .bottom-btn { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); padding: 8px 15px; border-radius: 30px; color: white; font-size: 12px; cursor: pointer; }
-        
-        /* Profile Modal */
         .profile-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 3000; display: none; flex-direction: column; overflow-y: auto; }
         .profile-modal.active { display: flex; }
         .profile-modal-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 30px; text-align: center; position: relative; }
@@ -129,15 +45,44 @@
         .profile-modal-avatar { width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
         .profile-modal-stats { display: flex; justify-content: space-around; padding: 20px; background: rgba(0,0,0,0.3); margin: 20px; border-radius: 20px; }
         
-        /* Lists */
-        .list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
-        .list-modal.active { transform: translateY(0); }
-        .list-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--glass-border); }
-        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .list-item-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .live-badge-small { position: absolute; top: 20px; right: 20px; background: #ff3b30; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; z-index: 20; animation: blink 1s infinite; }
+        @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         
-        .search-results { margin-top: 10px; display: none; background: rgba(0,0,0,0.95); border-radius: 16px; padding: 10px; max-width: 500px; margin: 10px auto 0 auto; }
-        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .story-ring { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #ff3b30, #ff6b35); display: flex; align-items: center; justify-content: center; margin: 5px; cursor: pointer; }
+        .story-inner { width: 65px; height: 65px; border-radius: 50%; background: #1a1a2e; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .stories-container { display: flex; overflow-x: auto; padding: 15px; gap: 10px; background: #000; border-bottom: 1px solid var(--glass-border); }
+        
+        .live-container { padding: 20px; min-height: 100vh; }
+        .start-live-btn { background: linear-gradient(135deg, #ff3b30, #ff6b35); border: none; padding: 18px 40px; border-radius: 60px; color: white; font-size: 18px; font-weight: 700; cursor: pointer; margin: 20px auto; display: block; }
+        .live-stream-card { background: var(--card-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid var(--glass-border); cursor: pointer; display: flex; align-items: center; gap: 15px; }
+        .live-indicator { width: 50px; height: 50px; background: #ff3b30; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .search-streams { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-streams input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
+        .search-streams button { background: var(--primary); border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer; }
+        
+        .packages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; }
+        .package-card { background: var(--card-bg); padding: 12px; border-radius: 16px; text-align: center; cursor: pointer; border: 1px solid var(--glass-border); transition: all 0.2s; font-size: 12px; }
+        .package-card.selected { background: linear-gradient(135deg, var(--primary), var(--secondary)); transform: scale(1.02); }
+        .package-icon { font-size: 32px; margin-bottom: 8px; }
+        .balance { background: var(--card-bg); padding: 25px; text-align: center; margin: 20px; border-radius: 28px; }
+        .balance-value { font-size: 48px; font-weight: 800; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .profile-pic-container { position: relative; width: 100px; height: 100px; margin: 0 auto 15px; cursor: pointer; }
+        .profile-pic { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background: white; border: 3px solid rgba(255,255,255,0.3); }
+        .upload-overlay { position: absolute; bottom: 0; right: 0; background: var(--primary); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; border: 2px solid white; }
+        .hidden-file-input { display: none; }
+        
+        .profile-header { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 40px 20px 30px; text-align: center; }
+        .stats { display: flex; justify-content: space-around; padding: 15px; margin: 15px; background: var(--card-bg); border-radius: 20px; cursor: pointer; }
+        .stat-item { text-align: center; flex: 1; }
+        .stat-number { font-size: 24px; font-weight: 700; }
+        .stat-label { font-size: 11px; opacity: 0.8; }
+        
+        .profile-buttons { display: flex; flex-direction: column; gap: 10px; margin: 15px; }
+        .profile-btn { background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; padding: 12px; border-radius: 40px; color: white; font-weight: bold; cursor: pointer; width: 100%; text-align: center; }
+        .profile-btn.secondary { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); }
         
         .input-field { width: 100%; padding: 14px 20px; margin: 12px 0; border-radius: 40px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; font-size: 16px; }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 14px 28px; border: none; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; }
@@ -147,14 +92,89 @@
         .modal.active { display: flex; }
         .modal-content { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); padding: 30px; border-radius: 40px; text-align: center; max-width: 320px; }
         
+        .list-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; overflow-y: auto; }
+        .list-modal.active { transform: translateY(0); }
+        .list-modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+        .list-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .list-item-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        
+        #searchResults { margin-top: 10px; display: none; background: rgba(0,0,0,0.95); border-radius: 16px; padding: 10px; max-width: 500px; margin: 10px auto 0 auto; }
+        .search-result-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .search-result-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        
         .edit-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; flex-direction: column; padding: 20px; overflow-y: auto; }
         .edit-modal.active { display: flex; }
         .edit-tools { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; justify-content: center; }
+        .edit-tool-btn { background: rgba(255,255,255,0.2); border: none; padding: 10px 20px; border-radius: 30px; color: white; cursor: pointer; }
         .preview-container { text-align: center; margin: 20px 0; }
         .preview-video, .preview-image { max-width: 100%; max-height: 60vh; border-radius: 20px; }
         
-        .hidden-file-input { display: none; }
-        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 20px; font-size: 10px; z-index: 15; }
+        .sound-library { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; max-height: 200px; overflow-y: auto; }
+        .sound-item { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 20px; cursor: pointer; text-align: center; }
+        
+        .effects-panel { position: absolute; top: 80px; right: 20px; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); border-radius: 20px; padding: 15px; display: none; flex-direction: column; gap: 10px; z-index: 1001; max-height: 300px; overflow-y: auto; }
+        .effects-panel.active { display: flex; }
+        .effect-option { background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 30px; color: white; cursor: pointer; text-align: center; font-size: 12px; }
+        
+        .floating-chat { position: absolute; bottom: 100px; left: 10px; right: 10px; max-height: 200px; overflow-y: auto; z-index: 1002; pointer-events: none; }
+        .floating-chat-message { background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); padding: 6px 12px; border-radius: 20px; margin: 4px; display: inline-block; max-width: 80%; font-size: 12px; pointer-events: auto; }
+        
+        .comments-modal { position: fixed; bottom: 0; left: 0; right: 0; background: #1a1a2e; border-radius: 30px 30px 0 0; padding: 20px; z-index: 200; transform: translateY(100%); transition: transform 0.3s ease; max-height: 70vh; display: flex; flex-direction: column; }
+        .comments-modal.active { transform: translateY(0); }
+        .comments-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; border-bottom: 1px solid var(--glass-border); margin-bottom: 15px; }
+        .comments-list { flex: 1; overflow-y: auto; margin-bottom: 15px; }
+        .comment-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
+        .comment-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .comment-content { flex: 1; }
+        .comment-username { font-weight: bold; font-size: 14px; }
+        .comment-text { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+        .comment-time { font-size: 10px; opacity: 0.5; margin-top: 4px; }
+        .comment-input-container { display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--glass-border); }
+        .comment-input { flex: 1; padding: 12px; border-radius: 30px; border: 1px solid var(--glass-border); background: var(--card-bg); color: white; }
+        
+        .notifications-panel { background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; margin: 20px; max-height: 200px; overflow-y: auto; }
+        .notification-item { padding: 10px; border-bottom: 1px solid var(--glass-border); cursor: pointer; font-size: 12px; }
+        .notification-unread { background: rgba(102,126,234,0.2); }
+        
+        .dm-user-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--glass-border); cursor: pointer; }
+        .dm-avatar { width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .dm-message-bubble { display: inline-block; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 20px; max-width: 80%; margin: 5px 0; font-size: 13px; }
+        
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; margin-left: 8px; }
+        .badge-bronze { background: #cd7f32; color: white; }
+        .badge-silver { background: #c0c0c0; color: #333; }
+        .badge-gold { background: #ffd700; color: #333; }
+        .badge-platinum { background: #e5e4e2; color: #333; }
+        .badge-diamond { background: #00bcd4; color: white; }
+        .badge-legend { background: #ff6b6b; color: white; }
+        .trending-badge { background: #ff3b30; padding: 2px 8px; border-radius: 20px; font-size: 10px; margin-left: 10px; }
+        
+        .video-call-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
+        .video-call-container.active { display: flex; }
+        .video-call-remote { width: 100%; height: 100%; object-fit: cover; }
+        .video-call-local { position: absolute; bottom: 20px; right: 20px; width: 100px; height: 150px; background: #333; border-radius: 15px; overflow: hidden; border: 2px solid var(--primary); z-index: 2002; }
+        .video-call-local video { width: 100%; height: 100%; object-fit: cover; }
+        .video-call-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 2001; }
+        .video-call-controls button { background: rgba(0,0,0,0.7); border: none; padding: 12px; border-radius: 50%; width: 50px; height: 50px; font-size: 20px; cursor: pointer; }
+        .video-call-end { background: #ff3b30 !important; }
+        
+        .story-viewer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 2000; display: none; flex-direction: column; }
+        .story-viewer.active { display: flex; }
+        .story-image { width: 100%; height: 100%; object-fit: contain; }
+        .story-progress { position: absolute; top: 20px; left: 0; right: 0; display: flex; gap: 5px; padding: 10px; }
+        .story-progress-bar { flex: 1; height: 3px; background: rgba(255,255,255,0.3); border-radius: 3px; overflow: hidden; }
+        .story-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.1s linear; }
+        
+        .admin-section { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 15px; margin-bottom: 15px; }
+        .admin-user-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 12px; }
+        
+        .streamer-controls { position: absolute; bottom: 30px; left: 0; right: 0; display: flex; justify-content: center; gap: 15px; z-index: 1001; }
+        .streamer-controls button { background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); border: none; padding: 10px 20px; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; font-size: 14px; }
+        .flip-btn { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
+        .effects-btn { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; z-index: 1001; }
+        
+        /* Watermark */
+        .watermark { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 20px; font-size: 10px; z-index: 15; font-family: monospace; }
     </style>
 </head>
 <body>
@@ -210,23 +230,25 @@
 
 <!-- Home Feed Screen -->
 <div id="feedScreen" class="screen">
-    <div class="search-bar">
-        <div class="search-bar-inner">
-            <div style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VYVE</div>
-            <input type="text" id="searchInput" placeholder="🔍 Search users or videos..." class="search-input">
-            <button onclick="searchUsersGlobal()" class="search-btn">Find</button>
+    <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 100;">
+        <div style="padding: 10px 15px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+            <div style="display: flex; gap: 8px; align-items: center; max-width: 500px; margin: 0 auto;">
+                <div style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">VYVE</div>
+                <input type="text" id="searchInput" placeholder="🔍 Search users..." class="input-field" style="flex: 1; padding: 10px 15px; font-size: 14px; margin: 0;">
+                <button onclick="searchUsersGlobal()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 10px 18px; border-radius: 30px; color: white; font-weight: bold; cursor: pointer;">Find</button>
+            </div>
+            <div id="searchResults"></div>
         </div>
-        <div id="searchResults" class="search-results"></div>
+        <div class="stories-container" id="storiesContainer"></div>
     </div>
-    <div class="stories-container" id="storiesContainer"></div>
     <div class="feed-container" id="feedContainer"></div>
 </div>
 
-<!-- Popular Screen - Top 25 Videos of the Day -->
+<!-- Popular Screen -->
 <div id="trendingScreen" class="screen">
-    <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 15px; z-index: 100; border-bottom: 1px solid var(--glass-border);">
+    <div style="position: sticky; top: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); padding: 15px; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1);">
         <h2 style="font-size: 22px;">🔥 Popular Today</h2>
-        <p style="font-size: 12px; opacity: 0.7;">Top 25 most viewed videos of the day</p>
+        <p style="font-size: 12px; opacity: 0.7;">Top 10 videos of the day</p>
     </div>
     <div class="feed-container" id="trendingContainer"></div>
 </div>
@@ -239,16 +261,15 @@
             <div class="live-streams-list">
                 <div class="search-streams">
                     <input type="text" id="searchStreamInput" placeholder="🔍 Search live streams..." class="input-field" style="margin: 0;">
-                    <button onclick="searchLiveStreams()" style="background: var(--primary); border: none; padding: 12px 20px; border-radius: 30px; color: white; cursor: pointer;">Search</button>
+                    <button onclick="searchLiveStreams()">Search</button>
                 </div>
                 <h3>🎥 Live streams from others:</h3>
                 <div id="activeStreamsContainer"></div>
             </div>
         </div>
         
-        <!-- Streamer Panel -->
-        <div id="liveStreamPanel" class="live-stream-panel">
-            <video id="localVideo" class="live-video" autoplay playsinline muted></video>
+        <div id="liveStreamPanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
+            <video id="localVideo" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
             <button class="flip-btn" onclick="flipCamera()">🔄</button>
             <button class="effects-btn" onclick="toggleEffects()">✨</button>
             <div id="effectsPanel" class="effects-panel">
@@ -265,52 +286,47 @@
                 <button class="effect-option" onclick="applyFilter('dreamy')">✨ Dreamy</button>
                 <button class="effect-option" onclick="applyFilter('dramatic')">🎬 Dramatic</button>
             </div>
-            <div class="live-stats">
-                <div class="live-stat">👁️ <span id="liveViewerCount">0</span></div>
-                <div class="live-stat">🎁 <span id="liveGiftCount">0</span></div>
-            </div>
-            <div class="live-chat-overlay" id="liveChatOverlay"></div>
-            <div class="live-controls">
-                <button class="live-control-btn" onclick="document.getElementById('lockModal').classList.add('active')">🔒 Lock Live</button>
-                <button class="live-control-btn" onclick="endLiveStream()">🔴 End Live</button>
+            <div class="floating-chat" id="floatingChat"></div>
+            <div class="streamer-controls">
+                <button onclick="document.getElementById('lockModal').classList.add('active')">🔒 Lock Live</button>
+                <button onclick="endLiveStream()">🔴 End Live</button>
             </div>
         </div>
         
-        <!-- Viewer Panel -->
-        <div id="viewerPanel" class="viewer-panel">
-            <video id="remoteVideo" class="viewer-video" autoplay playsinline></video>
-            <div class="viewer-stats">
-                <div class="live-stat">👁️ <span id="viewerViewerCount">342</span></div>
-                <div class="live-stat">🎁 <span id="viewerGiftCount">0</span></div>
+        <div id="viewerLivePanel" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #000; z-index: 1000;">
+            <video id="remoteVideo" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+            <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 30px;">
+                <span style="color: #ff3b30;">🔴 LIVE</span>
+                <span style="margin-left: 10px;" id="viewerStreamerName">@streamer</span>
             </div>
-            <div class="viewer-chat-overlay" id="viewerChatOverlay"></div>
-            <button class="viewer-gift-btn" onclick="showGiftModal()">🎁 Send Gift</button>
-            <input type="text" id="viewerChatInput" placeholder="Say something..." class="viewer-chat-input">
-            <button class="viewer-chat-send" onclick="sendViewerMessage()">Send</button>
-            <button class="viewer-close" onclick="closeViewer()">✕ Close</button>
+            <div class="gift-overlay" style="position: absolute; bottom: 150px; right: 20px;">
+                <button onclick="showGiftModal()" style="background: linear-gradient(135deg, #4caf50, #2e7d32); border: none; padding: 10px 20px; border-radius: 30px; color: white;">🎁 Send Gift</button>
+            </div>
+            <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; display: flex; gap: 10px;">
+                <input type="text" id="viewerChatInput" placeholder="Say something..." class="input-field" style="flex: 1; margin: 0;">
+                <button onclick="sendViewerMessage()" style="background: #667eea; border: none; padding: 12px 20px; border-radius: 30px;">Send</button>
+            </div>
+            <button onclick="closeViewer()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white;">✕ Close</button>
         </div>
     </div>
 </div>
 
-<!-- Shop Screen - 15 packages .99 to 5000 -->
+<!-- Shop Screen - Premium Icons -->
 <div id="shopScreen" class="screen">
     <div class="balance"><p>💰 YOUR COINS</p><div class="balance-value" id="coinBalance">0</div></div>
     <div class="packages">
         <div class="package-card" data-coins="10" data-price="0.99" onclick="selectPackage(this)"><div class="package-icon">🌹</div><b>10 Coins</b><br>$0.99</div>
         <div class="package-card" data-coins="50" data-price="4.99" onclick="selectPackage(this)"><div class="package-icon">🦋</div><b>50 Coins</b><br>$4.99</div>
-        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div class="package-icon">🌟</div><b>100 Coins</b><br>$9.99</div>
-        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div class="package-icon">💎</div><b>250 Coins</b><br>$24.99</div>
-        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div class="package-icon">👑</div><b>500 Coins</b><br>$49.99</div>
-        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div class="package-icon">🏰</div><b>1000 Coins</b><br>$99.99</div>
-        <div class="package-card" data-coins="2500" data-price="249.99" onclick="selectPackage(this)"><div class="package-icon">🏎️</div><b>2500 Coins</b><br>$249.99</div>
-        <div class="package-card" data-coins="5000" data-price="499.99" onclick="selectPackage(this)"><div class="package-icon">🌍</div><b>5000 Coins</b><br>$499.99</div>
-        <div class="package-card" data-coins="10000" data-price="999.99" onclick="selectPackage(this)"><div class="package-icon">🌙</div><b>10000 Coins</b><br>$999.99</div>
-        <div class="package-card" data-coins="25000" data-price="2499.99" onclick="selectPackage(this)"><div class="package-icon">✨🌌</div><b>25000 Coins</b><br>$2,499.99</div>
-        <div class="package-card" data-coins="50000" data-price="4999.99" onclick="selectPackage(this)"><div class="package-icon">💖</div><b>50000 Coins</b><br>$4,999.99</div>
-        <div class="package-card" data-coins="100000" data-price="9999.99" onclick="selectPackage(this)"><div class="package-icon">⭐🌠</div><b>100000 Coins</b><br>$9,999.99</div>
-        <div class="package-card" data-coins="250000" data-price="24999.99" onclick="selectPackage(this)"><div class="package-icon">🏆</div><b>250000 Coins</b><br>$24,999.99</div>
-        <div class="package-card" data-coins="500000" data-price="49999.99" onclick="selectPackage(this)"><div class="package-icon">💎👑</div><b>500000 Coins</b><br>$49,999.99</div>
-        <div class="package-card" data-coins="1000000" data-price="99999.99" onclick="selectPackage(this)"><div class="package-icon">⭐🏆</div><b>1,000,000 Coins</b><br>$99,999.99</div>
+        <div class="package-card" data-coins="100" data-price="9.99" onclick="selectPackage(this)"><div class="package-icon">🌟</div><b>100 Coins</b><br>$9.99<small>🎁 +5</small></div>
+        <div class="package-card" data-coins="250" data-price="24.99" onclick="selectPackage(this)"><div class="package-icon">💎</div><b>250 Coins</b><br>$24.99<small>🎁 +15</small></div>
+        <div class="package-card" data-coins="500" data-price="49.99" onclick="selectPackage(this)"><div class="package-icon">👑</div><b>500 Coins</b><br>$49.99<small>🎁 +35</small></div>
+        <div class="package-card" data-coins="1000" data-price="99.99" onclick="selectPackage(this)"><div class="package-icon">🏰</div><b>1000 Coins</b><br>$99.99<small>🎁 +100</small></div>
+        <div class="package-card" data-coins="2500" data-price="249.99" onclick="selectPackage(this)"><div class="package-icon">🏎️</div><b>2500 Coins</b><br>$249.99<small>🎁 +300</small></div>
+        <div class="package-card" data-coins="5000" data-price="499.99" onclick="selectPackage(this)"><div class="package-icon">🌍</div><b>5000 Coins</b><br>$499.99<small>🎁 +750</small></div>
+        <div class="package-card" data-coins="10000" data-price="999.99" onclick="selectPackage(this)"><div class="package-icon">🌙</div><b>10000 Coins</b><br>$999.99<small>🎁 +2000</small></div>
+        <div class="package-card" data-coins="25000" data-price="2499.99" onclick="selectPackage(this)"><div class="package-icon">✨🌌</div><b>25000 Coins</b><br>$2,499.99<small>🎁 +5000</small></div>
+        <div class="package-card" data-coins="50000" data-price="4999.99" onclick="selectPackage(this)"><div class="package-icon">💖</div><b>50000 Coins</b><br>$4,999.99<small>🎁 +10000</small></div>
+        <div class="package-card" data-coins="100000" data-price="9999.99" onclick="selectPackage(this)"><div class="package-icon">⭐🌠</div><b>100000 Coins</b><br>$9,999.99<small>🎁 +25000</small></div>
     </div>
     <div style="padding: 0 20px 20px;"><button id="buyBtn" class="btn-primary">💳 Purchase Coins</button></div>
 </div>
@@ -334,65 +350,39 @@
         <div class="stat-item" onclick="showMyPostsList()"><div class="stat-number" id="postsCount">0</div><div class="stat-label">Posts</div></div>
     </div>
     
-    <!-- Gold Wallet Icon -->
-    <div class="wallet-icon" onclick="showWalletModal()">
-        <div class="wallet-left">
-            <div class="wallet-gold">💰</div>
-            <div class="wallet-info">
-                <div class="wallet-label">Your Wallet</div>
-                <div class="wallet-amount" id="walletBalance">0 coins</div>
-            </div>
-        </div>
-        <div class="wallet-arrow">▼</div>
+    <div style="margin: 15px;">
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; margin-bottom: 10px;"><span>💰 Available Coins</span><span style="float: right; color: #667eea;" id="profileBalance">0</span></div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px; margin-bottom: 10px;"><span>💵 Total Earned</span><span style="float: right; color: #4caf50;" id="totalEarned">$0.00</span></div>
+        <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 20px;"><span>🎁 Gifts Received</span><span style="float: right; color: #ff9800;" id="giftsReceived">0</span></div>
     </div>
     
-    <!-- Small Action Buttons -->
-    <div class="action-buttons-row">
-        <div class="action-group-left">
-            <button class="small-action-btn" onclick="addStory()">📸 Story</button>
-            <button class="small-action-btn" onclick="openDirectMessages()">💬 DM</button>
-        </div>
-        <div class="action-group-center">
-            <button class="small-action-btn" onclick="startVideoCall()">📹 Call</button>
-        </div>
-        <div class="action-group-right">
-            <button class="small-action-btn" onclick="document.getElementById('videoUploadInput').click()">📹 Upload</button>
-            <button class="small-action-btn" onclick="document.getElementById('imageUploadInput').click()">🖼️ Picture</button>
-        </div>
+    <div class="profile-buttons">
+        <button class="profile-btn" onclick="startVideoCall()">📹 Start Video Call</button>
+        <button class="profile-btn" onclick="document.getElementById('videoUploadInput').click()">📹 Upload Video</button>
+        <button class="profile-btn" onclick="document.getElementById('imageUploadInput').click()">🖼️ Upload Picture</button>
+        <button class="profile-btn" onclick="addStory()">📸 Add Story</button>
+        <button class="profile-btn" onclick="openDirectMessages()">💬 Direct Messages</button>
+        <button class="profile-btn secondary" onclick="requestNotificationPermission()">🔔 Enable Notifications</button>
+        <button class="profile-btn secondary" onclick="logout()">🚪 Logout</button>
     </div>
     
     <input type="file" id="videoUploadInput" class="hidden-file-input" accept="video/*" onchange="prepareEdit(this)">
     <input type="file" id="imageUploadInput" class="hidden-file-input" accept="image/*" onchange="prepareEdit(this)">
     <input type="file" id="storyUploadInput" class="hidden-file-input" accept="image/*,video/*" onchange="uploadStory(this)">
     
-    <!-- Short Notifications Panel -->
     <div class="notifications-panel">
-        <h3 style="margin-bottom: 8px; font-size: 14px;">🔔 Notifications</h3>
+        <h3 style="margin-bottom: 10px;">🔔 Notifications</h3>
         <div id="notificationsList"></div>
     </div>
-    
-    <!-- Bottom Right Buttons -->
-    <div class="bottom-buttons">
-        <button class="bottom-btn" onclick="requestNotificationPermission()">🔔 Enable</button>
-        <button class="bottom-btn" onclick="logout()">🚪 Logout</button>
-    </div>
 </div>
 
-<!-- Wallet Modal -->
-<div id="walletModal" class="wallet-modal">
-    <div class="list-modal-header"><h3>💰 Wallet Details</h3><button onclick="closeWalletModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
-    <div class="wallet-item"><span>💰 Available Coins</span><span id="walletCoinsDisplay">0</span></div>
-    <div class="wallet-item"><span>💵 Total Earned (as streamer)</span><span id="walletEarnedDisplay">$0</span></div>
-    <div class="wallet-item"><span>🎁 Gifts Received</span><span id="walletGiftsDisplay">0</span></div>
-    <div class="wallet-item"><span>📊 Platform Fees Paid</span><span id="walletFeesDisplay">$0</span></div>
-</div>
-
-<!-- Profile Modal -->
+<!-- Profile Modal (for viewing other users) -->
 <div id="profileModal" class="profile-modal">
     <div class="profile-modal-header">
         <button class="profile-modal-close" onclick="closeProfileModal()">✕</button>
         <div class="profile-modal-avatar" id="modalAvatar">👤</div>
         <div style="font-size: 22px; font-weight: 700;" id="modalUsername">@user</div>
+        <div style="font-size: 12px; opacity: 0.8;" id="modalBio">Member since...</div>
         <div id="modalBadge" style="margin-top: 8px;"></div>
     </div>
     <div class="profile-modal-stats">
@@ -407,30 +397,62 @@
 </div>
 
 <!-- Like List Modal -->
-<div id="likeListModal" class="list-modal">
+<div id="likeListModal" class="like-list-modal">
     <div class="list-modal-header"><h3>❤️ Liked by</h3><button onclick="closeLikeListModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
     <div id="likeListContent"></div>
 </div>
 
-<!-- Followers/Following List Modal -->
-<div id="listModal" class="list-modal">
-    <div class="list-modal-header"><h3 id="listModalTitle">Followers</h3><button onclick="closeListModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
-    <div id="listModalContent"></div>
+<!-- Admin Panel -->
+<div id="adminScreen" class="screen">
+    <div style="padding: 20px;">
+        <h2 style="margin-bottom: 20px;">👑 Admin Panel</h2>
+        <div class="admin-section">
+            <h3 style="margin-bottom: 10px;">👥 User Management</h3>
+            <div id="adminUserList"></div>
+        </div>
+        <div class="admin-section">
+            <h3 style="margin-bottom: 10px;">📊 Platform Stats</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Users:</span><span id="adminTotalUsers">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Posts:</span><span id="adminTotalPosts">0</span></div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Coins:</span><span id="adminTotalCoins">0</span></div>
+            <div style="display: flex; justify-content: space-between;"><span>Platform Revenue:</span><span id="adminRevenue">$0</span></div>
+        </div>
+    </div>
+</div>
+
+<!-- Video Call Container -->
+<div id="videoCallContainer" class="video-call-container">
+    <video id="remoteCallVideo" class="video-call-remote" autoplay playsinline></video>
+    <div class="video-call-local"><video id="localCallVideo" autoplay playsinline muted></video></div>
+    <div class="video-call-controls">
+        <button onclick="toggleCallMic()">🎤</button>
+        <button onclick="toggleCallCamera()">📷</button>
+        <button class="video-call-end" onclick="endVideoCall()">📞</button>
+    </div>
+</div>
+
+<!-- Story Viewer -->
+<div id="storyViewer" class="story-viewer">
+    <div class="story-progress" id="storyProgress"></div>
+    <img id="storyImage" class="story-image" style="display: none;">
+    <video id="storyVideo" class="story-image" autoplay playsinline style="display: none;"></video>
+    <button onclick="closeStory()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white;">✕ Close</button>
+    <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white;" id="storyUsername"></div>
 </div>
 
 <!-- Comments Modal -->
-<div id="commentsModal" class="list-modal">
-    <div class="list-modal-header"><h3>💬 Comments</h3><button onclick="closeCommentsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
+<div id="commentsModal" class="comments-modal">
+    <div class="comments-header"><h3>💬 Comments</h3><button onclick="closeCommentsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
     <div class="comments-list" id="commentsList"></div>
-    <div class="comment-input-container" style="display: flex; gap: 10px; padding: 15px; border-top: 1px solid var(--glass-border);">
-        <input type="text" id="commentInput" placeholder="Write a comment..." class="input-field" style="margin: 0;">
+    <div class="comment-input-container">
+        <input type="text" id="commentInput" placeholder="Write a comment..." class="comment-input">
         <button onclick="postComment()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Post</button>
     </div>
 </div>
 
 <!-- Direct Messages Modal -->
-<div id="dmsModal" class="list-modal">
-    <div class="list-modal-header"><h3>💬 Direct Messages</h3><button onclick="closeDMsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
+<div id="dmsModal" class="comments-modal">
+    <div class="comments-header"><h3>💬 Direct Messages</h3><button onclick="closeDMsModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div>
     <div id="dmsContent"></div>
 </div>
 
@@ -509,43 +531,7 @@
     </div>
 </div>
 
-<!-- Admin Panel -->
-<div id="adminScreen" class="screen">
-    <div style="padding: 20px;">
-        <h2 style="margin-bottom: 20px;">👑 Admin Panel</h2>
-        <div class="admin-section">
-            <h3 style="margin-bottom: 10px;">👥 User Management</h3>
-            <div id="adminUserList"></div>
-        </div>
-        <div class="admin-section">
-            <h3 style="margin-bottom: 10px;">📊 Platform Stats</h3>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Users:</span><span id="adminTotalUsers">0</span></div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Posts:</span><span id="adminTotalPosts">0</span></div>
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Total Coins:</span><span id="adminTotalCoins">0</span></div>
-            <div style="display: flex; justify-content: space-between;"><span>Platform Revenue:</span><span id="adminRevenue">$0</span></div>
-        </div>
-    </div>
-</div>
-
-<!-- Video Call Container -->
-<div id="videoCallContainer" class="video-call-container">
-    <video id="remoteCallVideo" class="video-call-remote" autoplay playsinline></video>
-    <div class="video-call-local"><video id="localCallVideo" autoplay playsinline muted></video></div>
-    <div class="video-call-controls">
-        <button onclick="toggleCallMic()">🎤</button>
-        <button onclick="toggleCallCamera()">📷</button>
-        <button class="video-call-end" onclick="endVideoCall()">📞</button>
-    </div>
-</div>
-
-<!-- Story Viewer -->
-<div id="storyViewer" class="story-viewer">
-    <div class="story-progress" id="storyProgress"></div>
-    <img id="storyImage" class="story-image" style="display: none;">
-    <video id="storyVideo" class="story-image" autoplay playsinline style="display: none;"></video>
-    <button onclick="closeStory()" style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; padding: 10px 20px; border-radius: 30px; color: white;">✕ Close</button>
-    <div style="position: absolute; bottom: 20px; left: 0; right: 0; text-align: center; color: white;" id="storyUsername"></div>
-</div>
+<div id="listModal" class="list-modal"><div class="list-modal-header"><h3 id="listModalTitle">My Posts</h3><button onclick="closeListModal()" style="background: none; border: none; color: white; font-size: 24px;">✕</button></div><div id="listModalContent"></div></div>
 
 <script>
     // ==================== APP STATE ====================
@@ -568,14 +554,13 @@
     let storyInterval = null;
     let currentViewingProfile = null;
     let currentLikePostId = null;
-    let giftCount = 0;
     const ADMIN_USERS = ['admin', 'daniel', 'vyve_admin'];
 
-    // Sample posts
+    // Sample posts with watermark support
     if (posts.length === 0) {
         posts = [
-            { id: 1, username: 'traveler', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: 'Beautiful sunset at Maldives 🌅', likes: '12500', comments: '892', views: 15420, likesList: [] },
-            { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', title: 'Playing the new update! 🎮', likes: '3400', comments: '234', views: 8900, likesList: [] }
+            { id: 1, username: 'traveler', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4', title: 'Beautiful sunset at Maldives 🌅', likes: '12500', comments: '892', likesList: [] },
+            { id: 2, username: 'gamer', type: 'video', url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4', title: 'Playing the new update! 🎮', likes: '3400', comments: '234', likesList: [] }
         ];
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
     }
@@ -587,40 +572,50 @@
         localStorage.setItem('vyve_stories', JSON.stringify(stories));
     }
 
-    // ==================== WALLET ====================
-    function showWalletModal() {
-        document.getElementById('walletCoinsDisplay').innerText = coinBalance;
-        document.getElementById('walletEarnedDisplay').innerText = '$' + (coinBalance / 10).toFixed(2);
-        let totalGifts = 0;
-        for(let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if(key === 'vyve_streamer_earnings') {
-                let earnings = JSON.parse(localStorage.getItem(key));
-                totalGifts += earnings[currentUser] || 0;
-            }
-        }
-        document.getElementById('walletGiftsDisplay').innerText = totalGifts;
-        document.getElementById('walletFeesDisplay').innerText = '$' + ((coinBalance / 10) * 0.1).toFixed(2);
-        document.getElementById('walletModal').classList.add('active');
+    // ==================== WATERMARK FUNCTION ====================
+    function addWatermarkToVideo(videoElement, username) {
+        // Create canvas overlay with watermark
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = videoElement.videoWidth;
+        canvas.height = videoElement.videoHeight;
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        ctx.font = '16px Arial';
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.shadowBlur = 0;
+        ctx.fillText(`@${username} | Vyve`, canvas.width - 150, canvas.height - 20);
+        return canvas.toDataURL();
     }
-    function closeWalletModal() { document.getElementById('walletModal').classList.remove('active'); }
 
     // ==================== PROFILE MODAL ====================
     function showUserProfile(username) {
         currentViewingProfile = username;
         document.getElementById('modalUsername').innerText = '@' + username;
         document.getElementById('modalAvatar').innerHTML = '👤';
+        
         let userPosts = posts.filter(p => p.username === username);
         document.getElementById('modalPosts').innerText = userPosts.length;
         document.getElementById('modalFollowers').innerText = followers.filter(f => f === username).length;
         document.getElementById('modalFollowing').innerText = following.filter(f => f === username).length;
+        
         let isFollowing = following.includes(username);
         let followBtn = document.getElementById('modalFollowBtn');
-        if (isFollowing) { followBtn.innerText = 'Following ✓'; followBtn.style.background = '#4caf50'; }
-        else { followBtn.innerText = '+ Follow'; followBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)'; }
+        if (isFollowing) {
+            followBtn.innerText = 'Following ✓';
+            followBtn.style.background = '#4caf50';
+        } else {
+            followBtn.innerText = '+ Follow';
+            followBtn.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+        }
+        
         document.getElementById('profileModal').classList.add('active');
     }
-    function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); currentViewingProfile = null; }
+    
+    function closeProfileModal() {
+        document.getElementById('profileModal').classList.remove('active');
+        currentViewingProfile = null;
+    }
+    
     function followUserFromModal() {
         if (currentViewingProfile && !following.includes(currentViewingProfile)) {
             following.push(currentViewingProfile);
@@ -631,29 +626,59 @@
             updateFollowingCount();
         }
     }
-    function sendMessageFromModal() { closeProfileModal(); setTimeout(() => { openDirectMessages(); selectDMUser(currentViewingProfile); }, 300); }
+    
+    function sendMessageFromModal() {
+        closeProfileModal();
+        setTimeout(() => {
+            openDirectMessages();
+            selectDMUser(currentViewingProfile);
+        }, 300);
+    }
 
     // ==================== LIKE LIST ====================
     function showLikeList(postId) {
         currentLikePostId = postId;
         let post = posts.find(p => p.id === postId);
         let likesList = post.likesList || [];
+        
         let container = document.getElementById('likeListContent');
-        if (likesList.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No likes yet</div>'; }
-        else { container.innerHTML = likesList.map(likeUser => `<div class="list-item" onclick="showUserProfile('${likeUser}')"><div class="list-item-avatar">${likeUser.charAt(0).toUpperCase()}</div><div><strong>@${likeUser}</strong></div></div>`).join(''); }
+        if (likesList.length === 0) {
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No likes yet</div>';
+        } else {
+            container.innerHTML = likesList.map(likeUser => `
+                <div class="like-list-item" onclick="showUserProfile('${likeUser}')">
+                    <div class="like-list-avatar">${likeUser.charAt(0).toUpperCase()}</div>
+                    <div><strong>@${likeUser}</strong></div>
+                </div>
+            `).join('');
+        }
         document.getElementById('likeListModal').classList.add('active');
     }
-    function closeLikeListModal() { document.getElementById('likeListModal').classList.remove('active'); }
+    
+    function closeLikeListModal() {
+        document.getElementById('likeListModal').classList.remove('active');
+    }
 
     // ==================== GLOBAL SEARCH ====================
     function searchUsersGlobal() {
         let term = document.getElementById('searchInput').value.toLowerCase().trim();
         let results = document.getElementById('searchResults');
         if (!term) { results.style.display = 'none'; return; }
+        
         let allUsers = [...new Set(posts.map(p => p.username))];
         let matched = allUsers.filter(u => u.includes(term) && u !== currentUser);
-        if (matched.length === 0) { results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>'; }
-        else { results.innerHTML = matched.map(u => `<div class="search-result-item" onclick="showUserProfile('${u}')"><div class="list-item-avatar">${u.charAt(0).toUpperCase()}</div><div><strong>@${u}</strong></div><button class="follow-btn" onclick="event.stopPropagation(); followUser('${u}', this)" style="margin-left: auto;">${following.includes(u) ? 'Following ✓' : '+ Follow'}</button></div>`).join(''); }
+        
+        if (matched.length === 0) {
+            results.innerHTML = '<div style="text-align:center;padding:15px;">No users found</div>';
+        } else {
+            results.innerHTML = matched.map(u => `
+                <div class="search-result-item" onclick="showUserProfile('${u}')">
+                    <div class="search-result-avatar">${u.charAt(0).toUpperCase()}</div>
+                    <div><strong>@${u}</strong></div>
+                    <button class="follow-btn" onclick="event.stopPropagation(); followUser('${u}', this)" style="margin-left: auto;">${following.includes(u) ? 'Following ✓' : '+ Follow'}</button>
+                </div>
+            `).join('');
+        }
         results.style.display = 'block';
     }
 
@@ -668,24 +693,27 @@
             });
         }
     }
+    
     function sendLocalNotification(title, body) {
         if (localStorage.getItem('notifications_enabled') === 'true' && 'Notification' in window && Notification.permission === 'granted') {
             new Notification(title, { body: body, icon: '/icon-192.png' });
         }
     }
+    
     function addNotification(type, from, message) {
         let newNotif = { id: Date.now(), type: type, from: from, message: message, time: new Date().toLocaleString(), read: false };
         notifications.unshift(newNotif);
-        if (notifications.length > 30) notifications.pop();
+        if (notifications.length > 50) notifications.pop();
         localStorage.setItem('vyve_notifications', JSON.stringify(notifications));
         updateNotificationsList();
         sendLocalNotification(`@${from} ${type === 'like' ? 'liked' : type === 'follow' ? 'followed' : 'commented'}`, message);
     }
+    
     function updateNotificationsList() {
         let container = document.getElementById('notificationsList');
         if (!container) return;
-        if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 10px;">No notifications</div>'; return; }
-        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="showUserProfile('${notif.from}')"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 10px;">${notif.message}</div><div style="font-size: 9px; opacity: 0.5;">${notif.time}</div></div>`).join('');
+        if (notifications.length === 0) { container.innerHTML = '<div style="text-align: center; color: #888; padding: 20px;">No notifications yet</div>'; return; }
+        container.innerHTML = notifications.map(notif => `<div class="notification-item ${notif.read ? '' : 'notification-unread'}" onclick="showUserProfile('${notif.from}')"><strong>${notif.type === 'like' ? '❤️' : notif.type === 'follow' ? '👥' : notif.type === 'comment' ? '💬' : '🎁'} @${notif.from}</strong><div style="font-size: 12px;">${notif.message}</div><div style="font-size: 10px; opacity: 0.5;">${notif.time}</div></div>`).join('');
     }
     function markNotificationRead(id) { let notif = notifications.find(n => n.id === id); if (notif) notif.read = true; localStorage.setItem('vyve_notifications', JSON.stringify(notifications)); updateNotificationsList(); }
 
@@ -695,21 +723,21 @@
     function loadComments() {
         let postComments = comments[currentPostId] || [];
         let container = document.getElementById('commentsList');
-        if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet</div>'; return; }
-        container.innerHTML = postComments.map(comment => `<div class="list-item" onclick="showUserProfile('${comment.username}')"><div class="list-item-avatar">${comment.username.charAt(0).toUpperCase()}</div><div><strong>@${comment.username}</strong><div style="font-size: 12px;">${comment.text}</div><div style="font-size: 10px; opacity: 0.5;">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="event.stopPropagation(); deleteComment(${comment.id})" style="background: #ff4444; border: none; padding: 5px 10px; border-radius: 10px; color: white;">🗑️</button>` : ''}</div>`).join('');
+        if (postComments.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No comments yet. Be the first!</div>'; return; }
+        container.innerHTML = postComments.map(comment => `<div class="comment-item" onclick="showUserProfile('${comment.username}')"><div class="comment-avatar">${comment.username.charAt(0).toUpperCase()}</div><div class="comment-content"><div class="comment-username">@${comment.username}</div><div class="comment-text">${comment.text}</div><div class="comment-time">${comment.time}</div></div>${comment.username === currentUser ? `<button onclick="event.stopPropagation(); deleteComment(${comment.id})" style="background: none; border: none; color: #ff4444;">🗑️</button>` : ''}</div>`).join('');
     }
     function postComment() {
         let input = document.getElementById('commentInput');
         let text = input.value.trim();
-        if (!text) { alert('Write a comment'); return; }
+        if (!text) { alert('Write a comment first'); return; }
         if (!comments[currentPostId]) comments[currentPostId] = [];
         let newComment = { id: Date.now(), username: currentUser, text: text, time: new Date().toLocaleString() };
         comments[currentPostId].unshift(newComment);
         localStorage.setItem('vyve_comments', JSON.stringify(comments));
         let post = posts.find(p => p.id === currentPostId);
         if (post) { post.comments = comments[currentPostId].length.toString(); localStorage.setItem('vyve_posts', JSON.stringify(posts)); loadPosts(); loadTrending(); }
-        if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented: "${text.substring(0, 30)}"`);
-        if (isLiveActive) { addLiveChatMessage(currentUser, text); }
+        if (post && post.username !== currentUser) addNotification('comment', currentUser, `commented on your post: "${text.substring(0, 50)}"`);
+        if (isLiveActive) { addFloatingChatMessage(currentUser, text); }
         input.value = '';
         loadComments();
         alert('Comment posted!');
@@ -724,25 +752,15 @@
             alert('Comment deleted');
         }
     }
-    function addLiveChatMessage(username, message) {
-        let container = document.getElementById('liveChatOverlay');
+    function addFloatingChatMessage(username, message) {
+        let container = document.getElementById('floatingChat');
         if (!container) return;
         let msgDiv = document.createElement('div');
-        msgDiv.className = 'live-chat-message';
+        msgDiv.className = 'floating-chat-message';
         msgDiv.innerHTML = `<strong>@${username}:</strong> ${message}`;
         container.appendChild(msgDiv);
-        setTimeout(() => { if (msgDiv) msgDiv.remove(); }, 8000);
-        if (container.children.length > 15) container.removeChild(container.firstChild);
-    }
-    function addViewerChatMessage(username, message) {
-        let container = document.getElementById('viewerChatOverlay');
-        if (!container) return;
-        let msgDiv = document.createElement('div');
-        msgDiv.className = 'viewer-chat-message';
-        msgDiv.innerHTML = `<strong>@${username}:</strong> ${message}`;
-        container.appendChild(msgDiv);
-        setTimeout(() => { if (msgDiv) msgDiv.remove(); }, 8000);
-        if (container.children.length > 15) container.removeChild(container.firstChild);
+        setTimeout(() => { if (msgDiv) msgDiv.remove(); }, 10000);
+        if (container.children.length > 10) container.removeChild(container.firstChild);
     }
 
     // ==================== DIRECT MESSAGES ====================
@@ -752,18 +770,18 @@
         let users = [...new Set([...Object.keys(dms), ...following])];
         let container = document.getElementById('dmsContent');
         if (users.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Follow someone to start messaging</div>'; return; }
-        container.innerHTML = `<div style="margin-bottom: 15px;"><input type="text" id="dmSearchInput" placeholder="🔍 Search users..." class="input-field" oninput="searchDMUsers()"></div><div id="dmUsersList">${users.map(user => `<div class="list-item" onclick="selectDMUser('${user}')"><div class="list-item-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 11px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages'}</div></div></div>`).join('')}</div>`;
+        container.innerHTML = `<div style="margin-bottom: 15px;"><input type="text" id="dmSearchInput" placeholder="🔍 Search users..." class="input-field" oninput="searchDMUsers()"></div><div id="dmUsersList">${users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('')}</div>`;
     }
     function searchDMUsers() {
         let term = document.getElementById('dmSearchInput').value.toLowerCase();
         let users = [...new Set([...Object.keys(dms), ...following])].filter(u => u.toLowerCase().includes(term));
-        document.getElementById('dmUsersList').innerHTML = users.map(user => `<div class="list-item" onclick="selectDMUser('${user}')"><div class="list-item-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 11px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages'}</div></div></div>`).join('');
+        document.getElementById('dmUsersList').innerHTML = users.map(user => `<div class="dm-user-item" onclick="selectDMUser('${user}')"><div class="dm-avatar">${user.charAt(0).toUpperCase()}</div><div><strong>@${user}</strong><div style="font-size: 12px; color: #888;">${dms[user]?.[dms[user].length-1]?.text || 'No messages yet'}</div></div></div>`).join('');
     }
     function selectDMUser(username) { currentDMUser = username; loadDMMessages(); }
     function loadDMMessages() {
         let messages = dms[currentDMUser] || [];
         let container = document.getElementById('dmsContent');
-        container.innerHTML = `<div style="margin-bottom: 15px;"><button onclick="loadDMUsers()" style="background: none; border: none; color: #667eea;">← Back</button> <strong style="margin-left: 10px;">@${currentDMUser}</strong></div><div id="dmMessagesList" style="flex: 1; overflow-y: auto; max-height: 400px; margin-bottom: 15px;">${messages.map(msg => `<div style="text-align: ${msg.from === currentUser ? 'right' : 'left'}; margin: 10px 0;"><div class="dm-message-bubble" style="${msg.from === currentUser ? 'background: linear-gradient(135deg, #667eea, #764ba2);' : 'background: rgba(255,255,255,0.1);'}"><div>${msg.text}</div><div style="font-size: 10px; opacity: 0.5;">${msg.time}</div></div></div>`).join('')}</div><div class="comment-input-container" style="display: flex; gap: 10px; margin-top: 15px;"><input type="text" id="dmMessageInput" placeholder="Type a message..." class="input-field" style="margin: 0;"><button onclick="sendDMToUser()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Send</button></div>`;
+        container.innerHTML = `<div style="margin-bottom: 15px;"><button onclick="loadDMUsers()" style="background: none; border: none; color: #667eea;">← Back</button> <strong style="margin-left: 10px;">@${currentDMUser}</strong></div><div id="dmMessagesList" style="flex: 1; overflow-y: auto; max-height: 400px; margin-bottom: 15px;">${messages.map(msg => `<div style="text-align: ${msg.from === currentUser ? 'right' : 'left'}; margin: 10px 0;"><div class="dm-message-bubble" style="${msg.from === currentUser ? 'background: linear-gradient(135deg, #667eea, #764ba2);' : 'background: rgba(255,255,255,0.1);'}"><div>${msg.text}</div><div style="font-size: 10px; opacity: 0.5;">${msg.time}</div></div></div>`).join('')}</div><div class="comment-input-container"><input type="text" id="dmMessageInput" placeholder="Type a message..." class="comment-input"><button onclick="sendDMToUser()" style="background: linear-gradient(135deg, #667eea, #764ba2); border: none; padding: 12px 20px; border-radius: 30px; color: white;">Send</button></div>`;
     }
     function sendDMToUser() {
         let input = document.getElementById('dmMessageInput');
@@ -774,7 +792,7 @@
         localStorage.setItem('vyve_dms', JSON.stringify(dms));
         input.value = '';
         loadDMMessages();
-        addNotification('message', currentUser, `sent you a message: "${text.substring(0, 30)}"`);
+        addNotification('message', currentUser, `sent you a message: "${text.substring(0, 50)}"`);
     }
 
     // ==================== STORIES ====================
@@ -786,7 +804,7 @@
         let otherStories = activeStories.filter(s => s.username !== currentUser);
         let uniqueUsers = [...new Set([...myStories, ...otherStories].map(s => s.username))];
         container.innerHTML = uniqueUsers.map(username => `<div class="story-ring" onclick="viewStory('${username}')"><div class="story-inner">${username === currentUser ? '📸' : '👤'}</div><div style="font-size: 10px; margin-top: 5px;">@${username}</div></div>`).join('');
-        if (uniqueUsers.length === 0) container.innerHTML = '<div style="color: #888; padding: 10px;">No stories</div>';
+        if (uniqueUsers.length === 0) container.innerHTML = '<div style="color: #888; padding: 10px;">No stories available</div>';
     }
     function addStory() { document.getElementById('storyUploadInput').click(); }
     function uploadStory(input) {
@@ -797,7 +815,7 @@
             stories.push(newStory);
             localStorage.setItem('vyve_stories', JSON.stringify(stories));
             loadStories();
-            alert('Story added! Expires in 24 hours.');
+            alert('Story added! It will expire in 24 hours.');
             input.value = '';
         }
     }
@@ -834,11 +852,11 @@
             localCallStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             document.getElementById('localCallVideo').srcObject = localCallStream;
             document.getElementById('videoCallContainer').classList.add('active');
-            alert(`📞 Calling @${targetUser}...\n\nThey need to be online to accept.`);
+            alert(`📞 Calling @${targetUser}...\n\nShare this link: https://vyve-app.onrender.com\n\nThey need to be online to accept the call.`);
         } catch (error) { alert('Cannot access camera: ' + error.message); }
     }
     function endVideoCall() { if (localCallStream) localCallStream.getTracks().forEach(track => track.stop()); localCallStream = null; document.getElementById('videoCallContainer').classList.remove('active'); }
-    function toggleCallMic() { if (localCallStream) { let audioTrack = localCallStream.getAudioTracks()[0]; if (audioTrack) { audioTrack.enabled = !audioTrack.enabled; alert(audioTrack.enabled ? 'Mic ON' : 'Mic OFF'); } } }
+    function toggleCallMic() { if (localCallStream) { let audioTrack = localCallStream.getAudioTracks()[0]; if (audioTrack) { audioTrack.enabled = !audioTrack.enabled; alert(audioTrack.enabled ? 'Microphone ON' : 'Microphone OFF'); } } }
     function toggleCallCamera() { if (localCallStream) { let videoTrack = localCallStream.getVideoTracks()[0]; if (videoTrack) { videoTrack.enabled = !videoTrack.enabled; alert(videoTrack.enabled ? 'Camera ON' : 'Camera OFF'); } } }
 
     // ==================== USER LEVELS / BADGES ====================
@@ -852,18 +870,18 @@
         if (postsCount >= 5 || totalEarnings >= 500) return { level: 'Silver', badge: '✨', className: 'badge-silver' };
         return { level: 'Bronze', badge: '🪙', className: 'badge-bronze' };
     }
-    function updateBadge() { let level = getUserLevel(); let badgeElement = document.getElementById('userBadge'); if (badgeElement) badgeElement.innerHTML = `<span class="badge ${level.className}">${level.badge} ${level.level}</span>`; }
+    function updateBadge() { let level = getUserLevel(); let badgeElement = document.getElementById('userBadge'); if (badgeElement) badgeElement.innerHTML = `<span class="badge ${level.className}">${level.badge} ${level.level} Creator</span>`; }
 
-    // ==================== TRENDING - TOP 25 ====================
+    // ==================== TRENDING ====================
     function loadTrending() {
         let container = document.getElementById('trendingContainer');
         if (!container) return;
-        let trendingPosts = [...posts].sort((a, b) => (parseInt(b.views) || parseInt(b.likes)) - (parseInt(a.views) || parseInt(a.likes))).slice(0, 25);
-        container.innerHTML = trendingPosts.map((post, idx) => `
+        let trendingPosts = [...posts].sort((a, b) => parseInt(b.likes) - parseInt(a.likes)).slice(0, 10);
+        container.innerHTML = trendingPosts.map(post => `
             <div class="post-card">
                 ${post.type === 'video' ? `<video class="post-media" src="${post.url}" loop muted playsinline></video>` : `<img class="post-media" src="${post.url}" style="object-fit: contain;">`}
                 <div class="post-info">
-                    <div class="username" onclick="showUserProfile('${post.username}')">@${post.username} ✓ <span class="trending-badge">#${idx+1}</span><button class="follow-btn" onclick="event.stopPropagation(); followUser('${post.username}', this)">+ Follow</button></div>
+                    <div class="username" onclick="showUserProfile('${post.username}')">@${post.username} ✓ <span class="trending-badge">🔥 #${trendingPosts.indexOf(post)+1}</span><button class="follow-btn" onclick="event.stopPropagation(); followUser('${post.username}', this)">+ Follow</button></div>
                     <div>${post.title}</div>
                 </div>
                 <div class="post-actions">
@@ -920,6 +938,7 @@
             loadTrending();
         }
     }
+    
     function sharePost(url) { navigator.clipboard.writeText(url); alert('Link copied!'); }
     function deletePost(postId) { if (confirm('Delete this post?')) { posts = posts.filter(p => p.id !== postId); localStorage.setItem('vyve_posts', JSON.stringify(posts)); document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length; loadPosts(); loadTrending(); alert('Post deleted'); } }
     function showMyPostsList() {
@@ -964,7 +983,7 @@
         let title = prompt('Enter title:', 'My post');
         if (!title) title = 'Untitled';
         let url = URL.createObjectURL(pendingFile);
-        let newPost = { id: Date.now(), username: currentUser, type: pendingFileType, url: url, title: title, likes: '0', comments: '0', sound: pendingSound, filter: pendingFilter, likesList: [], views: 0 };
+        let newPost = { id: Date.now(), username: currentUser, type: pendingFileType, url: url, title: title, likes: '0', comments: '0', sound: pendingSound, filter: pendingFilter, likesList: [] };
         posts.unshift(newPost);
         localStorage.setItem('vyve_posts', JSON.stringify(posts));
         document.getElementById('postsCount').innerText = posts.filter(p => p.username === currentUser).length;
@@ -977,30 +996,30 @@
     }
     function closeEditModal() { document.getElementById('editModal').classList.remove('active'); pendingFile = null; }
 
-    // ==================== LIVE STREAMING ====================
+    // ==================== REAL CAMERA LIVE ====================
     async function startLiveStream() {
         if (!currentUser) { alert('Please login first'); return; }
         try {
             localStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: useFrontCamera ? 'user' : 'environment' }, audio: true });
             document.getElementById('localVideo').srcObject = localStream;
             document.getElementById('startLivePanel').style.display = 'none';
-            document.getElementById('liveStreamPanel').classList.add('active');
+            document.getElementById('liveStreamPanel').style.display = 'block';
             isLiveActive = true;
             activeStreams.push({ streamer: currentUser, viewers: 1 });
             localStorage.setItem('vyve_active_streams', JSON.stringify(activeStreams));
             updateActiveStreamsList();
             let viewerCount = 1;
-            document.getElementById('liveViewerCount').innerText = viewerCount;
+            document.getElementById('liveViewerCount').innerText = viewerCount + ' watching';
             viewerCountInterval = setInterval(() => {
                 if (isLiveActive) {
                     viewerCount += Math.floor(Math.random() * 3);
-                    document.getElementById('liveViewerCount').innerText = viewerCount;
+                    document.getElementById('liveViewerCount').innerText = viewerCount + ' watching';
                     let streamIndex = activeStreams.findIndex(s => s.streamer === currentUser);
                     if (streamIndex !== -1) { activeStreams[streamIndex].viewers = viewerCount; localStorage.setItem('vyve_active_streams', JSON.stringify(activeStreams)); updateActiveStreamsList(); }
                 }
             }, 5000);
             alert('You are now live! Viewers can find you in the Live tab.');
-        } catch (error) { alert('Cannot access camera.'); }
+        } catch (error) { alert('Cannot access camera. Please allow camera permissions.'); }
     }
     function endLiveStream() {
         isLiveActive = false;
@@ -1009,12 +1028,12 @@
         activeStreams = activeStreams.filter(s => s.streamer !== currentUser);
         localStorage.setItem('vyve_active_streams', JSON.stringify(activeStreams));
         updateActiveStreamsList();
-        document.getElementById('liveStreamPanel').classList.remove('active');
+        document.getElementById('liveStreamPanel').style.display = 'none';
         document.getElementById('startLivePanel').style.display = 'block';
-        alert('Live ended');
+        alert('Live stream ended');
     }
     function flipCamera() { useFrontCamera = !useFrontCamera; if (localStream) { localStream.getTracks().forEach(track => track.stop()); startLiveStream(); } }
-    function toggleEffects() { const panel = document.getElementById('effectsPanel'); panel.classList.toggle('active'); }
+    function toggleEffects() { const panel = document.getElementById('effectsPanel'); panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex'; }
     function applyFilter(filter) {
         const video = document.getElementById('localVideo');
         switch(filter) {
@@ -1033,7 +1052,7 @@
         }
         document.querySelectorAll('.effect-option').forEach(btn => btn.style.background = 'rgba(255,255,255,0.2)');
         if (event && event.target) event.target.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-        document.getElementById('effectsPanel').classList.remove('active');
+        document.getElementById('effectsPanel').style.display = 'none';
     }
     function confirmLockLive() {
         let price = parseInt(document.getElementById('lockPrice').value);
@@ -1041,10 +1060,10 @@
         let platformFee = Math.floor(price * 0.10);
         let viewerPays = price + platformFee;
         closeModal('lockModal');
-        alert(`🔒 Live locked!\n💰 You earn: ${price} coins\n👁️ Viewer pays: ${viewerPays} coins`);
+        alert(`🔒 Live locked!\n\n💰 Your price: ${price} coins\n👁️ Viewer pays: ${viewerPays} coins (includes 10% Vyve fee)\n📊 You earn: ${price} coins (100%)\n📊 Vyve platform: ${platformFee} coins`);
         let streamIndex = activeStreams.findIndex(s => s.streamer === currentUser);
         if (streamIndex !== -1) { activeStreams[streamIndex].isLocked = true; activeStreams[streamIndex].lockPrice = price; activeStreams[streamIndex].viewerPrice = viewerPays; localStorage.setItem('vyve_active_streams', JSON.stringify(activeStreams)); }
-        let lockBtn = document.querySelector('#liveStreamPanel .live-control-btn:first-child');
+        let lockBtn = document.querySelector('#liveStreamPanel .lock-btn');
         if (lockBtn) { lockBtn.innerText = '🔒 Locked'; lockBtn.disabled = true; lockBtn.style.opacity = '0.5'; }
     }
     function showGiftModal() { document.getElementById('giftModal').classList.add('active'); }
@@ -1052,19 +1071,16 @@
         if (coinBalance < amount) { alert(`Need ${amount} coins!`); return; }
         let platformFee = Math.floor(amount * 0.03);
         let senderPays = amount + platformFee;
-        if (confirm(`Send ${amount} coin gift?\n🎁 Streamer gets: ${amount} coins\n📊 Vyve fee: ${platformFee} coins`)) {
+        if (confirm(`Send ${amount} coin gift?\n\n📊 Sender pays: ${senderPays} coins (includes 3% Vyve fee)\n🎁 Streamer gets: ${amount} coins (100%)\n📊 Vyve platform: ${platformFee} coins\n\n+ Stripe fee applies to coin purchase`)) {
             coinBalance -= amount;
             updateBalance();
             let streamerEarnings = JSON.parse(localStorage.getItem('vyve_streamer_earnings') || '{}');
             streamerEarnings[currentViewingStream] = (streamerEarnings[currentViewingStream] || 0) + amount;
             localStorage.setItem('vyve_streamer_earnings', JSON.stringify(streamerEarnings));
-            giftCount++;
-            document.getElementById('liveGiftCount').innerText = giftCount;
-            document.getElementById('viewerGiftCount').innerText = giftCount;
-            let container = document.getElementById('viewerChatOverlay');
+            let container = document.getElementById('viewerCommentsContainer');
             if (container) {
                 let msg = document.createElement('div');
-                msg.className = 'viewer-chat-message';
+                msg.className = 'comment-bubble';
                 msg.style.background = "linear-gradient(135deg, rgba(255,215,0,0.3), rgba(255,165,0,0.3))";
                 msg.style.border = "1px solid gold";
                 msg.innerHTML = `🎁 @${currentUser} sent a ${amount} coin gift! 🎁`;
@@ -1072,42 +1088,45 @@
                 setTimeout(() => msg.remove(), 8000);
             }
             closeModal('giftModal');
-            alert(`✅ Gift sent! @${currentViewingStream} gets ${amount} coins`);
+            alert(`✅ Gift sent!\n\n📊 Vyve platform fee: ${platformFee} coins\n🎁 @${currentViewingStream} gets: ${amount} coins`);
         }
     }
-    function closeViewer() { document.getElementById('viewerPanel').classList.remove('active'); currentViewingStream = null; }
+    function closeViewer() { document.getElementById('viewerLivePanel').style.display = 'none'; document.getElementById('startLivePanel').style.display = 'block'; currentViewingStream = null; }
     function updateActiveStreamsList() {
         const container = document.getElementById('activeStreamsContainer');
         if (!container) return;
-        if (activeStreams.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No one is live</div>'; return; }
-        container.innerHTML = activeStreams.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerPanel').classList.add('active'); document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
+        if (activeStreams.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No one is live right now. Start a stream!</div>'; return; }
+        container.innerHTML = activeStreams.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
         loadPosts();
     }
     function searchLiveStreams() {
         const term = document.getElementById('searchStreamInput').value.toLowerCase();
         const filtered = activeStreams.filter(s => s.streamer.toLowerCase().includes(term));
         const container = document.getElementById('activeStreamsContainer');
-        if (filtered.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No matching streams</div>'; return; }
-        container.innerHTML = filtered.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerPanel').classList.add('active'); document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
+        if (filtered.length === 0) { container.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">No matching streams found</div>'; return; }
+        container.innerHTML = filtered.map(stream => `<div class="live-stream-card" onclick="currentViewingStream='${stream.streamer}'; document.getElementById('viewerLivePanel').style.display='block'; document.getElementById('viewerStreamerName').innerHTML='@${stream.streamer}'; document.getElementById('startLivePanel').style.display='none'"><div class="live-indicator">🔴</div><div><strong>@${stream.streamer}</strong><br>${stream.viewers} watching</div></div>`).join('');
     }
     function sendViewerMessage() {
         const input = document.getElementById('viewerChatInput');
         if (input && input.value.trim()) {
             const message = input.value;
-            addViewerChatMessage(currentUser, message);
-            if (currentViewingStream) { addLiveChatMessage(currentUser, message); }
+            alert(`Message sent to ${currentViewingStream}: "${message}"`);
+            if (currentViewingStream) { addFloatingChatMessage(currentUser, message); }
             input.value = '';
         }
     }
 
-    // ==================== STRIPE PAYMENT ====================
+    // ==================== STRIPE PAYMENT (7% platform fee) ====================
     document.getElementById('buyBtn').addEventListener('click', async () => {
         if (!selectedPackage) { alert('Select a package first'); return; }
-        let totalCoins = selectedPackage;
-        if (confirm(`Purchase ${selectedPackage} Coins for $${selectedPrice}?\n\n+ Stripe fee applies`)) {
+        let bonus = selectedPackage >= 250 ? Math.floor(selectedPackage * 0.1) : 0;
+        let totalCoins = selectedPackage + bonus;
+        let platformCommission = (selectedPrice * 0.07).toFixed(2);
+        let userGets = (selectedPrice * 0.93).toFixed(2);
+        if (confirm(`Purchase ${selectedPackage} Coins + ${bonus} bonus = ${totalCoins} Coins\n\n📊 Fee Breakdown:\n• Vyve Platform (7%): $${platformCommission}\n• You get (93%): $${userGets} worth of coins\n• + Stripe fee (2.9% + $0.30)\n\nProceed?`)) {
             coinBalance += totalCoins;
             updateBalance();
-            alert(`✅ Added ${totalCoins} Coins!`);
+            alert(`✅ Added ${totalCoins} Coins!\n\n📊 Vyve platform fee: $${platformCommission}\n📊 You received: ${totalCoins} coins`);
             selectedPackage = null;
             document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected'));
         }
@@ -1145,97 +1164,74 @@
         }
     }
     function loadProfilePicture() { let saved = localStorage.getItem('vyve_profile_pic'); if (saved) document.getElementById('profilePreview').src = saved; }
-   function createProfile() {
-    let username = document.getElementById('signupUsername').value;
-    let email = document.getElementById('signupEmail').value;
-    let birthdate = document.getElementById('signupBirthdate').value;
-    let password = document.getElementById('signupPassword').value;
-    
-    if (!username || !email || !birthdate || !password) {
-        alert('Please fill all fields');
-        return;
+    function createProfile() {
+        let username = document.getElementById('signupUsername').value;
+        let email = document.getElementById('signupEmail').value;
+        let birthdate = document.getElementById('signupBirthdate').value;
+        let password = document.getElementById('signupPassword').value;
+        if (!username || !email || !birthdate || !password) { alert('Please fill all fields'); return; }
+        let age = new Date().getFullYear() - new Date(birthdate).getFullYear();
+        if (age < 18) { alert('You must be 18+ to join Vyve'); return; }
+        currentUser = username; currentUserEmail = email; coinBalance = 100;
+        document.getElementById('profileUsername').innerText = '@' + username;
+        document.getElementById('profileEmail').innerText = email;
+        updateBalance(); saveUserData();
+        document.getElementById('createProfileScreen').classList.remove('active');
+        document.getElementById('feedScreen').classList.add('active');
+        document.getElementById('mainNav').style.display = 'flex';
+        loadPosts();
+        loadTrending();
+        loadStories();
+        updateBadge();
+        alert('Welcome ' + username + '!');
     }
-    
-    let age = new Date().getFullYear() - new Date(birthdate).getFullYear();
-    if (age < 18) {
-        alert('You must be 18+ to join Vyve');
-        return;
-    }
-    
-    currentUser = username;
-    currentUserEmail = email;
-    coinBalance = 100;
-    
-    let userData = {
-        username: currentUser,
-        email: currentUserEmail,
-        coins: coinBalance
-    };
-    localStorage.setItem('vyve_user', JSON.stringify(userData));
-    
-    document.getElementById('profileUsername').innerText = '@' + currentUser;
-    document.getElementById('profileEmail').innerText = currentUserEmail;
-    document.getElementById('walletBalance').innerText = coinBalance + ' coins';
-    updateBalance();
-    
-    document.getElementById('createProfileScreen').classList.remove('active');
-    document.getElementById('feedScreen').classList.add('active');
-    document.getElementById('mainNav').style.display = 'flex';
-    
-    loadPosts();
-    loadTrending();
-    loadStories();
-    updateBadge();
-    
-    alert('Welcome ' + username + '! You received 100 free coins.');
-}
-   function login() {
-    let username = document.getElementById('loginUsername').value;
-    let password = document.getElementById('loginPassword').value;
-    
-    if (!username) {
-        alert('Enter username');
-        return;
-    }
-    
-    let saved = localStorage.getItem('vyve_user');
-    if (saved) {
-        let data = JSON.parse(saved);
-        if (data.username === username) {
-            currentUser = data.username;
-            currentUserEmail = data.email;
-            coinBalance = data.coins || 100;
-            
-            document.getElementById('profileUsername').innerText = '@' + currentUser;
-            document.getElementById('profileEmail').innerText = currentUserEmail;
-            document.getElementById('walletBalance').innerText = coinBalance + ' coins';
-            updateBalance();
-            
-            document.getElementById('loginScreen').classList.remove('active');
-            document.getElementById('feedScreen').classList.add('active');
-            document.getElementById('mainNav').style.display = 'flex';
-            
-            loadPosts();
-            loadTrending();
-            loadStories();
-            updateBadge();
-            updateNotificationsList();
-            
-            alert('Welcome back ' + username + '!');
-            return;
+    function login() {
+        let username = document.getElementById('loginUsername').value;
+        if (!username) { alert('Enter username'); return; }
+        let saved = localStorage.getItem('vyve_user');
+        if (saved) {
+            let data = JSON.parse(saved);
+            if (data.username === username) {
+                currentUser = data.username; currentUserEmail = data.email; coinBalance = data.coins || 100;
+                document.getElementById('profileUsername').innerText = '@' + currentUser;
+                document.getElementById('profileEmail').innerText = currentUserEmail;
+                updateBalance();
+                document.getElementById('loginScreen').classList.remove('active');
+                document.getElementById('feedScreen').classList.add('active');
+                document.getElementById('mainNav').style.display = 'flex';
+                loadPosts();
+                loadTrending();
+                loadStories();
+                updateBadge();
+                alert('Welcome back ' + username + '!');
+                return;
+            }
         }
+        alert('User not found. Create an account first.');
     }
-    
-    // If user not found, ask to create account
-    let createNew = confirm('User not found. Create a new account?');
-    if (createNew) {
-        showCreateProfile();
-    }
-}
+    function showLogin() { document.getElementById('createProfileScreen').classList.remove('active'); document.getElementById('loginScreen').classList.add('active'); }
+    function showCreateProfile() { document.getElementById('loginScreen').classList.remove('active'); document.getElementById('createProfileScreen').classList.add('active'); }
+    function logout() { localStorage.removeItem('vyve_user'); currentUser = null; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('createProfileScreen').classList.add('active'); document.getElementById('mainNav').style.display = 'none'; }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+            if (!currentUser) return;
+            let screen = item.dataset.screen;
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screen + 'Screen').classList.add('active');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+            updateActiveStreamsList();
+            if (screen === 'profile') { updateNotificationsList(); updateBadge(); }
+            if (screen === 'trending') { loadTrending(); }
+            if (screen === 'feed') { loadStories(); }
+            if (screen === 'admin' && isAdmin()) { updateAdminData(); }
+        });
+    });
+
     function updateBalance() {
         document.getElementById('coinBalance').innerText = coinBalance;
         document.getElementById('profileBalance').innerText = coinBalance;
-        document.getElementById('walletBalance').innerText = coinBalance + ' coins';
         document.getElementById('totalEarned').innerText = '$' + (coinBalance / 10).toFixed(2);
         saveUserData();
         updateBadge();
@@ -1255,7 +1251,7 @@
     function showFollowingList() {
         document.getElementById('listModalTitle').innerText = 'Following';
         let container = document.getElementById('listModalContent');
-        if (following.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;">Not following anyone</div>'; }
+        if (following.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;">Not following anyone yet</div>'; }
         else { container.innerHTML = following.map(f => `<div class="list-item" onclick="showUserProfile('${f}')"><div class="list-item-avatar">${f.charAt(0).toUpperCase()}</div><div>@${f}</div></div>`).join(''); }
         document.getElementById('listModal').classList.add('active');
     }
@@ -1263,6 +1259,7 @@
     function selectPackage(el) { selectedPackage = parseInt(el.dataset.coins); selectedPrice = parseFloat(el.dataset.price); document.querySelectorAll('.package-card').forEach(p => p.classList.remove('selected')); el.classList.add('selected'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
     
+    // Lock price preview
     let lockPriceInput = document.getElementById('lockPrice');
     if (lockPriceInput) {
         lockPriceInput.addEventListener('input', function() {
@@ -1275,6 +1272,7 @@
         });
     }
     
+    // Gift preview
     function updateGiftPreview(amount) {
         let platformFee = Math.floor(amount * 0.03);
         let senderPays = amount + platformFee;
@@ -1283,6 +1281,7 @@
         document.getElementById('giftPreviewSenderPays').innerHTML = senderPays + ' coins';
     }
     
+    // Admin functions
     function isAdmin() { return ADMIN_USERS.includes(currentUser); }
     function showAdminPanel() {
         let adminNav = document.getElementById('adminNavItem');
