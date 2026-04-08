@@ -1189,7 +1189,7 @@
     
     alert('Welcome ' + username + '! You received 100 free coins.');
 }
-    function login() {
+   function login() {
     let username = document.getElementById('loginUsername').value;
     let password = document.getElementById('loginPassword').value;
     
@@ -1232,29 +1232,6 @@
         showCreateProfile();
     }
 }
-        }
-        alert('User not found. Create an account first.');
-    }
-    function showLogin() { document.getElementById('createProfileScreen').classList.remove('active'); document.getElementById('loginScreen').classList.add('active'); }
-    function showCreateProfile() { document.getElementById('loginScreen').classList.remove('active'); document.getElementById('createProfileScreen').classList.add('active'); }
-    function logout() { localStorage.removeItem('vyve_user'); currentUser = null; document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById('createProfileScreen').classList.add('active'); document.getElementById('mainNav').style.display = 'none'; }
-
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => {
-            if (!currentUser) return;
-            let screen = item.dataset.screen;
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screen + 'Screen').classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            item.classList.add('active');
-            updateActiveStreamsList();
-            if (screen === 'profile') { updateNotificationsList(); updateBadge(); }
-            if (screen === 'trending') { loadTrending(); }
-            if (screen === 'feed') { loadStories(); }
-            if (screen === 'admin' && isAdmin()) { updateAdminData(); }
-        });
-    });
-
     function updateBalance() {
         document.getElementById('coinBalance').innerText = coinBalance;
         document.getElementById('profileBalance').innerText = coinBalance;
