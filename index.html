@@ -1,0 +1,60 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const Stripe = require('stripe');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+// Replace with your actual Stripe Secret Key
+const stripe = new Stripe('sk_test_YOUR_STRIPE_TEST_KEY_HERE');
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static('.'));
+
+// Serve index.html for all routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Payment endpoint
+app.post('/api/create-payment', async (req, res) => {
+    try {
+        const { coins, amount, username, email } = req.body;
+        
+        const validPackages = [100, 500, 1000, 5000, 10000, 50000, 100000, 500000];
+        if (!validPackages.includes(coins)) {
+            return res.status(400).json({ error: 'Invalid coin package' });
+        }
+        
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            customer_email: email,
+            line_items: [{
+                price_data: {
+                    currency: 'usd',
+                    product_data: {
+                        name: `${coins} Coins for Vyve`,
+                        description: `Purchase ${coins} coins for Vyve`,
+                    },
+                    unit_amount: Math.round(amount * 100),
+                },
+                quantity: 1,
+            }],
+            mode: 'payment',
+            success_url: `http://localhost:3001/?success=true`,
+            cancel_url: `http://localhost:3001/?canceled=true`,
+            metadata: { coins, username, email }
+        });
+        
+        res.json({ url: session.url });
+    } catch (error) {
+        console.error('Stripe error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Vyve backend running on http://localhost:${PORT}`);
+});
